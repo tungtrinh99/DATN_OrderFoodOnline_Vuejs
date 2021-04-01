@@ -16,4 +16,9 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+a {
+    color: #0288d1;
+    text-decoration: none;
+    background-color: transparent;
+}
 </style>

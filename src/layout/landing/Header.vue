@@ -4,7 +4,7 @@
       <div class="container header-wrapper">
         <div class="header-left">
           <div class="logo">
-            <img :src="require('../assets/logo.png')" alt="" />
+            <img :src="require('@/assets/logo.png')" alt="" />
           </div>
           <a-menu
             theme="light"
@@ -40,8 +40,11 @@
 </template>
 <style scoped>
 .header {
-  position: "fixed";
-  z-index: 1;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 999;
   width: "100%";
 }
 
