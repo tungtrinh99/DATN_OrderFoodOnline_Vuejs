@@ -1,32 +1,33 @@
-const db = require("../config/db.config");
+const db = require('../config/db.config');
 const fs = require("fs");
 
-class GoodsController {
-  //Lấy danh sách món ăn
-  list(req, res, next) {
-    db.query("SELECT * FROM dish", (err, result, field) => {
-      if (!err) {
-        res.send({ data: { items: result } });
-      } else {
-        console.log(err);
-      }
-    });
-  }
-  // thêm món ăn
+class UserController {
+  // Lấy danh sách người dùng
+    list(req,res,next){
+        db.query('select * from user',(err, result, field)=>{
+            if (!err) {
+                res.send({'data':{'items' : result}});
+        
+              } else {
+                console.log(err);
+              }
+        })
+    }
+    // thêm món người dùng
   save(req, res, next) {
     var data = req.body;
 
-    db.query(`INSERT INTO dish SET ?  `, data, (err, result, fields) => {
+    db.query(`INSERT INTO user SET ?  `, data, (err, result, fields) => {
       if (!err) res.send({ data: { items: result } });
       else console.log(err);
     });
   }
-  // cập nhật món ăn
+  // cập nhật món người dùng
   update(req, res, next) {
     var id = req.query.id;
     var data = req.body;
     db.query(
-      `UPDATE dish SET ? WHERE id = ${id}`,
+      `UPDATE user SET ? WHERE id = ${id}`,
       data,
       (err, result, field) => {
         if (!err) {
@@ -37,19 +38,19 @@ class GoodsController {
       }
     );
   }
-  //xóa món ăn
+  //xóa món người dùng
   delete(req, res, next) {
     var id = req.query.id;
-    db.query(`DELETE FROM dish WHERE id = ${id}`, (err, result, fields) => {
+    db.query(`DELETE FROM user WHERE id = ${id}`, (err, result, fields) => {
       if (!err) res.send({ data: { items: result } });
       else console.log(err);
     });
   }
-  //Lấy chi tiết 1 món ăn
+  //Lấy chi tiết 1 người dùng
   detail(req, res, next) {
     var id = req.query.id;
 
-    db.query(`SELECT * FROM dish WHERE id = ${id}`, (err, result, field) => {
+    db.query(`SELECT * FROM user WHERE id = ${id}`, (err, result, field) => {
       if (!err) {
         res.send({ data: { items: result } });
       } else {
@@ -57,7 +58,7 @@ class GoodsController {
       }
     })
   }
-  //thêm ảnh món ăn
+  //thêm ảnh người dùng
   upload(req, res, next) {
     var file = req.file;
     res.send({
@@ -65,4 +66,5 @@ class GoodsController {
     })
   }
 }
-module.exports = new GoodsController();
+
+module.exports = new UserController;
