@@ -1,19 +1,23 @@
 const express = require('express');
 const router = express.Router();
-// const multer  = require('multer');
-// const upload = multer({ storage : storage });
+const storage = require('../middlewares/upload')
+const multer  = require('multer');
+const upload = multer({ storage : storage });
 
-const goods = require('../controller/goods.controller');
+
+const food = require('../controller/food.controller');
 const restaurant = require('../controller/restaurant.controller');
 const user = require('../controller/user.controller');
 
 
 //goods
-router.get('/goods/list',goods.list);
-router.get('/goods/detail',goods.detail);
-router.post('/goods/save',goods.save);
-router.post('/goods/update',goods.update);
-router.get('/goods/delete',goods.delete);
+router.get('/food/list',food.list);
+router.get('/food/detail',food.detail);
+router.post('/food/save',food.save);
+router.post('/food/update',food.update);
+router.get('/food/delete',food.delete);
+router.post('/food/uploadFiles',upload.single('file'),food.upload);
+
 
 
 //restaurant

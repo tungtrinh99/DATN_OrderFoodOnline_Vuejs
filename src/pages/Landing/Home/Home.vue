@@ -6,7 +6,7 @@
         :style="{
           'background-image':
             'url(' +
-            require('./../../assets/images/Background/back-ground.jpg') +
+            require('./../../../assets/images/Background/back-ground.jpg') +
             ')',
         }"
       >
@@ -52,8 +52,8 @@
 </template>
 <script>
 import FormSearch from "./Form.vue";
-import Item from "../../components/Cards/Item.vue";
-import http from "./../../http-common";
+import Item from "../../../components/Cards/Item.vue";
+import http from "./../../../http-common";
 
 export default {
   components: {

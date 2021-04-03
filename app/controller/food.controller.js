@@ -1,7 +1,8 @@
 const db = require("../config/db.config");
 const fs = require("fs");
 
-class GoodsController {
+
+class FoodController {
   //Lấy danh sách món ăn
   list(req, res, next) {
     db.query("SELECT * FROM dish", (err, result, field) => {
@@ -65,4 +66,4 @@ class GoodsController {
     })
   }
 }
-module.exports = new GoodsController();
+module.exports = new FoodController();

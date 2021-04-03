@@ -1,287 +1,202 @@
 <template>
   <div>
-    <a-menu
-      theme="dark"
-      mode="horizontal"
-      :default-selected-keys="['2']"
-      :style="{ lineHeight: '64px' }"
-    >
-      <a-menu-item key="notify" @click="showNotify">
-        <a-icon type="bell" style="margin:0"></a-icon>
-      </a-menu-item>
-      <a-menu-item key="cart" @click="showCart" v-if="role == 1">
-        <a-badge :count="this.count">
-          <a-icon type="shopping" style="margin:0"></a-icon>
-        </a-badge>
-      </a-menu-item>
-      <a-menu-item key="user" @click="showUser">
-        <a-icon type="user" style="margin:0"></a-icon>
-      </a-menu-item>
-    </a-menu>
-    <a-drawer
-      placement="right"
-      :closable="false"
-      :visible="visibleUser"
-      :after-visible-change="afterVisibleChange"
-      @close="onCloseUser"
-    >
-      <a-row>
-        <a-col :span="8"></a-col>
-        <a-col :span="12">
-          <a-avatar shape="square" :size="64" icon="user" />
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="24">
-          <a-descriptions
-            title="Thông tin người dùng"
-            :column="1"
-            :size="'middle'"
-            :style="{
-              marginTop: '30px'
-            }"
-          >
-            <a-descriptions-item label="Họ và tên">
-              {{ data.fullname }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Email">
-              {{ data.email }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Tên đăng nhập">
-              {{ data.username }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Số điện thoại">
-              {{ data.phone }}
-            </a-descriptions-item>
-          </a-descriptions>
-        </a-col>
-      </a-row>
-      <a-button
-        :style="{
-          position: 'absolute',
-          bottom: '10px',
-          width: '80%'
-        }"
-        type="danger"
-        block
-        @click="logout"
-      >
-        Đăng xuất</a-button
-      >
-    </a-drawer>
-    <a-drawer
-      width="720"
-      placement="right"
-      :closable="false"
-      :visible="visibleCart"
-      @close="onCloseCart"
-    >
-      <h2>
-        Giỏ hàng (<span style="color:red">{{ count }}</span
-        >)
-      </h2>
-      <a-divider />
-      <div v-for="(d, index) in dataCart" :key="index">
-        <a-row class="row">
-          <a-col :span="3">
-            <img
-              :style="{ width: '40px', height: '40px' }"
-              :src="require('../../../../public/images/' + d.avatar)"
-              alt="avatar"
-            />
-          </a-col>
-          <a-col :span="4">
-            <a-input-number
-              size="small"
-              :min="1"
-              :default-value="d.qty"
-              @change="onChange"
-            />
-          </a-col>
-          <a-col :span="10">
-            <a>{{ d.name }}</a>
-          </a-col>
-          <a-col :span="4">
-            <span>{{ Intl.NumberFormat().format(d.price) }} đ</span>
-          </a-col>
-          <a-col :span="3">
-            <a-button-group>
-              <a-button
-                type="primary"
-                icon="upload"
-                @click="upload(index)"
-                style="margin-right:3px"
-              />
-              <a-button type="danger" icon="close" @click="remove(index)" />
-            </a-button-group>
-          </a-col>
-        </a-row>
-        <a-divider />
-      </div>
-      <div class="cart-total-price">
-        <h2>
-          Tổng Tiền :
-          <span style="color:red"
-            >{{ Intl.NumberFormat().format(priceTotal) }} đ</span
-          >
-        </h2>
-      </div>
-      <a-button
-        :style="{
-          position: 'absolute',
-          bottom: '10px',
-          width: '90%'
-        }"
-        v-if="this.count"
-        type="danger"
-        block
-        @click="createOrder"
-      >
-        Tạo đơn hàng</a-button
-      >
-    </a-drawer>
-    <a-drawer
-      width="480"
-      placement="right"
-      :closable="false"
-      :visible="visibleNotify"
-      @close="onCloseNotify"
-    >
-      <h1>
-        Thông báo
-      </h1>
-      <a-divider />
-    </a-drawer>
+    <div class="content">
+      <a-table :columns="cols" :data-source="data">
+        <div slot="action" slot-scope="record">
+          <a-icon
+            type="edit"
+            style="color:green;margin-left:4px"
+            @click="showEditModal(record)"
+          />
+          <a-icon
+            type="delete"
+            style="color:red;margin-left:4px"
+            @click="showDeleteConfirm(record)"
+          />
+          
+          
+        </div>
+        <div slot="file" slot-scope="text">
+          <img
+            v-if="text"
+            :src="require('../../../public/images/' + text)"
+            alt="avatar"
+            :style="{ width: '50px', height: '50px' }"
+          />
+        </div>
+        <span slot="status" slot-scope="text">{{ renderStatus(text) }}</span>
+        <a slot="link" slot-scope="text" @click="openRecord(text)"
+          >{{ text }}
+        </a>
+      </a-table>
+      
+    </div>
   </div>
 </template>
 
 <script>
 import http from "../../http-common";
+import Constant from "../../constant";
+import EventBus from "../../event-bus";
 
 export default {
+  components: {
+  },
+  props: {
+    column: {
+      type: Array
+    },
+    entity: String,
+    isAction: Boolean
+  },
   data() {
-    var role = localStorage.getItem("logged-in");
+    var cols = [];
+    if (this.isAction) {
+      cols.push({
+        title: "Hành động",
+        key: "operation",
+        dataIndex: "id",
+        fixed: "left",
+        width: 120,
+        scopedSlots: { customRender: "action" }
+      });
+    }
+
+    const title = Constant[this.entity];
+    var tmp = this.column.map(p => {
+      if (!p.scopedSlots) {
+        p.scopedSlots = {
+          filterIcon: "filterIcon",
+          customRender: "customRender"
+        };
+      }
+      if (p.isCodeIndex) {
+        p.scopedSlots.customRender = "link";
+      } else {
+        if (p.dataType) {
+          p.scopedSlots.customRender = p.dataType;
+        }
+      }
+
+      return p;
+    });
+    cols = [].concat.apply(cols, tmp);
     return {
-      visibleUser: false,
-      visibleCart: false,
-      visibleNotify: false,
-      data: {},
-      dataCart: [],
-      priceTotal: 0,
-      count: 0,
-      role,
-      quantity: 0,
-      sizeList : []
+      data: [],
+      cartData: [],
+      key: 0,
+      cols: cols,
+      visible: false,
+      title,
+      dataEdit: [],
+      id: null,
+      filters: [],
+      searchText: "",
     };
   },
   methods: {
-    showUser() {
-      this.visibleUser = true;
-      this.getSession();
-    },
-    showCart() {
-      this.visibleCart = true;
-      this.getSession();
-    },
-    showNotify() {
-      this.visibleNotify = true;
-    },
-    onCloseUser() {
-      this.visibleUser = false;
-    },
-    onCloseNotify() {
-      this.visibleNotify = false;
-    },
-    onCloseCart() {
-      this.visibleCart = false;
-    },
-    afterVisibleChange(val) {
-      console.log("visible", val);
-    },
-    logout() {
+    fetchData() {
       http
-        .get("/auth/logout")
+        
+        .get(`/${this.entity}/list`)
         .then(response => {
-          localStorage.removeItem("logged-in");
-          this.$router.push("/login");
+          this.data = response.data.data.items;
+          
+          
         })
         .catch(error => {
-          console.log(error);
+          this.$message.error(error.message);
         });
     },
-    getSession() {
+    showDeleteConfirm(record) {
+      const entity = this.entity;
+      const component = this;
+      this.$confirm({
+        title: `Bạn có muốn xóa ${this.title} ${record} không?`,
+        okText: "Xác nhận",
+        okType: "danger",
+        cancelText: "Hủy",
+
+        onOk() {
+          http
+            .get(`/${entity}/delete`,{params:{
+              id : record
+            }})
+            .then(response => {
+              component.$message.success(
+                `Xóa ${component.title} ${record} thành công`
+              );
+              EventBus.$emit("reload");
+            })
+            .catch(error => {
+              component.$message.error(error.message);
+            });
+        }
+      });
+    },
+    showEditModal(record) {
+      this.visible = true;
+      this.id = record;
+      var data = [];
       http
-        .get("/auth/get_session", { withCredentials: true })
+        .get(`${this.entity}/details/${record}`)
         .then(response => {
-          this.priceTotal = 0;
-          this.data = response.data.user.data[0];
-          this.dataCart = response.data.cart.data;
-          console.log(this.dataCart[0].id);
-          http.get(`/goods/property/size/${this.dataCart[0].id}`).then(response =>{
-            this.sizeList = response.data;
-            console.log(this.sizeList);
-          });
-          this.dataCart.forEach(item => {
-            this.priceTotal += item.price * item.qty;
-          });
-          this.count = this.dataCart.length;
+          data = response.data;
+          EventBus.$emit("data", data[0]);
         })
         .catch(error => {
-          console.log(error);
+          this.$message.error(error.message);
         });
     },
-    createOrder() {
+    addCart(record) {
+      // debugger
+
       http
-        .post("/orderclient/create", { idUser: this.data.id })
+        .get(`/goods/details/${record}`)
         .then(response => {
-          this.visibleCart = false;
-          this.$message.success("Tạo đơn hàng thành công");
-          this.$router.push("/order-client");
+          this.cartData = response.data;
+          this.cartData.forEach(item => {
+            item.qty = 1;
+          });
+          this.addToCartSession(this.cartData[0], record);
         })
         .catch(error => {
           this.$message.error(message.error);
         });
     },
-
-    remove(index) {
+    addToCartSession(data, record) {
       http
-        .post("/cart/delete", { index: index })
+        .post("/cart/add", data)
         .then(response => {
-          this.getSession();
-          this.$message.success(`Xóa thành công sản phẩm khỏi đơn hàng`);
+          this.$message.success(
+            `Thêm thành công sản phẩm ${record} vào giỏ hàng `
+          );
         })
         .catch(error => {
           console.log(error);
         });
     },
-    onChange(value) {
-      this.quantity = value;
+    openRecord(text) {
+      this.$emit("openRecord", text);
     },
-    upload(index) {
-      http
-        .post("/cart/update", { index: index, value: this.quantity })
-        .then(response => {
-          this.getSession();
-          this.$message.success(`Cập nhật thành công số lượng`);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    save() {
+      EventBus.$emit("saveEdit");
+    },
+    hideModal() {
+      this.visible = false;
+      this.$emit("reload");
+    },
+    renderStatus(text) {
+      var title = 'title';
+      return this.status.find(p => p.value == text).title;
     }
   },
   mounted() {
-    this.getSession();
+    this.fetchData();
   }
 };
 </script>
 
 <style scoped>
-.row {
-  display: flex;
-  align-items: center;
-}
-.cart-total-price {
-  display: flex;
-  justify-content: flex-end;
-}
+
 </style>

@@ -6,19 +6,19 @@
       :default-selected-keys="['2']"
       :style="{ lineHeight: '64px' }"
     >
-      <a-menu-item key="notify" @click="showNotify">
+      <a-menu-item key="notify" >
         <a-icon type="bell" style="margin:0"></a-icon>
       </a-menu-item>
-      <a-menu-item key="cart" @click="showCart" v-if="role == 1">
+      <a-menu-item key="cart" >
         <a-badge :count="this.count">
           <a-icon type="shopping" style="margin:0"></a-icon>
         </a-badge>
       </a-menu-item>
-      <a-menu-item key="user" @click="showUser">
+      <a-menu-item key="user" >
         <a-icon type="user" style="margin:0"></a-icon>
       </a-menu-item>
     </a-menu>
-    <a-drawer
+    <!-- <a-drawer
       placement="right"
       :closable="false"
       :visible="visibleUser"
@@ -151,16 +151,15 @@
         Thông báo
       </h1>
       <a-divider />
-    </a-drawer>
+    </a-drawer> -->
   </div>
 </template>
 
 <script>
-import http from "../../../http-common";
+import http from "../../http-common";
 
 export default {
   data() {
-    var role = localStorage.getItem("logged-in");
     return {
       visibleUser: false,
       visibleCart: false,
@@ -169,7 +168,6 @@ export default {
       dataCart: [],
       priceTotal: 0,
       count: 0,
-      role,
       quantity: 0,
       sizeList : []
     };
@@ -270,7 +268,6 @@ export default {
     }
   },
   mounted() {
-    this.getSession();
   }
 };
 </script>
