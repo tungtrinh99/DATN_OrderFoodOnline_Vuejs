@@ -77,6 +77,7 @@ export default {
       this.key += 1;
     },
     save() {
+       EventBus.$emit("save");
     },
     openRecord(record) {
       this.$emit("openRecord", record);

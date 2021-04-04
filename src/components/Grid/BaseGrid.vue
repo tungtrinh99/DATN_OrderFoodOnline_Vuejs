@@ -29,7 +29,20 @@
           >{{ text }}
         </a>
       </a-table>
-      
+      <a-modal
+        v-model="visible"
+        :title="title"
+        okText="Lưu"
+        cancelText="Hủy"
+        @ok="save"
+      >
+        <form-edit
+          v-if="entity == 'food'"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+        ></form-edit>
+        </a-modal>
     </div>
   </div>
 </template>
@@ -38,9 +51,10 @@
 import http from "../../http-common";
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
-
+import FormEdit from "../../pages/Admin/Goods/FormEdit";
 export default {
   components: {
+    "form-edit":FormEdit
   },
   props: {
     column: {
@@ -101,8 +115,6 @@ export default {
         .get(`/${this.entity}/list`)
         .then(response => {
           this.data = response.data.data.items;
-          
-          
         })
         .catch(error => {
           this.$message.error(error.message);
@@ -139,9 +151,11 @@ export default {
       this.id = record;
       var data = [];
       http
-        .get(`${this.entity}/details/${record}`)
+        .get(`${this.entity}/detail`,{params : {
+          id : record
+        }})
         .then(response => {
-          data = response.data;
+          data = response.data.data.items;
           EventBus.$emit("data", data[0]);
         })
         .catch(error => {

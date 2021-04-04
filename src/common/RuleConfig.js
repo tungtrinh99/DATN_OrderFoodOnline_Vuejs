@@ -1,5 +1,5 @@
 const food = {
-  avatar: [
+  avatar_id: [
     {
       required: true,
       message: "Bạn chưa chọn ảnh",

@@ -18,7 +18,7 @@
       >
         <img
           v-if="goods.avatar_id"
-          :src="require('../../../../public/images/'+goods.avatar_id)"
+          :src="require('../../../../public/images/' + goods.avatar_id)"
           alt="file"
           :style="{ width: '120px', height: '120px' }"
         />
@@ -27,11 +27,10 @@
           <div class="ant-upload-text">Tải ảnh sản phẩm</div>
         </div>
       </a-upload>
-      
-    </a-form-model-item>    
+    </a-form-model-item>
     <a-form-model-item label="Tên đồ ăn" ref="title" prop="title">
-      <a-input v-model="goods.title" type="text" :allowClear="true"/>
-    </a-form-model-item> 
+      <a-input v-model="goods.title" type="text" :allowClear="true" />
+    </a-form-model-item>
     <a-form-model-item label="Kiểu đồ ăn" ref="price" prop="price">
       <a-input-number v-model="goods.type" :style="{ width: '50%' }" />
     </a-form-model-item>
@@ -43,49 +42,56 @@ import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 export default {
   created() {
-    // Listening the event hello
-    EventBus.$on("save", this.save);
+    EventBus.$on("saveEdit", this.save);
+    EventBus.$on("data", this.fetchDataEdit);
   },
   destroyed() {
-    // Stop listening the event hello with handler
-    EventBus.$off("save", this.save);
+    EventBus.$on("saveEdit", this.save);
+    EventBus.$off("data", this.fetchDataEdit);
   },
   props: {
-    entity: String
+    entity: String,
+    id:Number
   },
   data() {
     var rules = RuleConfig[this.entity];
     return {
       goods: {
-       title : "",
-       type : null ,
-       avatar_id : ""
+        title: "",
+        type: null,
+        avatar_id: "",
       },
       rules,
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
       data: [],
       loading: false,
-      imageUrl: ""
+      imageUrl: "",
     };
   },
   methods: {
-    
+    fetchDataEdit(data) {
+      this.goods.title = data.title;
+      this.goods.type = data.type;
+      this.goods.avatar_id = data.avatar_id;
+    },
     save() {
       var data = {
-        avatar_id:this.goods.avatar_id,
+        avatar_id: this.goods.avatar_id,
         title: this.goods.title,
-        type : this.goods.type
+        type: this.goods.type,
       };
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           http
-            .post("/food/save", data)
-            .then(response => {
-              this.id = response.data.id;
-              this.$message.success("Tạo thành công");
+            .post("/food/update",data, { params: {
+                id : this.id
+            } })
+            .then((response) => {
+              this.$emit("hideModal");
+              this.$message.success("Lưu thành công");
             })
-            .catch(error => {
+            .catch((error) => {
               this.$message.error(error.message);
             });
           this.$emit("hideModal");
@@ -105,13 +111,13 @@ export default {
       );
     },
     handleChangeFile(info) {
-      if (info.file.status === 'uploading') {
+      if (info.file.status === "uploading") {
         this.loading = true;
         return;
       }
-      if (info.file.status === 'done') {
+      if (info.file.status === "done") {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, imageUrl => {
+        getBase64(info.file.originFileObj, (imageUrl) => {
           this.goods.avatar_id = imageUrl;
           this.loading = false;
         });
@@ -132,21 +138,19 @@ export default {
     customRequest(options) {
       const fmData = new FormData();
       const { onSuccess, onError, file, onProgress } = options;
-      fmData.append("file",file);
+      fmData.append("file", file);
       http
-        .post("/food/uploadFiles",fmData,{
-          headers: { "content-type": "multipart/form-data" }
+        .post("/food/uploadFiles", fmData, {
+          headers: { "content-type": "multipart/form-data" },
         })
-        .then(response => {
+        .then((response) => {
           this.goods.avatar_id = response.data.data;
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message.error(error.message);
         });
-    }
+    },
   },
-  mounted() {
-    
-  }
+  mounted() {},
 };
 </script>
