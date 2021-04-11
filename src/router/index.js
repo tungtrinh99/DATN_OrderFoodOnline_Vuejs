@@ -4,7 +4,8 @@ import Index from "@/layout/landing/Index.vue";
 import Home from "@/pages/landing/home/Home.vue";
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
 import Dashboard from "@/pages/admin/dashboard/Dashboard.vue";
-import Goods from "@/pages/admin/goods/List.vue"
+import Goods from "@/pages/admin/goods/List.vue";
+import FoodDetail from "@/pages/Landing/Goods/Index.vue";
 Vue.use(Router);
 
 export default new Router({
@@ -21,6 +22,14 @@ export default new Router({
           path: "home",
           name: "Trang chủ",
           component: Home,
+          meta: {
+            auth: true
+          }
+        },
+        {
+          path: "tra-sua-tocotoco-duong-lang",
+          name: "Chi tiết món",
+          component: FoodDetail,
           meta: {
             auth: true
           }

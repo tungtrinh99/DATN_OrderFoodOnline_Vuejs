@@ -6,8 +6,8 @@
         :style="{
           'background-image':
             'url(' +
-            require('./../../../assets/images/Background/back-ground.jpg') +
-            ')',
+            require('@/assets/images/Background/back-ground.jpg') +
+            ')'
         }"
       >
         <div class="container">
@@ -32,11 +32,16 @@
                 >
               </div>
               <div class="list-restaurant">
-                <item
-                  v-for="(d, index) in listRestaurant"
-                  :key="index"
-                  :data="d"
-                ></item>
+                <a-list
+                  :grid="{ gutter: 16, column: 3 }"
+                  :data-source="listRestaurant"
+                >
+                  <a-list-item slot="renderItem" slot-scope="item, index">
+                    <a-card :bodyStyle="{padding : 0}">
+                      <item :key="index" :data="item"></item>
+                    </a-card>
+                  </a-list-item>
+                </a-list>
               </div>
               <div class="txt-center mt-2">
                 <button class="btn-none btn-load-more link">
@@ -52,13 +57,13 @@
 </template>
 <script>
 import FormSearch from "./Form.vue";
-import Item from "../../../components/Cards/Item.vue";
-import http from "./../../../http-common";
+import Item from "@/components/Cards/Item.vue";
+import http from "@/http-common";
 
 export default {
   components: {
     "form-search": FormSearch,
-    item: Item,
+    item: Item
   },
   data() {
     const listFoods = [];
@@ -72,17 +77,17 @@ export default {
     fetchData() {
       http
         .get("/restaurant/list")
-        .then((response) => {
+        .then(response => {
           this.listRestaurant = response.data.data.items;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
-    },
+    }
   },
   created() {
     this.fetchData();
-  },
+  }
 };
 </script>
 <style scoped>
@@ -121,7 +126,7 @@ export default {
   background-color: #fff;
 }
 .main-right-home .now-list-restaurant .list-restaurant {
-    margin: 0 -8px;
+  margin: 0 -8px;
 }
 .now-list-restaurant {
   border-radius: 6px;
@@ -146,10 +151,7 @@ export default {
 .col-auto {
   text-align: left;
 }
-.main-right-home .now-list-restaurant .item-restaurant {
-    padding: 8px;
-    width: 33.33333%;
-}
+
 .now-list-restaurant .title-wrapper {
   display: flex;
   justify-content: space-between;

@@ -13,35 +13,8 @@
       />
     </div>
     <div class="category-list-filter">
-      <a href="/ha-noi/danh-sach-dia-diem-giao-tan-noi"
+      <a href=""
         ><span class="category-item">All</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-food-giao-tan-noi"
-        ><span class="category-item">Đồ ăn</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-drink-giao-tan-noi"
-        ><span class="category-item">Đồ uống</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-vegetarian-giao-tan-noi"
-        ><span class="category-item">Đồ chay</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-cake-pastry-giao-tan-noi"
-        ><span class="category-item">Bánh kem</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-desserts-giao-tan-noi"
-        ><span class="category-item">Tráng miệng</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-home-made-giao-tan-noi"
-        ><span class="category-item">Homemade</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-streetfood-giao-tan-noi"
-        ><span class="category-item">Vỉa hè</span></a
-      ><a
-        href="/ha-noi/danh-sach-dia-diem-phuc-vu-pizza-pasta-burger-giao-tan-noi"
-        ><span class="category-item">Pizza/Burger</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-chicken-giao-tan-noi"
-        ><span class="category-item">Món gà</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-hotpot-giao-tan-noi"
-        ><span class="category-item">Món lẩu</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-sushi-giao-tan-noi"
-        ><span class="category-item">Sushi</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-soup-based-giao-tan-noi"
-        ><span class="category-item">Mì phở</span></a
-      ><a href="/ha-noi/danh-sach-dia-diem-phuc-vu-rice-giao-tan-noi"
-        ><span class="category-item">Cơm hộp</span></a
       >
     </div>
     <div>
@@ -52,12 +25,17 @@
   </div>
 </template>
 <script>
+import http from '../../../http-common'
 export default {
   methods: {
     onSearch(value) {
       console.log(value);
     },
-  },
+    getListTypeRestaurant(){
+      http
+      .get()
+    }
+  }
 };
 </script>
 <style scoped>
@@ -108,8 +86,8 @@ export default {
   background-color: #fff;
   border-color: #fff;
 }
-.form-bottom{
+.form-bottom {
   font-size: 18px !important;
-  margin : 16px 0 8px 0;
+  margin: 16px 0 8px 0;
 }
 </style>
