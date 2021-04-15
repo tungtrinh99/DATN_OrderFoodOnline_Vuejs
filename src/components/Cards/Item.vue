@@ -1,8 +1,9 @@
 <template>
   <div class="item-restaurant">
     
-      <router-link class="item-content" :to="data.slug">
-        <div class="img-restaurant">
+      <router-link class="item-content" :to="'/detail-restaurant'" > 
+       <div @click="nextPage(data.id)">
+          <div class="img-restaurant">
           <img
             :src="require(`../../../public/images/${data.avatar_id}`)"
             style="visibility: visible,width:100%"
@@ -28,13 +29,20 @@
             ></span>
           </div>
         </div>
+       </div>
       </router-link>
   </div>
 </template>
 <script>
+import EventBus from "../../event-bus";
 export default {
   props: {
     data: Object
+  },
+  methods:{
+    nextPage(id){
+      localStorage.setItem('getId',JSON.stringify(id))
+    }
   }
 };
 </script>

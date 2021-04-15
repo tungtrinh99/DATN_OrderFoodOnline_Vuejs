@@ -49,10 +49,7 @@ import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 export default {
   props: {
-    id: {
-      type: Number,
-      default: "",
-    },
+    id : Number
   },
   data() {
     return {
@@ -68,7 +65,7 @@ export default {
       http
         .get("/restaurant-food/list", {
           params: {
-            id: 1,
+            id: this.id,
             filter: this.filter,
           },
         })
@@ -82,14 +79,26 @@ export default {
     handleCancel() {
       this.previewVisible = false;
     },
-    handlePreview(index) {
+    handlePreview(index,item) {
       this.previewImage = this.foodData[index].avatar_id;
       this.previewVisible = true;
     },
     addToCart(index) {
+      if(!localStorage.getItem("cart")){
+        localStorage.setItem("cart", JSON.stringify([]));
+      }
       this.cartData = JSON.parse(localStorage.getItem("cart"));
       let data = Object.assign({ quantity: 1 }, this.foodData[index]);
-      this.cartData.push(data);
+      let ind =  this.cartData.findIndex(d=>d.id === data.id);
+      console.log(ind);
+      if(ind >= 0 ){
+        this.cartData[ind].quantity += data.quantity;
+      }else if(ind ===  -1) {
+        this.cartData.push(data);
+      }else {
+        this.cartData.push(data);
+
+      }
       localStorage.setItem("cart", JSON.stringify(this.cartData));
       EventBus.$emit("reload");
     },
@@ -130,5 +139,9 @@ export default {
 .menu-restaurant{
   padding : 8px 16px;
   background-color: #fff;
+}
+.ant-btn.ant-btn-danger{
+  padding : 0 4px;
+  height: 24px;
 }
 </style>

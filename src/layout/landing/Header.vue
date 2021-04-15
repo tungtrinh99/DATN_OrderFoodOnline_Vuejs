@@ -3,7 +3,7 @@
     <a-layout-header style="background : #fff">
       <div class="container header-wrapper">
         <div class="header-left">
-          <div class="logo">
+          <div class="logo" @click="goHome">
             <img :src="require('@/assets/logo.png')" alt="" />
           </div>
           <a-menu
@@ -38,6 +38,15 @@
     </a-layout-header>
   </a-layout>
 </template>
+<script>
+export default {
+  methods:{
+    goHome(){
+      this.$router.push('/home')
+    }
+  }
+}
+</script>
 <style scoped>
 .header {
   position: fixed;
@@ -66,5 +75,8 @@
 }
 .header-icon-search {
   margin-right: 24px;
+}
+.logo{
+  cursor: pointer;
 }
 </style>

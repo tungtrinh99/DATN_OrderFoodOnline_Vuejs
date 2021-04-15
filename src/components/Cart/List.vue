@@ -3,21 +3,20 @@
     <a-list class="list-item" item-layout="horizontal" :data-source="cartData">
       <div slot="header" class="cart-header">
         <h3>Chi tiết đơn hàng</h3>
+
         <div class="user">
-          <div>
-            <a-avatar icon="user" />
-            <span>Xuân Tùng</span>
-          </div>
+          <span
+            >Đơn hàng tạo bởi
+            <span style="color: #0288d1">Xuân Tùng</span></span
+          >
           <span>{{ cartData.length }} món</span>
         </div>
       </div>
       <a-list-item slot="renderItem" slot-scope="item, index">
         <a-list-item-meta description="">
-          <a slot="title">{{ item.title }}</a>
-          <!-- <a-avatar
-            slot="avatar"
-            :src="require('../../../public/images/' + item.avatar_id)"
-          /> -->
+          <a slot="title">
+            {{ item.title }}
+          </a>
         </a-list-item-meta>
         <div class="cost">
           <span
@@ -27,7 +26,15 @@
               )
             }}đ</span
           >
-          <span>x {{ item.quantity }}</span>
+          <div class="quantity-wrapper">
+            <a-button @click="minusItemInCart(index)"
+              ><a-icon type="minus"
+            /></a-button>
+            <span>{{ item.quantity }}</span>
+            <a-button @click="plusItemInCart(index)"
+              ><a-icon type="plus"
+            /></a-button>
+          </div>
         </div>
       </a-list-item>
       <div slot="footer">
@@ -41,7 +48,9 @@
             }}đ</span
           >
         </div>
-        <a-button type="danger" style="width: 100%">Đặt hàng</a-button>
+        <a-button type="danger" style="width: 100%">
+          <a-icon type="check-circle" theme="filled" /> Đặt hàng</a-button
+        >
       </div>
     </a-list>
   </div>
@@ -50,30 +59,42 @@
 import EventBus from "../../event-bus";
 export default {
   props: {
-    id: {
-      type: Number,
-      default: "",
-    },
+    id: Number,
   },
   data() {
     return {
       cartData: [],
       key: 0,
-      cost : 0
+      cost: 0,
     };
   },
   methods: {
     fetchData() {
+      this.cost = 0;
       if (!localStorage.getItem("cart")) {
         localStorage.setItem("cart", JSON.stringify([]));
       }
       this.cartData = JSON.parse(localStorage.getItem("cart"));
-      this.cartData.forEach((d)=>{
-        return this.cost += (d.quantity * d.cost * d.discount)/100
-      })
+      this.cartData.forEach((d) => {
+        return (this.cost += (d.quantity * d.cost * d.discount) / 100);
+      });
     },
     reload() {
-      this.fetchData()
+      this.fetchData();
+    },
+    minusItemInCart(index) {
+      if(this.cartData[index].quantity > 1){
+        this.cartData[index].quantity -= 1 ;
+      }else  {
+        this.cartData.splice(index,1);
+      }
+      localStorage.setItem("cart", JSON.stringify(this.cartData));
+      this.reload();
+    },
+    plusItemInCart(index) {
+      this.cartData[index].quantity += 1 ;
+      localStorage.setItem("cart", JSON.stringify(this.cartData));
+      this.reload();
     },
   },
   created: function () {
@@ -107,6 +128,13 @@ export default {
   font-size: 14px;
   font-weight: 700;
   text-align: left;
+  margin-bottom: 8px;
+}
+.user > span:nth-child(1) {
+  font-style: italic;
+  text-align: left;
+  font-size: 11px;
+  display: block;
 }
 .cart {
   padding: 8px 16px;
@@ -123,14 +151,24 @@ export default {
   margin-left: 8px;
   color: #000;
 }
-.bill{
+.bill {
   display: flex;
   justify-content: space-between;
   align-content: center;
   margin: 8px 0;
 }
-.bill span:nth-child(2){
+.bill span:nth-child(2) {
   color: #0288d1;
   font-weight: 700;
+}
+.quantity-wrapper {
+  margin-top: 4px;
+}
+.quantity-wrapper > .ant-btn {
+  height: 20px;
+  padding: 0;
+}
+.quantity-wrapper > span {
+  padding: 0 4px;
 }
 </style>

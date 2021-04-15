@@ -27,7 +27,7 @@ export default new Router({
           }
         },
         {
-          path: "tra-sua-tocotoco-duong-lang",
+          path: "detail-restaurant",
           name: "Chi tiết món",
           component: RestaurantDetail,
           meta: {

@@ -1,162 +1,153 @@
 <template>
   <div class="content">
-    <div class="now-detail-restaurant clearfix"> 
-      <div class="menu-restaurant container">
+    <div class="detail-restaurant">
+      <div class="container">
         <a-row>
-          <a-col :span="5">
-
-          </a-col>
-          <a-col :span="12">
-            <list-food :id="1"></list-food>
+          <a-col :span="10">
+            <img
+              class="detail-restaurant-img"
+              :src="
+                require(`../../../../public/images/${Object.keys(infoRestaurant).length !== 0 ? infoRestaurant.avatar_id : '3eae291f-bf6d-41f8-a8b8-eb41cfaecece.jpg'}`)
+              "
+            />
           </a-col>
           <a-col :span="1"></a-col>
-          <a-col :span="6">
-            <cart></cart>
+          <a-col :span="13">
+            <div class="detail-restaurant-info">
+              <a-breadcrumb>
+                <a-breadcrumb-item href="/">
+                  <a-icon type="home" @click="backHome" />
+                  <span @click="backHome">Home</span>
+                </a-breadcrumb-item>
+                <a-breadcrumb-item>
+                  {{ infoRestaurant.title }}
+                </a-breadcrumb-item>
+              </a-breadcrumb>
+              <div class="name-restaurant">
+                <h1>{{ infoRestaurant.title }}</h1>
+              </div>
+              <div class="address-restaurant">
+                <span>{{ addressRestaurant.full_address }}</span>
+              </div>
+              <div class="status-restaurant">
+                <div class="opentime-status">
+                  <span>Mở cửa</span>
+                </div>
+                <div class="time">
+                  <a-icon type="clock-circle" />
+                  <span>{{ infoRestaurant.opentime }}</span> -
+                  <span>{{ infoRestaurant.closetime }}</span>
+                </div>
+              </div>
+              <div class="cost-restaurant">
+                <span><a-icon type="dollar" /> 20,000 - 45,000</span>
+              </div>
+            </div>
           </a-col>
         </a-row>
-        
       </div>
+    </div>
+    <div class="menu-restaurant container">
+      <a-row>
+        <a-col :span="15">
+          <list-food :id="id"></list-food>
+        </a-col>
+        <a-col :span="1"></a-col>
+        <a-col :span="8" :style="{position :'sticky',top:'64px'}">
+          <cart></cart>
+        </a-col>
+      </a-row>
     </div>
   </div>
 </template>
 <script>
 import ListFood from "../Goods/List";
-import Cart from "../../../components/Cart/List"
+import Cart from "../../../components/Cart/List";
+import http from "../../../http-common";
 export default {
+  data() {
+    return {
+      id: 0,
+      infoRestaurant: {},
+      addressRestaurant: {},
+    };
+  },
   components: {
     "list-food": ListFood,
-    Cart
+    Cart,
+  },
+  methods: {
+    backHome() {
+      this.$router.push("/home");
+    },
+    fetchData() {
+      http
+        .get("/restaurant/detail", {
+          params: {
+            id: this.id,
+          },
+        })
+        .then((response) => {
+          this.infoRestaurant = response.data.data.item[0];
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    },
+    getAddress() {
+      http
+        .get("/restaurant-location/list", {
+          params: {
+            id: this.id,
+          },
+        })
+        .then((response) => {
+          this.addressRestaurant = response.data.data.item[0];
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    },
+  },
+  created() {
+    this.id = JSON.parse(localStorage.getItem("getId"));
+    this.fetchData();
+    this.getAddress();
   },
 };
 </script>
 <style scoped>
-.now-detail-restaurant {
+.content {
   background-color: #f2f2f2;
-  padding-top: 100px;
+  padding-top: 64px;
+}
+.detail-restaurant {
+  background-color: #fff;
 }
 .container {
   max-width: 1200px;
   margin: 0 auto;
 }
-.now-detail-restaurant .detail-restaurant-img {
-  width: 480px;
-  height: 300px;
-  position: relative;
-  float: left;
+.detail-restaurant {
+  padding-top: 30px;
+  padding-bottom: 80px;
 }
-.now-detail-restaurant .detail-restaurant-img img {
+.menu-restaurant.container {
+  margin-top: 50px;
+}
+.detail-restaurant-img {
   width: 100%;
-  height: 100%;
 }
-
-.now-detail-restaurant .detail-restaurant-info {
-  color: #252525;
-  float: right;
-  width: 645px;
-  padding-bottom: 15px;
+.detail-restaurant-info {
   text-align: left;
 }
-.detail-restaurant-info > .breadcrumb {
-  padding-left: 0;
-  margin-bottom: 18px;
-  list-style: none;
-  overflow: hidden;
-  margin-top: -2px;
-}
-.now-detail-restaurant .name-restaurant {
-  font-size: 22px;
-  color: #464646;
-  font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  margin-bottom: 4px;
-  line-height: 33px;
-}
-.now-detail-restaurant .address-restaurant {
-  font-size: 13px;
-  margin-bottom: 2px;
-}
-.now-detail-restaurant .rating {
-  margin-bottom: 4px;
-  font-size: 14px;
-}
-.rating {
-  font-size: 18px;
-  vertical-align: middle;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-flow: row wrap;
-  flex-flow: row wrap;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-}
-.rating .stars {
-  font-size: 14px;
-  color: #ffc107;
-  display: inline-block;
-}
-.rating .stars > span {
-  padding-right: 2px;
-}
-.now-detail-restaurant .kind-restaurant {
-  font-size: 11px;
-  color: #959595;
-  text-transform: uppercase;
-  display: -ms-flexbox;
+.status-restaurant {
   display: flex;
 }
-.full {
-  width: 100%;
+.opentime-status > span {
+  color: #6cc942;
 }
-.now-detail-restaurant .rating .number-rating {
-  background-color: #ffc107;
-  padding: 0 5px;
-  border-radius: 4px;
-  color: #fff;
-  margin: 0 5px;
-}
-.now-detail-restaurant .view-more-rating {
-  margin-bottom: 4px;
-}
-.now-detail-restaurant .number-review {
-  font-size: 14px;
-}
-.now-detail-restaurant .status-restaurant {
-  margin-bottom: 6px;
-}
-.now-detail-restaurant .opentime-status {
-  position: relative;
-  top: 0;
-  left: 0;
-  display: inline-block;
-}
-.now-detail-restaurant .opentime-status .stt {
-  width: inherit;
-  height: inherit;
-  vertical-align: middle;
-  display: inline-block;
-  background-color: transparent;
-}
-
-.opentime-status .online {
-  background-color: #6cc942;
-  color: #329900;
-}
-.opentime-status .stt {
-  border-radius: 50%;
-  cursor: pointer;
-  width: 15px;
-  height: 15px;
-  display: block;
-  position: relative;
-  z-index: 2;
-}
-.now-detail-restaurant .opentime-status .online:before {
-  background-color: #6cc942;
-}
-
-.now-detail-restaurant .opentime-status .stt:before {
+.opentime-status > span::before {
   content: "";
   border-radius: 50%;
   cursor: pointer;
@@ -166,114 +157,31 @@ export default {
   position: relative;
   top: -1px;
   z-index: 2;
+  background-color: #6cc942;
+  margin-right: 5px;
 }
-.now-detail-restaurant .opentime-status .stt:after {
-  content: attr(title);
+.time {
+  padding-left: 8px;
+}
+.cost-restaurant {
+  color: #959595;
   font-size: 15px;
-  display: inline-block;
+}
+.name-restaurant > h1 {
+  font-size: 22px;
+  color: #464646;
+  font-weight: 700;
+  text-overflow: ellipsis;
   white-space: nowrap;
-  color: inherit;
-  padding-left: 5px;
+  overflow: hidden;
+  margin-bottom: 4px;
+  line-height: 33px;
 }
-.opentime-status:after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  background-color: #fff;
-  border-radius: 50%;
-  z-index: 1;
-}
-.now-detail-restaurant .status-restaurant .time {
-  font-size: 15px;
-  display: inline-block;
-  padding-left: 10px;
-  vertical-align: middle;
-}
-.now-detail-restaurant .cost-restaurant {
-  color: #959595;
-  font-size: 15px;
-}
-.now-detail-restaurant .share-social {
-  width: 100%;
-  height: auto;
-  margin-top: 10px;
-}
-.now-detail-restaurant .link-merchant {
-  margin-bottom: 8px;
-}
-.now-detail-restaurant .link-merchant {
-  color: #fff;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: #525252;
-  border-radius: 3px;
-  padding: 9px 10px 9px 10px;
-  position: relative;
-  float: right;
-}
-.now-detail-restaurant .utility-restaurant {
-  border-top: 1px solid #ebebeb;
-}
-.now-detail-restaurant .utility-restaurant .utility-item:first-child {
-  padding-left: 0;
-}
-
-.now-detail-restaurant .utility-restaurant .utility-item {
-  float: left;
-  width: 140px;
-  position: relative;
-  padding: 10px;
-  margin-bottom: 30px;
-}
-.now-detail-restaurant .utility-restaurant .utility-title {
-  color: #959595;
+.address-restaurant > span {
   font-size: 13px;
-  text-transform: uppercase;
+  margin-bottom: 2px;
 }
-.now-detail-restaurant .utility-restaurant .utility-content {
-  font-size: 14px;
-}
-.txt-red,
-.txt-red-dark {
-  color: #cf2127 !important;
-}
-
-.txt-bold {
-  font-weight: 700 !important;
-}
-.icon-partner-vi {
-  background-image: url(/app/assets/img/partner-vi.png?dec00ea…);
-  position: absolute;
-  top: 20px;
-  left: 15px;
-  cursor: pointer;
-  width: 116px;
-  height: 44px;
-}
-
-.icon {
-  display: inline-block;
-  font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
-  line-height: 1;
-}
-.now-detail-restaurant .utility-restaurant .utility-item:first-child:after {
-  width: 0;
-  height: 0;
-}
-
-.now-detail-restaurant .utility-restaurant .utility-item:after {
-  content: "";
-  width: 1px;
-  height: 20px;
-  position: absolute;
-  top: 22px;
-  left: 0;
-  background-color: #ebebeb;
+.status-restaurant  {
+margin-bottom : 6px
 }
 </style>

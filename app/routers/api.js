@@ -27,7 +27,8 @@ router.post('/restaurant/save',restaurant.save);
 router.post('/restaurant/update',restaurant.update);
 router.get('/restaurant/delete',restaurant.delete);
 router.get('/restaurant/type',restaurant.type);
-router.get('/restaurant-food/list',restaurant.item)
+router.get('/restaurant-food/list',restaurant.item);
+router.get('/restaurant-location/list',restaurant.address);
 //user
 router.get('/user/list',user.list);
 router.get('/user/detail',user.detail);

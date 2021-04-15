@@ -59,7 +59,7 @@
 import FormSearch from "./Form.vue";
 import Item from "@/components/Cards/Item.vue";
 import http from "@/http-common";
-
+import EventBus from "../../../event-bus"
 export default {
   components: {
     "form-search": FormSearch,
@@ -83,10 +83,13 @@ export default {
         .catch(error => {
           this.$message.error(error.message);
         });
-    }
+    },
   },
   created() {
     this.fetchData();
+  },
+  destroyed(){
+
   }
 };
 </script>

@@ -95,7 +95,7 @@ class RestaurantController {
       if (!err) {
         res.send({
           data: {
-            items: result
+            item: result
           }
         });
       } else {
@@ -105,7 +105,6 @@ class RestaurantController {
   }
   //Lấy danh sách loại nhà hàng
   type(req, res, next) {
-    const id = req.query.id;
     db.query(`SELECT * FROM restaurant_type`, (err, result, field) => {
       if (!err) {
         res.send({
@@ -118,6 +117,21 @@ class RestaurantController {
       }
     })
 
+  }
+  //Lấy danh sách địa điểm
+  address(req, res, next) {
+    const id = req.query.id;
+    db.query(`SELECT * FROM location WHERE restaurant_id = ${id}`, (err, result, field) => {
+      if (!err) {
+        res.send({
+          data: {
+            item: result
+          }
+        });
+      } else {
+        console.log(err);
+      }
+    })
   }
   //thêm ảnh nhà hàng
   upload(req, res, next) {
