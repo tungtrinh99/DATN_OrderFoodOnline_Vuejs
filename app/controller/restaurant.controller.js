@@ -5,19 +5,39 @@ class RestaurantController {
   // Lấy danh sách nhà hàng
   list(req, res, next) {
     const filters = req.query || "";
-    
-      db.query(`select * from restaurant `, (err, result, field) => {
-        if (!err) {
-          res.send({
-            'data': {
-              'items': result
-            }
-          });
 
-        } else {
-          res.send(err)
-        }
-      })
+    db.query(`select * from restaurant `, (err, result, field) => {
+      if (!err) {
+        res.send({
+          'data': {
+            'items': result
+          }
+        });
+
+      } else {
+        res.send(err)
+      }
+    })
+
+
+
+  }
+  // Lấy danh sách món ăn nhà hàng
+  item(req, res, next) {
+    const id = req.query.id;
+    const filter = req.query.filter;
+    db.query(`select b.id , b.title , b.type , b.avatar_id , a.combo_id , a.cost , a.discount from restaurant_dish as a join dish as b on a.dish_id = b.id where a.restaurant_id = ${id} and b.title like "${filter}%"`, (err, result, field) => {
+      if (!err) {
+        res.send({
+          'data': {
+            'items': result
+          }
+        });
+
+      } else {
+        res.send(err)
+      }
+    })
 
 
 
