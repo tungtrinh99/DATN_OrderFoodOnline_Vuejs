@@ -2,40 +2,72 @@
   <div class="home-search">
     <div>
       <h1 class="title">Đặt Đồ ăn, giao hàng từ 20'...</h1>
-      <div class="local">có 25902 địa điểm ở Hà Nội từ 00:00 - 23:59</div>
+      <div class="local">
+        có {{ listRestaurant.length }} địa điểm ở Hà Nội từ 00:00 - 23:59
+      </div>
     </div>
     <div class="form-search">
-      <a-input-search
-        size="large"
-        placeholder="Tìm địa điểm, món ăn, địa chỉ..."
-        enter-button
-        @search="onSearch"
-      />
+      <common-select></common-select>
     </div>
     <div class="category-list-filter">
-      <a href=""
-        ><span class="category-item">All</span></a
-      >
+      <a v-for="type in listTypeFood" href=""
+        ><span class="category-item">{{ type.title }}</span>
+      </a>
     </div>
     <div>
       <div class="form-bottom">
-        Sử dụng App Now để có nhiều giảm giá <br />và trải nghiệm tốt hơn
+        Sử dụng Website Xuân Tùng để có nhiều giảm giá <br />và trải nghiệm tốt
+        hơn
       </div>
     </div>
   </div>
 </template>
 <script>
-import http from '../../../http-common'
+import http from "../../../http-common";
+import CommonSelect from "../../../components/Select/CommonSelect"
 export default {
+  components:{
+    "common-select": CommonSelect
+  },
+  data() {
+    return {
+      listRestaurant: [],
+      listTypeFood: [],
+    };
+  },
   methods: {
     onSearch(value) {
       console.log(value);
     },
-    getListTypeRestaurant(){
+    getListTypeRestaurant() {
       http
-      .get()
-    }
-  }
+        .get("/food/type")
+        .then((response) => {
+          this.listTypeFood = response.data.data.items;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getListRestaurant() {
+      http
+        .get("/restaurant/list",{
+          params:{
+            keyword : ""
+          }
+        })
+        .then((response) => {
+          this.listRestaurant = response.data.data.items;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+  created() {
+    this.getListRestaurant();
+    this.getListTypeRestaurant();
+  },
 };
 </script>
 <style scoped>

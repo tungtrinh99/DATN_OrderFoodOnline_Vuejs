@@ -22,7 +22,7 @@
           <span
             >{{
               Intl.NumberFormat("vi-VN").format(
-                Number.parseFloat((item.cost * item.discount) / 100).toFixed(0)
+                Number.parseFloat(item.cost-(item.cost * item.discount) / 100).toFixed(0)
               )
             }}đ</span
           >
@@ -76,7 +76,7 @@ export default {
       }
       this.cartData = JSON.parse(localStorage.getItem("cart"));
       this.cartData.forEach((d) => {
-        return (this.cost += (d.quantity * d.cost * d.discount) / 100);
+        return (this.cost += (d.quantity * (d.cost - (d.cost*d.discount/100)) ));
       });
     },
     reload() {

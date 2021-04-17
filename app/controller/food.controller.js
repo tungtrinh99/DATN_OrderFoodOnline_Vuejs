@@ -58,6 +58,16 @@ class FoodController {
       }
     })
   }
+  //Lấy danh sách kiểu đồ ăn
+  type(req, res, next) {
+    db.query(`SELECT * FROM dish_type `, (err, result, field) => {
+      if (!err) {
+        res.send({ data: { items: result } });
+      } else {
+        console.log(err);
+      }
+    })
+  }
   //thêm ảnh món ăn
   upload(req, res, next) {
     var file = req.file;

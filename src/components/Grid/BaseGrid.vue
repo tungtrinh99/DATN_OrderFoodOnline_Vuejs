@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="content">
+      <!-- <a-spin :tip="'Đang tải...'" v-if="data.length == 0"></a-spin> -->
       <a-table :columns="cols" :data-source="data">
         <div slot="action" slot-scope="record">
           <a-icon
@@ -195,6 +196,7 @@ export default {
     },
     save() {
       EventBus.$emit("saveEdit");
+      EventBus.$emit("reload")
     },
     hideModal() {
       this.visible = false;

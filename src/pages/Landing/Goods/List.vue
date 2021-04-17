@@ -35,7 +35,7 @@
           <span
             >{{
               Intl.NumberFormat("vi-VN").format(
-                Number.parseFloat((item.cost * item.discount) / 100).toFixed(0)
+                Number.parseFloat(item.cost-(item.cost * item.discount) / 100).toFixed(0)
               )
             }}đ</span
           >
@@ -57,7 +57,7 @@ export default {
       cartData: [],
       previewVisible: false,
       previewImage: "",
-      filter: "",
+      keyword: "",
     };
   },
   methods: {
@@ -66,7 +66,7 @@ export default {
         .get("/restaurant-food/list", {
           params: {
             id: this.id,
-            filter: this.filter,
+            keyword: this.keyword,
           },
         })
         .then((response) => {
@@ -103,7 +103,7 @@ export default {
       EventBus.$emit("reload");
     },
     onSearch(value) {
-      this.filter = value;
+      this.keyword = value;
       this.fetchData();
     },
   },
@@ -143,5 +143,15 @@ export default {
 .ant-btn.ant-btn-danger{
   padding : 0 4px;
   height: 24px;
+}
+.ant-input-search.ant-input-affix-wrapper{
+  margin-top:12px
+}
+.ant-avatar{
+  width: 48px;
+  height: 48px;
+}
+.ant-list-item-meta{
+  align-items: center;
 }
 </style>

@@ -1,34 +1,25 @@
 <template>
   <a-layout class="header">
-    <a-layout-header style="background : #fff">
+    <a-layout-header style="background: #fff">
       <div class="container header-wrapper">
         <div class="header-left">
           <div class="logo" @click="goHome">
-            <img :src="require('@/assets/logo.png')" alt="" />
+            <img :src="require('@/assets/logo.png')" alt="" :style="{height:'48px'}"/>
           </div>
           <a-menu
             theme="light"
             mode="horizontal"
-            :default-selected-keys="['2']"
+            :default-selected-keys="['quan-an']"
             :style="{ lineHeight: '64px', marginLeft: '24px' }"
           >
-            <a-menu-item key="1">
-              Đồ ăn
-            </a-menu-item>
-            <a-menu-item key="2">
-              Bia
-            </a-menu-item>
-            <a-menu-item key="3">
-              Thực phẩm
-            </a-menu-item>
-            <a-menu-item key="4">
-              Trà sữa
+            <a-menu-item v-for="type in listTypeRestaurant" :key="type.code" @click="() => router(type)">
+              {{ type.title }}
             </a-menu-item>
           </a-menu>
         </div>
         <div class="header-right">
           <div class="header-icon-search">
-            <a-button shape="circle" icon="search" />
+            <a-icon type="search" class="btn-search"/>
           </div>
           <div class="user-account">
             <a-button>Đăng nhập</a-button>
@@ -39,13 +30,36 @@
   </a-layout>
 </template>
 <script>
+import http from "../../http-common";
 export default {
-  methods:{
-    goHome(){
-      this.$router.push('/home')
-    }
-  }
-}
+  data() {
+    return {
+      listTypeRestaurant: [],
+    };
+  },
+  methods: {
+    goHome() {
+      this.$router.push("/home");
+    },
+    getTypeRestaurant() {
+      http
+        .get("/restaurant/type")
+        .then((response) => {
+          this.listTypeRestaurant = response.data.data.items;
+          
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    },
+    router(path) {
+      this.$router.push({path: path.code});
+    },
+  },
+  created() {
+    this.getTypeRestaurant();
+  },
+};
 </script>
 <style scoped>
 .header {
@@ -76,7 +90,20 @@ export default {
 .header-icon-search {
   margin-right: 24px;
 }
-.logo{
+.logo {
   cursor: pointer;
+}
+.ant-menu-item {
+}
+.ant-menu-item.ant-menu-item-selected {
+  font-weight: 700;
+}
+.btn-search{
+  font-size: 24px;
+  cursor: pointer;
+}
+.header-icon-search{
+  display: flex;
+  align-items: center;
 }
 </style>

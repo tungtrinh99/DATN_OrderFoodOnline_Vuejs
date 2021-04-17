@@ -16,6 +16,7 @@ router.get('/food/detail',food.detail);
 router.post('/food/save',food.save);
 router.post('/food/update',food.update);
 router.get('/food/delete',food.delete);
+router.get('/food/type',food.type)
 router.post('/food/uploadFiles',upload.single('file'),food.upload);
 
 

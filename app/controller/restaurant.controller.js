@@ -4,9 +4,9 @@ const fs = require("fs");
 class RestaurantController {
   // Lấy danh sách nhà hàng
   list(req, res, next) {
-    const filters = req.query || "";
+    const keyword = req.query.keyword;
 
-    db.query(`select * from restaurant `, (err, result, field) => {
+    db.query(`select a.id , a.title , a.opentime , a.closetime ,a.restaurant_manage_id , a.phone_number,a.avatar_id,a.type_id,a.slug,b.full_address from restaurant a join location b on a.id = b.restaurant_id where a.title like "%${keyword}%"`, (err, result, field) => {
       if (!err) {
         res.send({
           'data': {
@@ -25,8 +25,8 @@ class RestaurantController {
   // Lấy danh sách món ăn nhà hàng
   item(req, res, next) {
     const id = req.query.id;
-    const filter = req.query.filter;
-    db.query(`select b.id , b.title , b.type , b.avatar_id , a.combo_id , a.cost , a.discount from restaurant_dish as a join dish as b on a.dish_id = b.id where a.restaurant_id = ${id} and b.title like "${filter}%"`, (err, result, field) => {
+    const keyword = req.query.keyword;
+    db.query(`select b.id , b.title , b.type , b.avatar_id , a.combo_id , a.cost , a.discount , a.content from restaurant_dish as a join dish as b on a.dish_id = b.id where a.restaurant_id = ${id} and b.title like "%${keyword}%"`, (err, result, field) => {
       if (!err) {
         res.send({
           'data': {
