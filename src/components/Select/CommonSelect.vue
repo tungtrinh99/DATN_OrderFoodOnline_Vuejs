@@ -98,6 +98,7 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color :#252525;
 }
 .info-restaurant > span:nth-child(2) {
   font-size: 12px;

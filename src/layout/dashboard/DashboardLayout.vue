@@ -84,7 +84,26 @@ export default {
             },
             
           ]
-        }
+        },
+        
+        {
+          key: "user",
+          icon: "user",
+          title: "Người dùng",
+          children: [
+            {
+              key: "customer",
+              title: "Khách hàng",
+              path: "customer"
+            },
+            {
+              key: "merchant",
+              title: "Chủ quán",
+              path: "merchant"
+            }
+          ]
+        },
+        
       ]
     };
   }

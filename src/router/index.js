@@ -3,9 +3,12 @@ import Router from "vue-router";
 import Index from "@/layout/landing/Index.vue";
 import Home from "@/pages/landing/home/Home.vue";
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
-import Dashboard from "@/pages/admin/dashboard/Dashboard.vue";
-import Goods from "@/pages/admin/goods/List.vue";
+import Dashboard from "@/pages/admin/Dashboard/Dashboard.vue";
+import Goods from "@/pages/admin/Goods/List.vue";
 import RestaurantDetail from "@/pages/Landing/Restaurant/Index.vue";
+import Customer from "@/pages/admin/Customer/List.vue";
+import Merchant from "@/pages/admin/Merchant/List.vue";
+
 Vue.use(Router);
 
 export default new Router({
@@ -56,6 +59,23 @@ export default new Router({
           path: "food",
           title: "Đồ ăn",
           component: Goods,
+          meta: {
+            auth: true,
+          },
+        }
+        ,
+        {
+          path: "customer",
+          title: "Khách hàng",
+          component: Customer,
+          meta: {
+            auth: true,
+          },
+        },
+        {
+          path: "merchant",
+          title: "Chủ quán",
+          component: Merchant,
           meta: {
             auth: true,
           },

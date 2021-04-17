@@ -4,7 +4,9 @@ const fs = require("fs");
 class UserController {
   // Lấy danh sách người dùng
     list(req,res,next){
-        db.query('select * from user',(err, result, field)=>{
+      
+        const role = req.query.id;
+        db.query(`select * from user where role = ${role}`,(err, result, field)=>{
             if (!err) {
                 res.send({'data':{'items' : result}});
         
@@ -13,7 +15,7 @@ class UserController {
               }
         })
     }
-    // thêm món người dùng
+    // thêm  người dùng
   save(req, res, next) {
     var data = req.body;
 
@@ -22,7 +24,7 @@ class UserController {
       else console.log(err);
     });
   }
-  // cập nhật món người dùng
+  // cập nhật  người dùng
   update(req, res, next) {
     var id = req.query.id;
     var data = req.body;
@@ -38,7 +40,7 @@ class UserController {
       }
     );
   }
-  //xóa món người dùng
+  //xóa   người dùng
   delete(req, res, next) {
     var id = req.query.id;
     db.query(`DELETE FROM user WHERE id = ${id}`, (err, result, fields) => {

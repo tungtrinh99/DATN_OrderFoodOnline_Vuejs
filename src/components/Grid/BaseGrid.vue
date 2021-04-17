@@ -62,7 +62,8 @@ export default {
       type: Array
     },
     entity: String,
-    isAction: Boolean
+    isAction: Boolean,
+    id : Number
   },
   data() {
     var cols = [];
@@ -113,7 +114,11 @@ export default {
     fetchData() {
       http
         
-        .get(`/${this.entity}/list`)
+        .get(`/${this.entity}/list`,{
+          params:{
+            id : this.id
+          }
+        })
         .then(response => {
           this.data = response.data.data.items;
         })

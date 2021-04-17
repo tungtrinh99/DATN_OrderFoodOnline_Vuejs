@@ -31,7 +31,7 @@
       :entity="entity"
       :key="key"
       :isAction ="isAction"
-
+      :id="id"
     ></base-grid>
   </div>
 </template>
@@ -63,7 +63,8 @@ export default {
     textTitle: String,
     entity: String,
     isAction : Boolean,
-    isAdd : Boolean
+    isAdd : Boolean,
+    id : Number
   },
   methods: {
     show() {
