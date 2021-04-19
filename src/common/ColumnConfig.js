@@ -22,7 +22,7 @@ const food = [{
     title: "Tên",
     dataIndex: "title",
     key: "title",
-    width: 100
+    width: 500
   }
 ];
 const user = [{
@@ -65,12 +65,14 @@ const user = [{
   {
     title: "Giới tính",
     dataIndex: "gender",
+    dataType:"gender",
     key: "gender",
     width: 100
   }, {
     title: "Ngày sinh",
     dataIndex: "birth_date",
     key: "birth_date",
+    dataType:"date",
     width: 100
   }, {
     title: "Địa chỉ",

@@ -2,9 +2,9 @@
   <base-list
    :textTitle="title"
    :entity="entity"
+   :role="role"
    :isAction = "isAction"
    :isAdd = "isAdd"
-   :id="role"
 
   ></base-list> 
 </template>

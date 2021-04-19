@@ -27,7 +27,7 @@
                 <h1>{{ infoRestaurant.title }}</h1>
               </div>
               <div class="address-restaurant">
-                <span>{{ addressRestaurant.full_address }}</span>
+                <span>{{ infoRestaurant.full_address }}</span>
               </div>
               <div class="status-restaurant">
                 <div class="opentime-status">

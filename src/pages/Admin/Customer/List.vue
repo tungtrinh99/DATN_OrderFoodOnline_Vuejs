@@ -4,7 +4,7 @@
    :entity="entity"
    :isAction = "isAction"
    :isAdd = "isAdd"
-   :id="role"
+   :role="role"
   ></base-list> 
 </template>
 

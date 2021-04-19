@@ -2,20 +2,22 @@
   <div>
     <div class="content">
       <!-- <a-spin :tip="'Đang tải...'" v-if="data.length == 0"></a-spin> -->
-      <a-table :columns="cols" :data-source="data">
+      <a-table
+        :columns="cols"
+        :data-source="data"
+        :row-key="(record) => record.id"
+      >
         <div slot="action" slot-scope="record">
           <a-icon
             type="edit"
-            style="color:green;margin-left:4px"
+            style="color: green; margin-left: 4px"
             @click="showEditModal(record)"
           />
           <a-icon
             type="delete"
-            style="color:red;margin-left:4px"
+            style="color: red; margin-left: 4px"
             @click="showDeleteConfirm(record)"
           />
-          
-          
         </div>
         <div slot="file" slot-scope="text">
           <img
@@ -26,9 +28,13 @@
           />
         </div>
         <span slot="status" slot-scope="text">{{ renderStatus(text) }}</span>
+        <span slot="gender" slot-scope="text">{{ getTextGender(text) }}</span>
         <a slot="link" slot-scope="text" @click="openRecord(text)"
           >{{ text }}
         </a>
+        <span slot="date" slot-scope="text">{{
+          text == null ? "" : moment(String(text)).format("DD-MM-YYYY")
+        }}</span>
       </a-table>
       <a-modal
         v-model="visible"
@@ -37,13 +43,27 @@
         cancelText="Hủy"
         @ok="save"
       >
-        <form-edit
+        <form-edit-food
           v-if="entity == 'food'"
           :entity="entity"
           :id="id"
           @hideModal="hideModal"
-        ></form-edit>
-        </a-modal>
+        ></form-edit-food>
+        <form-edit-customer
+          v-if="entity == 'user' && role == 2"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+          
+        ></form-edit-customer>
+        <form-edit-merchant
+          v-if="entity == 'user' && role == 4"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+          
+        ></form-edit-merchant>
+      </a-modal>
     </div>
   </div>
 </template>
@@ -52,18 +72,25 @@
 import http from "../../http-common";
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
-import FormEdit from "../../pages/Admin/Goods/FormEdit";
+import moment from "moment";
+import FormEditFood from "../../pages/Admin/Goods/FormEdit";
+import FormEditCustomer from "../../pages/Admin/Customer/FormEdit";
+import FormEditMerchant from "../../pages/Admin/Merchant/FormEdit";
+import constant from "../../constant";
 export default {
   components: {
-    "form-edit":FormEdit
+    "form-edit-food": FormEditFood,
+    "form-edit-customer": FormEditCustomer,
+    "form-edit-merchant": FormEditMerchant,
+
   },
   props: {
     column: {
-      type: Array
+      type: Array,
     },
     entity: String,
     isAction: Boolean,
-    id : Number
+    role: Number
   },
   data() {
     var cols = [];
@@ -74,16 +101,16 @@ export default {
         dataIndex: "id",
         fixed: "left",
         width: 120,
-        scopedSlots: { customRender: "action" }
+        scopedSlots: { customRender: "action" },
       });
     }
 
     const title = Constant[this.entity];
-    var tmp = this.column.map(p => {
+    var tmp = this.column.map((p) => {
       if (!p.scopedSlots) {
         p.scopedSlots = {
           filterIcon: "filterIcon",
-          customRender: "customRender"
+          customRender: "customRender",
         };
       }
       if (p.isCodeIndex) {
@@ -97,7 +124,10 @@ export default {
       return p;
     });
     cols = [].concat.apply(cols, tmp);
+
+    const gender = constant.genderText;
     return {
+      moment,
       data: [],
       cartData: [],
       key: 0,
@@ -108,21 +138,24 @@ export default {
       id: null,
       filters: [],
       searchText: "",
+      filter: this.role,
+      gender
     };
   },
   methods: {
+    
     fetchData() {
       http
-        
-        .get(`/${this.entity}/list`,{
-          params:{
-            id : this.id
-          }
+
+        .get(`/${this.entity}/list`, {
+          params: {
+            id: this.filter,
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.data = response.data.data.items;
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message.error(error.message);
         });
     },
@@ -137,19 +170,21 @@ export default {
 
         onOk() {
           http
-            .get(`/${entity}/delete`,{params:{
-              id : record
-            }})
-            .then(response => {
+            .get(`/${entity}/delete`, {
+              params: {
+                id: record,
+              },
+            })
+            .then((response) => {
               component.$message.success(
                 `Xóa ${component.title} ${record} thành công`
               );
               EventBus.$emit("reload");
             })
-            .catch(error => {
+            .catch((error) => {
               component.$message.error(error.message);
             });
-        }
+        },
       });
     },
     showEditModal(record) {
@@ -157,14 +192,16 @@ export default {
       this.id = record;
       var data = [];
       http
-        .get(`${this.entity}/detail`,{params : {
-          id : record
-        }})
-        .then(response => {
+        .get(`${this.entity}/detail`, {
+          params: {
+            id: record,
+          },
+        })
+        .then((response) => {
           data = response.data.data.items;
           EventBus.$emit("data", data[0]);
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message.error(error.message);
         });
     },
@@ -173,26 +210,26 @@ export default {
 
       http
         .get(`/goods/details/${record}`)
-        .then(response => {
+        .then((response) => {
           this.cartData = response.data;
-          this.cartData.forEach(item => {
+          this.cartData.forEach((item) => {
             item.qty = 1;
           });
           this.addToCartSession(this.cartData[0], record);
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message.error(message.error);
         });
     },
     addToCartSession(data, record) {
       http
         .post("/cart/add", data)
-        .then(response => {
+        .then((response) => {
           this.$message.success(
             `Thêm thành công sản phẩm ${record} vào giỏ hàng `
           );
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -201,23 +238,25 @@ export default {
     },
     save() {
       EventBus.$emit("saveEdit");
-      EventBus.$emit("reload")
+      EventBus.$emit("reload");
     },
     hideModal() {
       this.visible = false;
       this.$emit("reload");
     },
     renderStatus(text) {
-      var title = 'title';
-      return this.status.find(p => p.value == text).title;
-    }
+      var title = "title";
+      return this.status.find((p) => p.value == text).title;
+    },
+    getTextGender(index){
+      return this.gender.find((p)=>p.value == index).text;
+    },
   },
   mounted() {
     this.fetchData();
-  }
+  },
 };
 </script>
 
 <style scoped>
-
 </style>

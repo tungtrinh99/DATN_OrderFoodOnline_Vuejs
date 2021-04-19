@@ -2,7 +2,7 @@
   <a-select
     show-search
     :value="value"
-    placeholder="Tìm quán ăn"
+    placeholder="Tìm quán ăn , địa điểm ..."
     style="width: 100%"
     :default-active-first-option="false"
     :show-arrow="false"

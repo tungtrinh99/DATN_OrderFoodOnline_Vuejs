@@ -80,7 +80,7 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           http
-            .post("/food/save", data)
+            .post(`/${this.entity}/save`, data)
             .then(response => {
               this.id = response.data.id;
               this.$message.success("Tạo thành công");

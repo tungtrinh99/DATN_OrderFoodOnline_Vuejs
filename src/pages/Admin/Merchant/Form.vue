@@ -93,7 +93,7 @@ export default {
   },
   data() {
     var rules = RuleConfig[this.entity];
-    var userCode = `KH000` + Math.floor(Math.random() * 1000 + 1);
+    var userCode = `CQ000` + Math.floor(Math.random() * 1000 + 1);
     let user = {
       username: "",
       userCode: userCode,

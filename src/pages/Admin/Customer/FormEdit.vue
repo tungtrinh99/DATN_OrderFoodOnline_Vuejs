@@ -6,7 +6,7 @@
     :rules="rules"
     ref="ruleForm"
   >
-    <a-form-model-item label="Ảnh khách hàng" prop="avatar_id">
+    <a-form-model-item label="Ảnh khách hàng" prop="avatar">
       <a-upload
         name="file"
         list-type="picture-card"
@@ -28,13 +28,8 @@
         </div>
       </a-upload>
     </a-form-model-item>
-    <a-form-model-item label="Mã khách hàng" ref="userCode" prop="usercode">
-      <a-input
-        v-model="user.userCode"
-        type="text"
-        :allowClear="true"
-        :disabled="true"
-      />
+    <a-form-model-item label="Mã khách hàng" ref="userCode" prop="user_code">
+      <a-input v-model="user.userCode" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Tên khách hàng" ref="fullname" prop="fullname">
       <a-input v-model="user.fullname" type="text" :allowClear="true" />
@@ -43,13 +38,13 @@
       <a-input v-model="user.username" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Mật khẩu" ref="password" prop="password">
-      <a-input-password v-model="user.password" />
+      <a-input-password v-model="user.password"   />
     </a-form-model-item>
     <a-form-model-item label="Email" ref="email" prop="email">
       <a-input v-model="user.email" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Ngày sinh" ref="birthDate" prop="birth_date">
-      <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY"  />
+      <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY"/>
     </a-form-model-item>
     <a-form-model-item label="Giới tính" ref="gender" prop="gender">
       <a-input v-model="user.gender" type="text" :allowClear="true" />
@@ -79,48 +74,63 @@ import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 import moment from "moment";
-
 export default {
   created() {
-    EventBus.$on("save", this.save);
+    EventBus.$on("saveEdit", this.save);
+    EventBus.$on("data", this.fetchDataEdit);
   },
   destroyed() {
-    EventBus.$off("save", this.save);
+    EventBus.$on("saveEdit", this.save);
+    EventBus.$off("data", this.fetchDataEdit);
   },
   props: {
     entity: String,
-    roleNumber: Number,
+    id: Number,
   },
   data() {
     var rules = RuleConfig[this.entity];
-    var userCode = `KH000` + Math.floor(Math.random() * 1000 + 1);
-    let user = {
-      username: "",
-      userCode: userCode,
-      password: "",
-      email: "",
-      fullname: "",
-      gender: null,
-      birthDate:moment(new Date(), "DD-MM-YYYY"),
-      phoneNumber: "",
-      address: "",
-      active: 1,
-      avatarId: "",
-      role: this.roleNumber,
-    };
     return {
-      moment,
-      user,
+      user: {
+        username: "",
+        userCode: "",
+        password: "",
+        email: "",
+        fullname: "",
+        gender: null,
+        birthDate: "",
+        phoneNumber: "",
+        address: "",
+        active: 1,
+        avatarId: "",
+        role: 2,
+      },
       rules,
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
+      data: [],
       loading: false,
       imageUrl: "",
+      dateFormatList: ["DD/MM/YYYY", "DD/MM/YY"],
     };
   },
   methods: {
-    onChangeDate(date, dateString) {
+    moment,
+    onChangeDate(date, dateString){
       this.user.birthDate = dateString;
+    },
+    fetchDataEdit(data) {
+      this.user.username = data.username;
+      this.user.userCode = data.user_code;
+      this.user.password = data.password;
+      this.user.fullname = data.fullname;
+      this.user.role = data.role;
+      this.user.email = data.email;
+      this.user.gender = data.gender;
+      this.user.birthDate = data.birth_date;
+      this.user.phoneNumber = data.phone_number;
+      this.user.address = data.address;
+      this.user.active = data.active;
+      this.user.avatarId = data.avatar_id;
     },
     save() {
       var data = {
@@ -140,10 +150,14 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           http
-            .post(`/${this.entity}/save`, data)
+            .post("/user/update", data, {
+              params: {
+                id: this.id,
+              },
+            })
             .then((response) => {
-              this.id = response.data.data.items.id;
-              this.$message.success("Tạo thành công");
+              this.$emit("hideModal");
+              this.$message.success("Lưu thành công");
             })
             .catch((error) => {
               this.$message.error(error.message);
@@ -156,28 +170,7 @@ export default {
         }
       });
     },
-    getListData() {
-      http
-        .get(`/${this.entity}/list`, {
-          params: {
-            id: this.roleNumber,
-          },
-        })
-        .then((response) => {
-          let data = response.data.data.items;
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
-        });
-    },
 
-    filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
-    },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text
@@ -193,7 +186,7 @@ export default {
       if (info.file.status === "done") {
         // Get this url from response in real world.
         getBase64(info.file.originFileObj, (imageUrl) => {
-          this.user.avatar_id = imageUrl;
+          this.user.avatarId = imageUrl;
           this.loading = false;
         });
       }
@@ -227,6 +220,5 @@ export default {
     },
   },
   mounted() {},
-  created() {},
 };
 </script>
