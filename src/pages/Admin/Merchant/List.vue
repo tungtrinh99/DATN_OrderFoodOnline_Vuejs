@@ -2,7 +2,6 @@
   <base-list
    :textTitle="title"
    :entity="entity"
-   :role="role"
    :isAction = "isAction"
    :isAdd = "isAdd"
 
@@ -11,7 +10,7 @@
 
 <script>
 import BaseList from '../../BasePage/BaseList'
-const entity = "user";
+const entity = "merchant";
 export default {
 
   data(){
@@ -20,7 +19,6 @@ export default {
       entity,
       isAction :true,
       isAdd :true,
-      role : 4
 
     }
   },

@@ -23,16 +23,24 @@
           ></form-goods>
           <form-customer
             :entity="entity"
-            :roleNumber="role"
-            v-if="entity == 'user' && role == 2"
+            v-if="entity == 'customer'"
             @hideModal="hideModal"
           ></form-customer>
           <form-merchant
             :entity="entity"
-            :roleNumber="role"
-            v-if="entity == 'user' && role == 4"
+            v-if="entity == 'merchant'"
             @hideModal="hideModal"
           ></form-merchant>
+          <form-restaurant
+            :entity="entity"
+            v-if="entity == 'restaurant'"
+            @hideModal="hideModal"
+          ></form-restaurant>
+          <form-location
+            :entity="entity"
+            v-if="entity == 'location'"
+            @hideModal="hideModal"
+          ></form-location>
         </a-modal>
       </template>
     </a-page-header>
@@ -42,7 +50,6 @@
       :entity="entity"
       :key="key"
       :isAction="isAction"
-      :role="role"
     ></base-grid>
   </div>
 </template>
@@ -50,18 +57,22 @@
 <script>
 import BaseGrid from "../../components/Grid/BaseGrid";
 import ColumnConfig from "../../common/ColumnConfig";
-import FormGoods from "../../pages/Admin/Goods/Form";
-import FormCustomer from "../../pages/Admin/Customer/Form";
-import FormMerchant from "../../pages/Admin/Merchant/Form";
+import Goods from "../../pages/Admin/Goods/Form";
+import Customer from "../../pages/Admin/Customer/Form";
+import Merchant from "../../pages/Admin/Merchant/Form";
+import Restaurant from "../../pages/Admin/Restaurant/Form";
+import Location from "../../pages/Admin/Location/Form";
 
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
 export default {
   components: {
     "base-grid": BaseGrid,
-    "form-goods": FormGoods,
-    "form-customer": FormCustomer,
-    "form-merchant": FormMerchant,
+    "form-goods": Goods,
+    "form-customer": Customer,
+    "form-merchant": Merchant,
+    "form-restaurant": Restaurant,
+    "form-location": Location,
   },
   data() {
     const column = ColumnConfig[this.entity];
@@ -72,7 +83,7 @@ export default {
       column,
       title,
       key: 0,
-      data : []
+      data: [],
     };
   },
   props: {
@@ -80,10 +91,8 @@ export default {
     entity: String,
     isAction: Boolean,
     isAdd: Boolean,
-    role: Number,
   },
   methods: {
-    
     show() {
       this.visible = true;
     },

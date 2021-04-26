@@ -106,7 +106,7 @@ export default {
       address: "",
       active: 1,
       avatarId: "",
-      role: this.roleNumber,
+      role:2,
     };
     return {
       moment,
@@ -137,6 +137,7 @@ export default {
         address: this.user.address,
         active: this.user.active,
       };
+
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           http
@@ -156,21 +157,7 @@ export default {
         }
       });
     },
-    getListData() {
-      http
-        .get(`/${this.entity}/list`, {
-          params: {
-            id: this.roleNumber,
-          },
-        })
-        .then((response) => {
-          let data = response.data.data.items;
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
-        });
-    },
-
+   
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text
@@ -227,6 +214,5 @@ export default {
     },
   },
   mounted() {},
-  created() {},
 };
 </script>

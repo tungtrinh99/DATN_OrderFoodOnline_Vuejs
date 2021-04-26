@@ -61,13 +61,13 @@ export default {
           ]
         },
         {
-          key: "food",
+          key: "manage",
           icon: "dropbox",
-          title: "Đồ ăn",
+          title: "Quản lý",
           children: [
             {
-              key: "all-goods",
-              title: "Tất cả món ăn",
+              key: "food",
+              title: "Món ăn",
               path: "food"
             }
           ]
@@ -75,12 +75,17 @@ export default {
         {
           key: "order",
           icon: "read",
-          title: "Đơn hàng",
+          title: "Đơn hàng",
           children: [
             {
-              key: "sale-order",
-              title: "Đơn hàng mua",
+              key: "order",
+              title: "Đơn hàng",
               path: "order"
+            },
+            {
+              key: "order-customer",
+              title: "Đơn hàng khách hàng",
+              path: "order-customer"
             },
             
           ]
@@ -98,9 +103,27 @@ export default {
             },
             {
               key: "merchant",
-              title: "Chủ quán",
+              title: "Đối tác",
               path: "merchant"
             }
+          ]
+        },
+        {
+          key: "restaurant",
+          icon: "bank",
+          title: "Quán ăn",
+          children: [
+            {
+              key: "restaurant",
+              title: "Danh sách quán ăn",
+              path: "restaurant"
+            },
+             {
+              key: "location",
+              title: "Địa chỉ",
+              path: "location"
+            },
+            
           ]
         },
         

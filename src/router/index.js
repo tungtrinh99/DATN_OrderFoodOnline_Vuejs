@@ -1,27 +1,28 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Index from "@/layout/landing/Index.vue";
-import Home from "@/pages/landing/home/Home.vue";
+import Index from "@/layout/Client/Index.vue";
+import Home from "@/pages/Client/home/Home.vue";
 import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
 import Dashboard from "@/pages/admin/Dashboard/Dashboard.vue";
 import Goods from "@/pages/admin/Goods/List.vue";
-import RestaurantDetail from "@/pages/Landing/Restaurant/Index.vue";
+import RestaurantDetail from "@/pages/Client/Restaurant/Index.vue";
 import Customer from "@/pages/admin/Customer/List.vue";
 import Merchant from "@/pages/admin/Merchant/List.vue";
-
+import Restaurant from "@/pages/admin/Restaurant/List.vue";
+import Location from "@/pages/admin/Location/List.vue";
+import LoginPage from "@/pages/client/Login/Form.vue";
+import RegisterPage from "@/pages/client/Register/Form.vue"
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: "/",
       component: Index,
       redirect: "home",
       meta: {
         auth: true
       },
-      children: [
-        {
+      children: [{
           path: "home",
           name: "Trang chủ",
           component: Home,
@@ -46,8 +47,7 @@ export default new Router({
       meta: {
         auth: true
       },
-      children: [
-        {
+      children: [{
           path: "dashboard",
           title: "Tổng quan",
           component: Dashboard,
@@ -62,8 +62,7 @@ export default new Router({
           meta: {
             auth: true,
           },
-        }
-        ,
+        },
         {
           path: "customer",
           title: "Khách hàng",
@@ -80,7 +79,44 @@ export default new Router({
             auth: true,
           },
         },
+        {
+          path: "restaurant",
+          title: "Quán ăn",
+          component: Restaurant,
+          meta: {
+            auth: true,
+          },
+        }, {
+          path: "location",
+          title: "Địa điểm",
+          component: Location,
+          meta: {
+            auth: true,
+          },
+        },
       ]
+    },
+    {
+      path: "/",
+      component: Index,
+      redirect: "login",
+      children: [{
+        path: "login",
+        name: "Đăng nhập",
+        component: LoginPage,
+
+      }, ]
+    },
+    {
+      path: "/",
+      component: Index,
+      redirect: "register",
+      children: [{
+        path: "register",
+        name: "Đăng kí",
+        component: RegisterPage,
+
+      }, ]
     }
   ]
 });

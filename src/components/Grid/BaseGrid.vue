@@ -50,19 +50,29 @@
           @hideModal="hideModal"
         ></form-edit-food>
         <form-edit-customer
-          v-if="entity == 'user' && role == 2"
+          v-if="entity == 'customer'"
           :entity="entity"
           :id="id"
           @hideModal="hideModal"
-          
         ></form-edit-customer>
         <form-edit-merchant
-          v-if="entity == 'user' && role == 4"
+          v-if="entity == 'merchant'"
           :entity="entity"
           :id="id"
           @hideModal="hideModal"
-          
         ></form-edit-merchant>
+        <form-edit-location
+          v-if="entity == 'location'"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+        ></form-edit-location>
+        <form-edit-restaurant
+          v-if="entity == 'restaurant'"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+        ></form-edit-restaurant>
       </a-modal>
     </div>
   </div>
@@ -73,16 +83,22 @@ import http from "../../http-common";
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
 import moment from "moment";
-import FormEditFood from "../../pages/Admin/Goods/FormEdit";
-import FormEditCustomer from "../../pages/Admin/Customer/FormEdit";
-import FormEditMerchant from "../../pages/Admin/Merchant/FormEdit";
 import constant from "../../constant";
+
+
+import Food from "../../pages/Admin/Goods/FormEdit";
+import Customer from "../../pages/Admin/Customer/FormEdit";
+import Merchant from "../../pages/Admin/Merchant/FormEdit";
+import Restaurant from "../../pages/Admin/Restaurant/FormEdit";
+import Location from "../../pages/Admin/Location/FormEdit";
+
 export default {
   components: {
-    "form-edit-food": FormEditFood,
-    "form-edit-customer": FormEditCustomer,
-    "form-edit-merchant": FormEditMerchant,
-
+    "form-edit-food": Food,
+    "form-edit-customer": Customer,
+    "form-edit-merchant": Merchant,
+    "form-edit-restaurant": Restaurant,
+    "form-edit-location": Location,
   },
   props: {
     column: {
@@ -90,7 +106,6 @@ export default {
     },
     entity: String,
     isAction: Boolean,
-    role: Number
   },
   data() {
     var cols = [];
@@ -139,17 +154,17 @@ export default {
       filters: [],
       searchText: "",
       filter: this.role,
-      gender
+      gender,
     };
   },
   methods: {
-    
     fetchData() {
       http
 
         .get(`/${this.entity}/list`, {
           params: {
             id: this.filter,
+            keyword: "",
           },
         })
         .then((response) => {
@@ -248,8 +263,8 @@ export default {
       var title = "title";
       return this.status.find((p) => p.value == text).title;
     },
-    getTextGender(index){
-      return this.gender.find((p)=>p.value == index).text;
+    getTextGender(index) {
+      return this.gender.find((p) => p.value == index).text;
     },
   },
   mounted() {

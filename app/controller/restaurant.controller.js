@@ -6,7 +6,8 @@ class RestaurantController {
   list(req, res, next) {
     const keyword = req.query.keyword;
     db.query(`
-              select a.*,b.full_address from restaurant a join location b on a.id = b.restaurant_id 
+              select a.*,b.full_address ,c.fullname as name_of_user_id from 
+              restaurant a join location b on a.location_id = b.id join user c on a.user_id = c.id
               where a.title like "%${keyword}%" or b.full_address like "%${keyword}%"`,
       (err, result, field) => {
         if (!err) {
@@ -28,7 +29,7 @@ class RestaurantController {
     const id = req.query.id;
     const keyword = req.query.keyword;
     db.query(`
-              select b.* , a.combo_id , a.cost , a.discount , a.content from restaurant_dish as a join dish as b on a.dish_id = b.id 
+              select b.* , a.combo_id , a.cost , a.discount , a.content from restaurant_food as a join food as b on a.food_id = b.id 
               where a.restaurant_id = ${id} and b.title like "%${keyword}%"`,
       (err, result, field) => {
         if (!err) {
@@ -100,13 +101,13 @@ class RestaurantController {
     const id = req.query.id;
 
     db.query(`
-            SELECT a.* , b.full_address FROM restaurant a join location b on a.id = b.restaurant_id  
+            SELECT a.* , b.full_address FROM restaurant a join location b on a.location_id = b.id  
             WHERE a.id = ${id}`,
       (err, result, field) => {
         if (!err) {
           res.send({
             data: {
-              item: result
+              items: result
             }
           });
         } else {

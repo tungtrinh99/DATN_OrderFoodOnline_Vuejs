@@ -90,6 +90,7 @@ export default {
             .then((response) => {
               this.$emit("hideModal");
               this.$message.success("Lưu thành công");
+
             })
             .catch((error) => {
               this.$message.error(error.message);

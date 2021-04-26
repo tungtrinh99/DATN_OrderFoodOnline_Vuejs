@@ -7,7 +7,9 @@
         <div class="user">
           <span
             >Đơn hàng tạo bởi
-            <span style="color: #0288d1">Xuân Tùng</span></span
+            <span style="color: #0288d1">{{
+              formData ? formData.fullname : ""
+            }}</span></span
           >
           <span>{{ cartData.length }} món</span>
         </div>
@@ -22,7 +24,9 @@
           <span
             >{{
               Intl.NumberFormat("vi-VN").format(
-                Number.parseFloat(item.cost-(item.cost * item.discount) / 100).toFixed(0)
+                Number.parseFloat(
+                  item.cost - (item.cost * item.discount) / 100
+                ).toFixed(0)
               )
             }}đ</span
           >
@@ -66,6 +70,7 @@ export default {
       cartData: [],
       key: 0,
       cost: 0,
+      formData: {},
     };
   },
   methods: {
@@ -74,34 +79,45 @@ export default {
       if (!localStorage.getItem("cart")) {
         localStorage.setItem("cart", JSON.stringify([]));
       }
+      this.formData = JSON.parse(localStorage.getItem("user"));
+
       this.cartData = JSON.parse(localStorage.getItem("cart"));
       this.cartData.forEach((d) => {
-        return (this.cost += (d.quantity * (d.cost - (d.cost*d.discount/100)) ));
+        return (this.cost +=
+          d.quantity * (d.cost - (d.cost * d.discount) / 100));
       });
     },
     reload() {
       this.fetchData();
     },
     minusItemInCart(index) {
-      if(this.cartData[index].quantity > 1){
-        this.cartData[index].quantity -= 1 ;
-      }else  {
-        this.cartData.splice(index,1);
+      if (this.cartData[index].quantity > 1) {
+        this.cartData[index].quantity -= 1;
+      } else {
+        this.cartData.splice(index, 1);
       }
       localStorage.setItem("cart", JSON.stringify(this.cartData));
       this.reload();
     },
     plusItemInCart(index) {
-      this.cartData[index].quantity += 1 ;
+      this.cartData[index].quantity += 1;
       localStorage.setItem("cart", JSON.stringify(this.cartData));
       this.reload();
+    },
+    getUserInfo() {
+      this.formData = JSON.parse(localStorage.getItem("user"));
     },
   },
   created: function () {
     EventBus.$on("reload", this.reload);
+    EventBus.$on("getItemCart", this.fetchData);
   },
   destroyed() {
     EventBus.$off("reload", this.reload);
+    EventBus.$off("getItemCart", this.fetchData);
+  },
+  mounted() {
+    this.getUserInfo();
   },
   beforeMount() {
     this.fetchData();

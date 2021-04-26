@@ -9,11 +9,6 @@
       <a-menu-item key="notify" >
         <a-icon type="bell" style="margin:0"></a-icon>
       </a-menu-item>
-      <a-menu-item key="cart" >
-        <a-badge :count="this.count">
-          <a-icon type="shopping" style="margin:0"></a-icon>
-        </a-badge>
-      </a-menu-item>
       <a-menu-item key="user" >
         <a-icon type="user" style="margin:0"></a-icon>
       </a-menu-item>

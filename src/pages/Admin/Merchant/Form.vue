@@ -106,7 +106,7 @@ export default {
       address: "",
       active: 1,
       avatarId: "",
-      role: this.roleNumber,
+      role: 4,
     };
     return {
       moment,
@@ -156,20 +156,7 @@ export default {
         }
       });
     },
-    getListData() {
-      http
-        .get(`/${this.entity}/list`, {
-          params: {
-            id: this.roleNumber,
-          },
-        })
-        .then((response) => {
-          let data = response.data.data.items;
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
-        });
-    },
+    
 
     filterOption(input, option) {
       return (
@@ -227,6 +214,5 @@ export default {
     },
   },
   mounted() {},
-  created() {},
 };
 </script>

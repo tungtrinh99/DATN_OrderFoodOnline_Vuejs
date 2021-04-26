@@ -3,10 +3,12 @@
 import router from './router';
 import Vue from 'vue';
 import Antd from "ant-design-vue";
+import VueCookie from 'vue-cookie';
 import 'ant-design-vue/dist/antd.css';
 import App from './App';
 Vue.config.productionTip = false
 Vue.use(Antd);
+Vue.use(VueCookie);
 
 
 

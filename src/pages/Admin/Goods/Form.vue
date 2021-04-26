@@ -43,11 +43,9 @@ import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 export default {
   created() {
-    // Listening the event hello
     EventBus.$on("save", this.save);
   },
   destroyed() {
-    // Stop listening the event hello with handler
     EventBus.$off("save", this.save);
   },
   props: {
