@@ -54,7 +54,9 @@
         </a-col>
         <a-col :span="1"></a-col>
         <a-col :span="8" :style="{position :'sticky',top:'64px'}">
-          <cart></cart>
+          <cart :restaurantData = "formData"
+                :discountCodeData = "discountCodeList"
+          ></cart>
         </a-col>
       </a-row>
     </div>
@@ -68,7 +70,8 @@ export default {
   data() {
     return {
       id: null,
-      formData: {}
+      formData: {},
+      discountCodeList : []
     };
   },
   components: {
@@ -93,11 +96,26 @@ export default {
           this.$message.error(error.message);
         });
     },
+    getDiscountCode(){
+       http
+        .get("/restaurant-discount/list", {
+          params: {
+            id: this.id,
+          },
+        })
+        .then((response) => {
+          this.discountCodeList = response.data.data.items;
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    }
     
   },
   created() {
     this.id = JSON.parse(localStorage.getItem("getId"));
     this.fetchData();
+    this.getDiscountCode();
   },
 };
 </script>

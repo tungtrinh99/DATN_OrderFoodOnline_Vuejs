@@ -1,85 +1,434 @@
 <template>
-  <div class="cart">
-    <a-list class="list-item" item-layout="horizontal" :data-source="cartData">
-      <div slot="header" class="cart-header">
-        <h3>Chi tiết đơn hàng</h3>
+  <div>
+    <div class="cart">
+      <a-list
+        class="list-item"
+        item-layout="horizontal"
+        :data-source="cartData"
+      >
+        <div slot="header">
+          <h3 :style="{ textAlign: 'left' }">Chi tiết đơn hàng</h3>
 
-        <div class="user">
-          <span
-            >Đơn hàng tạo bởi
-            <span style="color: #0288d1">{{
-              formData ? formData.fullname : ""
-            }}</span></span
-          >
-          <span>{{ cartData.length }} món</span>
-        </div>
-      </div>
-      <a-list-item slot="renderItem" slot-scope="item, index">
-        <a-list-item-meta description="">
-          <a slot="title">
-            {{ item.title }}
-          </a>
-        </a-list-item-meta>
-        <div class="cost">
-          <span
-            >{{
-              Intl.NumberFormat("vi-VN").format(
-                Number.parseFloat(
-                  item.cost - (item.cost * item.discount) / 100
-                ).toFixed(0)
-              )
-            }}đ</span
-          >
-          <div class="quantity-wrapper">
-            <a-button @click="minusItemInCart(index)"
-              ><a-icon type="minus"
-            /></a-button>
-            <span>{{ item.quantity }}</span>
-            <a-button @click="plusItemInCart(index)"
-              ><a-icon type="plus"
-            /></a-button>
+          <div class="user">
+            <span
+              >Đơn hàng tạo bởi
+              <span style="color: #0288d1">{{
+                formData ? formData.fullname : ""
+              }}</span></span
+            >
+            <span>{{ cartData.length }} món</span>
           </div>
         </div>
-      </a-list-item>
-      <div slot="footer">
-        <div class="bill">
-          <span>Tổng cộng</span>
-          <span
-            >{{
-              Intl.NumberFormat("vi-VN").format(
-                Number.parseFloat(cost).toFixed(0)
-              )
-            }}đ</span
+        <a-list-item slot="renderItem" slot-scope="item, index">
+          <a-list-item-meta description="">
+            <a slot="title">
+              {{ item.title }}
+            </a>
+          </a-list-item-meta>
+          <div class="cost">
+            <span 
+              >{{
+                Intl.NumberFormat("vi-VN").format(
+                  Number.parseFloat(
+                    item.cost - (item.cost * item.discount) / 100
+                  ).toFixed(0)
+                )
+              }}đ</span
+            >
+            <div class="quantity-wrapper">
+              <a-button @click="minusItemInCart(index)"
+                ><a-icon type="minus"
+              /></a-button>
+              <span>{{ item.quantity }}</span>
+              <a-button @click="plusItemInCart(index)"
+                ><a-icon type="plus"
+              /></a-button>
+            </div>
+          </div>
+        </a-list-item>
+        <div slot="footer">
+          <div class="bill">
+            <span>Tổng cộng</span>
+            <span
+              >{{
+                Intl.NumberFormat("vi-VN").format(
+                  Number.parseFloat(cost).toFixed(0)
+                )
+              }}đ</span
+            >
+          </div>
+          <a-button type="danger" style="width: 100%" @click="showOrderDetail">
+            <a-icon type="check-circle" theme="filled" />
+            Đặt hàng</a-button
           >
         </div>
-        <a-button type="danger" style="width: 100%">
-          <a-icon type="check-circle" theme="filled" /> Đặt hàng</a-button
-        >
-      </div>
-    </a-list>
+      </a-list>
+    </div>
+    <div class="order-detail">
+      <a-modal
+        title="Xác nhận đơn hàng"
+        v-model="orderDetailVisible"
+        :width="900"
+        :bodyStyle="{ padding: '8px', height: '450px', overflow: 'auto' }"
+      >
+        <div slot="footer">
+          <a-button type="primary" :style="{ width: '100%' }" @click="order"
+            >Đặt hàng</a-button
+          >
+        </div>
+        <a-row>
+          <a-col :span="10">
+            <div>
+              <img
+                class="restaurant-avatar"
+                :src="
+                  require(`../../../public/images/${
+                    Object.keys(restaurantData).length !== 0
+                      ? restaurantData.avatar_id
+                      : '3eae291f-bf6d-41f8-a8b8-eb41cfaecece.jpg'
+                  }`)
+                "
+              />
+            </div>
+            <div class="direction-content">
+              <div class="direction-info">
+                <div class="direction-from">
+                  <div class="direction-name">{{ restaurantData.title }}</div>
+                  <div class="direction-name">
+                    {{ restaurantData.full_address }}
+                  </div>
+                </div>
+                <div class="direction-to">
+                  <div class="">
+                    <div class="direction-name" id="shipping-address">
+                      <span>{{ formData ? formData.fullname : "" }}</span
+                      ><span>
+                        - {{ formData ? formData.phone_number : "" }}
+                      </span>
+                    </div>
+                    <div class="direction-address">
+                      <span> {{ formData ? formData.address : "" }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="direction-time">
+                  <a-icon type="clock-circle" /><span class="txt-bold">
+                    Dự kiến:
+                    {{ moment().add(15, "minute").format("HH:mm - DD/MM") }}
+                  </span>
+                </div>
+                <div class="change-info">
+                  Thay đổi thông tin nhận hàng<a-icon type="right" />
+                </div>
+              </div>
+            </div>
+          </a-col>
+          <a-col :span="1"></a-col>
+          <a-col :span="13">
+            <a-list
+              class="list-item"
+              item-layout="horizontal"
+              :data-source="cartData"
+            >
+              <div slot="header" class="cart-header">
+                <h3>Chi tiết đơn hàng</h3>
+              </div>
+              <a-list-item slot="renderItem" slot-scope="item">
+                <a-list-item-meta description="">
+                  <a
+                    slot="title"
+                    style="
+                      font-size: 12px;
+                      text-align: center;
+                      color: #fff;
+                      display: block;
+                      width: 15px;
+                      height: 15px;
+                      background-color: #0288d1;
+                      line-height: 14px;
+                      border-radius: 4px;
+                      margin-right: 4px;
+                    "
+                    >{{ item.quantity }}</a
+                  >
+                  <a slot="title">
+                    {{ item.title }}
+                  </a>
+                </a-list-item-meta>
+                <div class="cost">
+                  <span
+                    >{{
+                      Intl.NumberFormat("vi-VN").format(
+                        Number.parseFloat(
+                          item.cost - (item.cost * item.discount) / 100
+                        ).toFixed(0)
+                      )
+                    }}đ</span
+                  >
+                </div>
+              </a-list-item>
+              <div slot="footer">
+                <div class="info-order">
+                  <a-col>
+                    <a-row>
+                      <div class="bill">
+                        <span>Tổng cộng {{ cartData.length }} phần</span>
+                        <span
+                          >{{
+                            Intl.NumberFormat("vi-VN").format(
+                              Number.parseFloat(cost).toFixed(0)
+                            )
+                          }}đ</span
+                        >
+                      </div>
+                    </a-row>
+                    <a-row>
+                      <div class="bill">
+                        <span>Phí vận chuyển</span>
+                        <span
+                          >{{
+                            Intl.NumberFormat("vi-VN").format(
+                              Number.parseFloat(ship).toFixed(0)
+                            )
+                          }}đ</span
+                        >
+                      </div>
+                    </a-row>
+                    <a-row>
+                      <div class="bill" v-if="discount">
+                        <span>Khuyến mãi</span>
+
+                        <span
+                          >-{{
+                            Intl.NumberFormat("vi-VN").format(
+                              Number.parseFloat(discount).toFixed(0)
+                            )
+                          }}đ</span
+                        >
+                      </div>
+                    </a-row>
+                  </a-col>
+                </div>
+                <div class="discount-code">
+                  <a-row>
+                    <a-col>
+                      <div class="code">
+                        <span>Mã khuyến mãi</span>
+                        <span v-if="discount">{{ discountCode }}</span>
+                        <a @click="showDiscountCode">Xem mã giảm giá</a>
+                        <a-modal
+                          title="Khuyến mãi"
+                          v-model="discountCodeVisible"
+                          :width="900"
+                          :bodyStyle="{ padding: '8px', height: '500px' }"
+                          :footer="false"
+                        >
+                          <a-list
+                            class="discount-code-list"
+                            item-layout="horizontal"
+                            :data-source="discountCodeData"
+                          >
+                            <div slot="header">
+                              <div class="modal-order-promo-code__title">
+                                Mã khuyến mãi của nhà hàng
+                              </div>
+                            </div>
+                            <a-list-item slot="renderItem" slot-scope="item">
+                              <a slot="actions">
+                                <a-button
+                                  type="primary"
+                                  @click="applyDiscountCode(item)"
+                                  >Áp dụng</a-button
+                                >
+                              </a>
+                              <a-list-item-meta :description="item.content">
+                                <a slot="title">{{ item.code }}</a>
+                                <a-avatar slot="avatar" icon="gift" />
+                              </a-list-item-meta>
+                              <div>
+                                <span style="margin-right: 16px"
+                                  >Giảm giá :
+                                  <span style="font-weight: 700"
+                                    >{{
+                                      Intl.NumberFormat("vi-VN").format(
+                                        Number.parseFloat(
+                                          item.discount
+                                        ).toFixed(0)
+                                      )
+                                    }}đ</span
+                                  ></span
+                                >
+                                <span
+                                  >Đặt tối thiểu :
+                                  <span style="font-weight: 700"
+                                    >{{
+                                      Intl.NumberFormat("vi-VN").format(
+                                        Number.parseFloat(
+                                          item.min_total_order
+                                        ).toFixed(0)
+                                      )
+                                    }}đ</span
+                                  ></span
+                                >
+                              </div>
+                            </a-list-item>
+                          </a-list>
+                        </a-modal>
+                      </div>
+                    </a-col>
+                  </a-row>
+                </div>
+                <div class="total_order">
+                  <a-col>
+                    <a-row>
+                      <div class="bill">
+                        <span
+                          style="
+                            font-weight: 700;
+                            color: black;
+                            font-size: 18px;
+                          "
+                          >Tổng cộng :</span
+                        >
+                        <span
+                          >{{
+                            Intl.NumberFormat("vi-VN").format(
+                              Number.parseFloat(grandTotal).toFixed(0)
+                            )
+                          }}đ</span
+                        >
+                      </div>
+                    </a-row>
+                  </a-col>
+                </div>
+              </div>
+            </a-list>
+          </a-col>
+        </a-row>
+      </a-modal>
+    </div>
   </div>
 </template>
 <script>
 import EventBus from "../../event-bus";
+import http from "../../http-common";
+import moment from "moment";
+
 export default {
   props: {
     id: Number,
+    restaurantData: Object,
+    discountCodeData: Array,
   },
   data() {
     return {
+      moment,
       cartData: [],
       key: 0,
       cost: 0,
+      ship: 20000,
       formData: {},
+      userID: null,
+      orderDetailVisible: false,
+      discountCodeVisible: false,
+      discount: null,
+      grandTotal: null,
+      discountCode: "",
     };
   },
   methods: {
+    order() {
+      let data = {
+        customer_id: this.formData.id,
+        restaurant_id: this.restaurantData.id,
+        drive_id: null,
+        delivery_order_id: null,
+        status: 1,
+        shipping: this.ship,
+        promo: this.discount,
+        fee: null,
+        grand_total: this.grandTotal,
+        location_destination: this.restaurantData.full_address,
+        location_arrival: this.formData.address,
+        customer_full_name: this.formData.fullname,
+        distant: 1,
+        create_at: moment(),
+        update_at: moment(),
+        content: null,
+      };
+
+      http
+        .post("/order/save", data)
+        .then((res) => {
+          if (res.data.errorCode == 1) {
+            var orderId = res.data.data.insertId;
+            if (orderId) {
+              let itemData = this.cartData.map((d) => {
+                return {
+                  order_id: orderId,
+                  food_id: d.id,
+                  price: d.cost,
+                  discount: d.discount,
+                  quantity: d.quantity,
+                };
+              });
+              itemData.forEach((item) => {
+                http
+                  .post("/order-item/save", item)
+                  .then((response) => {
+                    if (res.data.errorCode == 1) {
+                      console.log(response);
+                    } else {
+                      console.log();
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              });
+            }
+            this.$message.success("Đặt hàng thành công");
+            this.orderDetailVisible = false;
+            localStorage.removeItem("cart");
+            this.fetchData()
+          } else {
+            this.$message.error(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    applyDiscountCode(value) {
+      this.discount = value.discount;
+      this.discountCode = value.code;
+      this.showOrderDetail();
+      this.discountCodeVisible = false;
+    },
+    showDiscountCode() {
+      this.discountCodeVisible = true;
+    },
+    showOrderDetail() {
+      this.orderDetailVisible = true;
+      if (this.discount) {
+        this.grandTotal = this.cost + this.ship - this.discount;
+      } else {
+        this.grandTotal = this.cost + this.ship;
+      }
+    },
     fetchData() {
       this.cost = 0;
       if (!localStorage.getItem("cart")) {
         localStorage.setItem("cart", JSON.stringify([]));
       }
-      this.formData = JSON.parse(localStorage.getItem("user"));
+      this.userID = JSON.parse(localStorage.getItem("user_customer_id"));
+      if (this.userID) {
+        this.getUserInfo(this.userID);
+      } else {
+        this.formData = {};
+      }
 
       this.cartData = JSON.parse(localStorage.getItem("cart"));
       this.cartData.forEach((d) => {
@@ -104,24 +453,35 @@ export default {
       localStorage.setItem("cart", JSON.stringify(this.cartData));
       this.reload();
     },
-    getUserInfo() {
-      this.formData = JSON.parse(localStorage.getItem("user"));
+    getUserInfo(value) {
+      http
+        .get("/user/detail", {
+          params: {
+            id: value,
+          },
+        })
+        .then((resp) => {
+          this.formData = resp.data.data.items[0];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   created: function () {
+    this.fetchData();
+
     EventBus.$on("reload", this.reload);
-    EventBus.$on("getItemCart", this.fetchData);
+    EventBus.$on("emptyCart", this.fetchData);
   },
   destroyed() {
     EventBus.$off("reload", this.reload);
-    EventBus.$off("getItemCart", this.fetchData);
+    EventBus.$off("emptyCart", this.fetchData);
   },
   mounted() {
-    this.getUserInfo();
+    this.getUserInfo(this.userID);
   },
-  beforeMount() {
-    this.fetchData();
-  },
+  beforeMount() {},
 };
 </script>
 <style scoped>
@@ -177,6 +537,23 @@ export default {
   color: #0288d1;
   font-weight: 700;
 }
+.bill span:nth-child(3) {
+  color: #0288d1;
+  font-weight: 700;
+}
+.code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  background: #fbf9d8;
+}
+.code > span:nth-child(2) {
+  color: white;
+  background-color: red;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
 .quantity-wrapper {
   margin-top: 4px;
 }
@@ -186,5 +563,99 @@ export default {
 }
 .quantity-wrapper > span {
   padding: 0 4px;
+}
+.direction-content {
+  padding-left: 10px;
+  border-top: 0;
+  margin-top: 8px;
+}
+.direction-info {
+  padding: 5px 10px 5px 23px;
+  overflow: hidden;
+}
+.direction-from {
+  padding: 5px 0;
+  position: relative;
+}
+.direction-to {
+  padding: 5px 0;
+  position: relative;
+}
+.direction-from:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  background-color: #d7d7d7;
+  left: -14px;
+  top: 16px;
+  height: 50px;
+}
+.direction-from:after,
+.direction-to:after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #6cc942;
+  margin: auto;
+  position: absolute;
+  top: 9px;
+  left: -19px;
+}
+.direction-name {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 96%;
+}
+
+.direction-address {
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.direction-time {
+  border: 1px solid #464646;
+  border-radius: 12px;
+  display: inline-block;
+  padding: 2px 3px;
+  background-color: #fbf9d8;
+}
+.txt-bold {
+  font-weight: 700 !important;
+}
+
+.change-info {
+  font-size: 14px;
+  color: #0288d1;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ant-list-item-meta-title {
+  display: flex;
+  align-items: center;
+}
+.restaurant-avatar {
+  width: 100%;
+}
+.cart-header {
+  margin-top: -4px;
+}
+.modal-order-promo-code__title {
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #363636;
+  background: #ebebeb;
+  margin-bottom: -12px;
 }
 </style>

@@ -82,7 +82,7 @@
         <a-col :span="12">
           <div class="person-info">
             <span>Ngày sinh</span>
-            <span>{{ formData ? formData.birth_date : "" }}</span>
+            <span>{{ formData ? moment(formData.birth_date).format("DD-MM-YYYY") : "" }}</span>
           </div>
         </a-col>
         <a-col :span="12">
@@ -202,7 +202,7 @@
 import EventBus from "../../event-bus";
 import http from "../../http-common";
 import RuleConfig from "../../common/RuleConfig";
-
+import moment from 'moment';
 export default {
   data() {
     var rules = RuleConfig["customer"];
@@ -210,7 +210,7 @@ export default {
     return {
       rules,
       loading: false,
-
+      moment,
       listTypeRestaurant: [],
       defaultAuthToken: "",
       isShowUserInfo: false,
@@ -265,7 +265,7 @@ export default {
         });
     },
     getInfoUser() {
-      let userID = JSON.parse(localStorage.getItem("user"));
+      let userID = JSON.parse(localStorage.getItem("user_customer_id"));
       this.defaultAuthToken = JSON.parse(
         localStorage.getItem("default_auth_token")
       );
@@ -309,7 +309,7 @@ export default {
       localStorage.removeItem("default_auth_token");
       this.defaultAuthToken ="";
       this.onClose();
-      EventBus.$emit("getItemCart");
+      EventBus.$emit("emptyCart");
       this.$notification["success"]({
         message: "Thông báo",
         description: "Bạn đã đăng xuất thành công!",

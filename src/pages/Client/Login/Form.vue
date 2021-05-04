@@ -71,7 +71,7 @@
 
 <script>
 import http from "../../../http-common";
-import EventBus from "../../../event-bus"
+import EventBus from "../../../event-bus";
 export default {
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: "normal_login" });
@@ -86,6 +86,7 @@ export default {
       e.preventDefault();
 
       this.form.validateFields((err, values) => {
+         Object.assign(values, { role: 2 });
         if (!err) {
           http
             .post("/auth/login", values)
@@ -94,11 +95,21 @@ export default {
                 this.notify = response.data.errorMessage;
               } else {
                 this.notify = "";
-                this.$message.success("Đăng nhập thành công");
-                localStorage.setItem('user',JSON.stringify(response.data.user.id));
-                localStorage.setItem('default_auth_token',JSON.stringify(response.data.accessToken));
+                this.$notification["success"]({
+                  message: "Thông báo đăng nhập",
+                  description:
+                    "Bạn đã đăng nhập thành công!",
+                });
+                localStorage.setItem(
+                  "user_customer_id",
+                  JSON.stringify(response.data.user.id)
+                );
+                localStorage.setItem(
+                  "default_auth_token",
+                  JSON.stringify(response.data.accessToken)
+                );
                 this.$router.back();
-                EventBus.$emit('login')
+                EventBus.$emit("login");
               }
             })
             .catch((error) => {
@@ -111,7 +122,7 @@ export default {
   created() {},
 };
 </script>
-<style>
+<style scoped>
 #components-form-demo-normal-login .login-form {
   max-width: 300px;
 }

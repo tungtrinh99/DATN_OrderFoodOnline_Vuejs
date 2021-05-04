@@ -14,7 +14,8 @@ const location = require('../controller/location.controller');
 const merchant = require('../controller/merchant.controller');
 const customer = require('../controller/customer.controller');
 const auth = require("../controller/auth.controller");
-
+const order = require("../controller/order.controller");
+const orderItems = require("../controller/orderItems.controller");
 
 //goods
 router.get('/food/list', food.list);
@@ -35,7 +36,7 @@ router.get('/restaurant/delete', restaurant.delete);
 router.get('/restaurant-type/list', restaurant.type);
 router.get('/restaurant-food/list', restaurant.item);
 router.get('/restaurant-location/list', restaurant.address);
-
+router.get('/restaurant-discount/list', restaurant.discount)
 //user
 router.get('/user/list', user.list);
 router.get('/user/detail', user.detail);
@@ -66,7 +67,19 @@ router.get('/vie-district/list', location.district);
 router.get('/vie-ward/list', location.ward);
 
 //register
-router.post('/auth/register',auth.register);
-router.post('/auth/login',auth.login);
+router.post('/auth/register', auth.register);
+//login
+router.post('/auth/login', auth.login);
+
+//order
+router.get('/order/list', order.list);
+router.post('/order/save', order.save);
+router.post('/order/update', order.update);
+
+
+
+//order-detail
+router.get('/order-item/list', orderItems.list);
+router.post('/order-item/save', orderItems.save);
 
 module.exports = router;

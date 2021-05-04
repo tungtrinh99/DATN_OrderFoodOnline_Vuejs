@@ -12,7 +12,8 @@ class AuthController {
       username,
       password,
       passwordConfirm,
-      avatar_id
+      avatar_id,
+     
     } = req.body;
     db.query(`select username from user where username = ?`, [username], (err, result, fields) => {
       if (err) {
@@ -64,7 +65,8 @@ class AuthController {
   login(req, res, next) {
     let {
       username,
-      password
+      password,
+      role
     } = req.body;
     if (!username || !password) {
       res.send({
@@ -72,7 +74,7 @@ class AuthController {
         errorMessage: 'Tên đăng nhập hoặc mật khẩu không được để trống!'
       })
     } else {
-      db.query('select * from user where username = ?', [username], (err, result, fields) => {
+      db.query(`select * from user where username = ? and role = ${role}`, [username], (err, result, fields) => {
         if (!result || !bcrypt.compareSync(password, result[0].password)) {
           res.send({
             errorCode: 0,

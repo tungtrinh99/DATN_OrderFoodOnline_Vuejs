@@ -62,7 +62,6 @@ export default {
     },
     handleSearch(value) {
       this.keyword = value;
-      console.log(this.keyword);
       this.fetchData();
     },
     handleChange(value) {

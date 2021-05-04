@@ -17,7 +17,7 @@
             <a-icon type="plus" />
           </a-button>
         </a>
-        <a-list-item-meta description="">
+        <a-list-item-meta :description="item.content">
           <a slot="title">{{ item.title }}</a>
           <a-avatar
             slot="avatar"
@@ -60,7 +60,6 @@ export default {
       previewVisible: false,
       previewImage: "",
       keyword: "",
-      formData: {},
     };
   },
   methods: {
@@ -87,8 +86,8 @@ export default {
       this.previewVisible = true;
     },
     addToCart(index) {
-      this.formData = JSON.parse(localStorage.getItem("user"));
-      if (this.formData) {
+      let defaultToken = JSON.parse(localStorage.getItem("default_auth_token"));
+      if (defaultToken) {
         if (!localStorage.getItem("cart")) {
           localStorage.setItem("cart", JSON.stringify([]));
         }
@@ -141,7 +140,6 @@ export default {
   font-weight: 700;
   color: #0288d1;
   text-align: left;
-  padding-left: 16px;
   margin-bottom: 0;
 }
 .ant-input-search.ant-input-affix-wrapper {
@@ -164,5 +162,9 @@ export default {
 }
 .ant-list-item-meta {
   align-items: center;
+}
+.ant-list-item-meta-description{
+  font-size:12px;
+  text-align: left;
 }
 </style>

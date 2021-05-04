@@ -156,6 +156,26 @@ class RestaurantController {
       'data': file.filename
     })
   }
+  // lay danh sach ma giam gia
+  discount(req, res, next) {
+    const id = req.query.id;
+    db.query(`
+              SELECT c.*,b.title FROM restaurant_discount_code a
+              JOIN restaurant b ON a.restaurant_id = b.id 
+              JOIN discount_code c ON a.discount_code_id = c.id 
+              WHERE a.restaurant_id = ${id}`,
+      (err, result, field) => {
+        if (!err) {
+          res.send({
+            data: {
+              items: result
+            }
+          });
+        } else {
+          console.log(err);
+        }
+      })
+  }
 }
 
 module.exports = new RestaurantController;
