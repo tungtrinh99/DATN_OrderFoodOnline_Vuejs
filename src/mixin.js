@@ -1,4 +1,41 @@
 export default {
+    data(){
+        return {
+            listStatus: [
+                {
+                    id: 0,
+                    text: "Tất cả",
+                    styleClass: 'badge badge-light',
+                    sortOrder: 0,
+                },
+                {
+                    id: 1,
+                    text: "Chờ xác nhận",
+                    styleClass: 'badge badge-light',
+                    sortOrder: 1,
+                },
+                {
+                    id: 2,
+                    text: "Đang vận chuyển",
+                    styleClass: 'badge badge-secondary',
+                    sortOrder: 2,
+                },
+                {
+                    id: 3,
+                    text: "Đã hoàn thành",
+                    styleClass: 'badge badge-secondary',
+                    sortOrder: 3,
+                },
+                {
+                    id: 4,
+                    text: "Đã hủy",
+                    styleClass: 'badge badge-secondary',
+                    sortOrder: 4,
+                },
+
+            ],
+        }
+    },
     methods :{
         convertSlug(str) {
             str = str.toLowerCase().replace(/\s/g, "-");

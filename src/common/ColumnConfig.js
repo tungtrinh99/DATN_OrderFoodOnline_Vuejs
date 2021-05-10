@@ -1,20 +1,24 @@
+import constant from "../constant";
 const food = [{
     title: "Ảnh",
     dataIndex: "avatar_id",
     key: "avatar",
-    width: 100,
+    fixed: "left",
+    width: 80,
     dataType: "file"
   },
   {
     title: "Mã sản phẩm",
     dataIndex: "id",
+    fixed: "left",
+
     key: "id",
-    width: 100
+    width: 120,
   },
 
   {
     title: "Loại đồ ăn",
-    dataIndex: "type",
+    dataIndex: "name_of_type_id",
     key: "type",
     width: 100
   },
@@ -29,6 +33,8 @@ const customer = [{
     title: "Ảnh",
     dataIndex: "avatar_id",
     key: "avatar",
+    fixed: "left",
+
     width: 60,
     dataType: "file"
   },
@@ -36,31 +42,36 @@ const customer = [{
     title: "Mã khách hàng",
     dataIndex: "user_code",
     key: "id",
-    width: 100
+    fixed: "left",
+
+    width: 150,
   },
   {
     title: "Tên khách hàng",
     dataIndex: "fullname",
     key: "fullname",
-    width: 100
+    width: 200
   },
   {
     title: "Tên đăng nhập",
     dataIndex: "username",
     key: "username",
-    width: 100
-  },
-  {
-    title: "Mật khẩu",
-    dataIndex: "password",
-    key: "password",
-    width: 100
+    width: 200
   },
   {
     title: "Email",
     dataIndex: "email",
     key: "email",
-    width: 100
+    width: 200,
+    dataType: "email",
+    ellipsis: true
+  },
+  {
+    title: "Số điện thoại",
+    dataIndex: "phone_number",
+    key: "phone",
+    dataType: 'phone',
+    width: 150
   },
   {
     title: "Giới tính",
@@ -73,76 +84,89 @@ const customer = [{
     dataIndex: "birth_date",
     key: "birth_date",
     dataType: "date",
-    width: 100
+    width: 120
   }, {
     title: "Địa chỉ",
     dataIndex: "address",
     key: "address",
-    width: 100
+    width: 200,
+    ellipsis: true
+
   },
 
 ];
 const merchant = [{
-  title: "Ảnh",
-  dataIndex: "avatar_id",
-  key: "avatar",
-  width: 60,
-  dataType: "file"
-},
-{
-  title: "Mã khách hàng",
-  dataIndex: "user_code",
-  key: "id",
-  width: 100
-},
-{
-  title: "Tên khách hàng",
-  dataIndex: "fullname",
-  key: "fullname",
-  width: 100
-},
-{
-  title: "Tên đăng nhập",
-  dataIndex: "username",
-  key: "username",
-  width: 100
-},
-{
-  title: "Mật khẩu",
-  dataIndex: "password",
-  key: "password",
-  width: 100
-},
-{
-  title: "Email",
-  dataIndex: "email",
-  key: "email",
-  width: 100
-},
-{
-  title: "Giới tính",
-  dataIndex: "gender",
-  dataType: "gender",
-  key: "gender",
-  width: 100
-}, {
-  title: "Ngày sinh",
-  dataIndex: "birth_date",
-  key: "birth_date",
-  dataType: "date",
-  width: 100
-}, {
-  title: "Địa chỉ",
-  dataIndex: "address",
-  key: "address",
-  width: 100
-},
+    title: "Ảnh",
+    dataIndex: "avatar_id",
+    key: "avatar",
+    fixed: "left",
+
+    width: 60,
+    dataType: "file"
+  },
+  {
+    title: "Mã khách hàng",
+    dataIndex: "user_code",
+    key: "id",
+    fixed: "left",
+
+    width: 150,
+  },
+  {
+    title: "Tên khách hàng",
+    dataIndex: "fullname",
+    key: "fullname",
+    width: 200
+  },
+  {
+    title: "Tên đăng nhập",
+    dataIndex: "username",
+    key: "username",
+    width: 200
+  },
+  {
+    title: "Email",
+    dataIndex: "email",
+    key: "email",
+    width: 200,
+    ellipsis: true
+  },
+
+  {
+    title: "Số điện thoại",
+    dataIndex: "phone_number",
+    key: "phone",
+    dataType: 'phone',
+    width: 150
+  },
+  {
+    title: "Giới tính",
+    dataIndex: "gender",
+    dataType: "gender",
+    key: "gender",
+    width: 100
+  }, {
+    title: "Ngày sinh",
+    dataIndex: "birth_date",
+    key: "birth_date",
+    dataType: "date",
+    width: 120
+  }, {
+    title: "Địa chỉ",
+    dataIndex: "address",
+    key: "address",
+    width: 200,
+    ellipsis: true
+
+  },
 
 ];
 const restaurant = [{
     title: "Ảnh",
     dataIndex: "avatar_id",
     key: "avatar",
+    fixed: "left",
+
     width: 60,
     dataType: "file"
   },
@@ -150,18 +174,30 @@ const restaurant = [{
     title: "Mã quán",
     dataIndex: "id",
     key: "id",
-    width: 70
+    fixed: "left",
+    dataType:"link",
+    width: 100,
   },
   {
     title: "Tên quán",
     dataIndex: "title",
     key: "name",
-    width: 200
+    width: 250,
+    fixed:"left",
+    ellipsis: true,
+
+  },
+  {
+    title: "Địa chỉ",
+    dataIndex: "full_address",
+    key: "phone_res",
+    width: 200,
+    ellipsis: true,
+
   },
   {
     title: "Kiểu quán ăn",
-    dataIndex: "type_id",
-    dataType : "type",
+    dataIndex: "name_of_restaurant_type_id",
     key: "type",
     width: 100
   },
@@ -169,50 +205,46 @@ const restaurant = [{
     title: "Giờ mở cửa",
     dataIndex: "opentime",
     key: "opentime",
-    width: 100
+    width: 100,
+    dataType: "time"
   },
   {
     title: "Giờ đóng cửa",
     dataIndex: "closetime",
     key: "closetime",
-    width: 100
+    width: 100,
+    dataType: "time"
   },
   {
-    title: "Chủ quán",
-    dataIndex: "name_of_user_id",
-    key: "name_user",
-    width: 100
-  }, {
     title: "Số điện thoại",
     dataIndex: "phone_number",
     key: "phone",
-    width: 100
-  }, {
-    title: "Địa chỉ",
-    dataIndex: "full_address",
-    key: "phone_res",
-    width: 200
+    width: 100,
+    dataType: "phone"
   }
-
 ];
-const location = [
-  {
+const location = [{
     title: "Mã",
     dataIndex: "id",
     key: "id",
-    width: 100
+    fixed: "left",
+
+    width: 100,
   },
   {
     title: "Tên",
     dataIndex: "title",
     key: "title",
+    fixed: "left",
+    ellipsis: true,
     width: 200
   },
   {
     title: "Địa chỉ",
     dataIndex: "full_address",
     key: "full_address",
-    width: 200
+    width: 300,
+    ellipsis: true
   },
   {
     title: "Tỉnh/Thành phố",
@@ -232,11 +264,113 @@ const location = [
     key: "ward_title",
     width: 200
   }
-]
+];
+const orders = [{
+    title: "Mã đơn hàng",
+    dataIndex: "order_code",
+    key: "order_code",
+    width: 200,
+    fixed: "left",
+    isCodeIndex :true
+
+  },
+  {
+    title: "Trạng thái",
+    dataIndex: "status",
+    key: "status",
+    width: 200,
+    dataType: "list",
+    dataSource: constant.orderCustomerStatus,
+
+  },
+
+  {
+    title: "Ngày đặt hàng",
+    dataIndex: "create_at",
+    key: "create_at",
+    width: 200,
+    dataType: 'date'
+
+  },
+  {
+    title: "Tên khách hàng",
+    dataIndex: "name_of_customer_id",
+    key: "name_of_customer_id",
+    width: 200,
+    dataType: 'text',
+    ellipsis: true,
+
+  },
+
+  {
+    title: "Điạ chỉ nhận hàng",
+    dataIndex: "location_arrival",
+    key: "location_arrival",
+    width: 200,
+    dataType: 'text',
+    ellipsis: true,
+
+
+  },
+  {
+    title: "Điạ chỉ lấy hàng",
+    dataIndex: "location_destination",
+    key: "location_destination",
+    width: 200,
+    dataType: 'text',
+    ellipsis: true,
+
+
+  },
+  {
+    title: "Nhà hàng",
+    dataIndex: "name_of_restaurant_id",
+    key: "name_of_restaurant_id",
+    width: 200,
+    dataType: 'text',
+    ellipsis: true,
+
+
+  },
+
+  {
+    title: "Phí vận chuyển",
+    dataIndex: "shipping",
+    key: "shipping",
+    width: 200,
+    dataType: 'number'
+
+  },
+  {
+    title: "Giảm giá",
+    dataIndex: "promo",
+    key: "promo",
+    width: 200,
+    dataType: 'number'
+
+  },
+  {
+    title: "Tổng hóa đơn",
+    dataIndex: "grand_total",
+    key: "grand_total",
+    width: 200,
+    dataType: 'number'
+
+  },
+  {
+    title: "Khoảng cách",
+    dataIndex: "distant",
+    key: "distant",
+    width: 200,
+    dataType: 'number'
+
+  }
+];
 export default {
   food,
   customer,
   merchant,
   restaurant,
-  location
+  location,
+  orders
 };

@@ -48,10 +48,8 @@ export default {
     },
     fetchData() {
       http
-        .get("/restaurant/list", {
-          params: {
-            keyword: this.keyword,
-          },
+        .post("/restaurant/list", {
+          textSearch : this.keyword
         })
         .then((response) => {
           this.data = response.data.data.items;
@@ -65,7 +63,6 @@ export default {
       this.fetchData();
     },
     handleChange(value) {
-      console.log(value);
       this.value = value;
     },
   },

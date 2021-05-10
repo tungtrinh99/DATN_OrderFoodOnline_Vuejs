@@ -113,7 +113,7 @@ export default {
     
   },
   created() {
-    this.id = JSON.parse(localStorage.getItem("getId"));
+    this.id = JSON.parse(localStorage.getItem("restaurant_id"));
     this.fetchData();
     this.getDiscountCode();
   },

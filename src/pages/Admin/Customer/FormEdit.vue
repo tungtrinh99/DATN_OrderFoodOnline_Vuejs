@@ -34,9 +34,7 @@
     <a-form-model-item label="Tên khách hàng" ref="fullname" prop="fullname">
       <a-input v-model="user.fullname" type="text" :allowClear="true" />
     </a-form-model-item>
-    <a-form-model-item label="Tên đăng nhập" ref="username" prop="username">
-      <a-input v-model="user.username" type="text" :allowClear="true" />
-    </a-form-model-item>
+    
     <a-form-model-item label="Mật khẩu" ref="password" prop="password">
       <a-input-password v-model="user.password"   />
     </a-form-model-item>
@@ -91,7 +89,6 @@ export default {
     var rules = RuleConfig[this.entity];
     return {
       user: {
-        username: "",
         userCode: "",
         password: "",
         email: "",
@@ -119,7 +116,6 @@ export default {
       this.user.birthDate = dateString;
     },
     fetchDataEdit(data) {
-      this.user.username = data.username;
       this.user.userCode = data.user_code;
       this.user.password = data.password;
       this.user.fullname = data.fullname;
@@ -135,7 +131,6 @@ export default {
     save() {
       var data = {
         role: this.user.role,
-        username: this.user.username,
         avatar_id: this.user.avatarId,
         user_code: this.user.userCode,
         password: this.user.password,

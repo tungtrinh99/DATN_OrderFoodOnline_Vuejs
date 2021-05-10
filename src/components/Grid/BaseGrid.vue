@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="content">
-      <!-- <a-spin :tip="'Đang tải...'" v-if="data.length == 0"></a-spin> -->
       <a-table
         :columns="cols"
         :data-source="data"
         :row-key="(record) => record.id"
+        :scroll="{ x: 1300 }"
       >
         <div slot="action" slot-scope="record">
           <a-icon
@@ -24,12 +24,29 @@
             v-if="text"
             :src="require('../../../public/images/' + text)"
             alt="avatar"
-            :style="{ width: '50px', height: '50px' }"
+            :style="{ width: '30px', height: '30px' }"
           />
         </div>
         <span slot="status" slot-scope="text">{{ renderStatus(text) }}</span>
+        <a slot="email" :href="'mailto:' + text" slot-scope="text">
+          <a-tooltip :title="text" placement="topLeft">
+            {{ text }}
+          </a-tooltip>
+        </a>
+        <a slot="phone" :href="'tel:' + text" slot-scope="text">{{ text }}</a>
+        <span slot="list" slot-scope="text, record, index, column">
+          <a-tooltip :title="renderList(text, column)" placement="topLeft">
+            <a-tag :color="renderColorForList(text, column)">
+              {{ renderList(text, column) }}
+            </a-tag>
+          </a-tooltip>
+        </span>
         <span slot="gender" slot-scope="text">{{ getTextGender(text) }}</span>
-        <a slot="link" slot-scope="text" @click="openRecord(text)"
+        <a
+          slot="link"
+          slot-scope="text"
+          @click="openRecord(text)"
+          
           >{{ text }}
         </a>
         <span slot="date" slot-scope="text">{{
@@ -85,7 +102,6 @@ import EventBus from "../../event-bus";
 import moment from "moment";
 import constant from "../../constant";
 
-
 import Food from "../../pages/Admin/Goods/FormEdit";
 import Customer from "../../pages/Admin/Customer/FormEdit";
 import Merchant from "../../pages/Admin/Merchant/FormEdit";
@@ -115,18 +131,42 @@ export default {
         key: "operation",
         dataIndex: "id",
         fixed: "left",
-        width: 120,
+        width: 110,
         scopedSlots: { customRender: "action" },
       });
     }
 
     const title = Constant[this.entity];
     var tmp = this.column.map((p) => {
+      switch (p.dataType) {
+        case "number":
+          p.className = "column-number";
+          break;
+        case "date":
+        case "time":
+        case "datetime":
+          p.className = "column-date";
+          break;
+        default:
+          p.className = "column-string";
+          break;
+      }
       if (!p.scopedSlots) {
         p.scopedSlots = {
           filterIcon: "filterIcon",
           customRender: "customRender",
         };
+      }
+      if (p.dataSource) {
+        p.status = p.dataSource;
+      } else {
+        if (p.dataType == "date" || p.dataType == "datetime") {
+          p.scopedSlots.filterDropdown = "filterDate";
+        } else if (p.dataType == "file") {
+          p.scopedSlots.filterDropdown = "";
+        } else {
+          p.scopedSlots.filterDropdown = "filterDropdown";
+        }
       }
       if (p.isCodeIndex) {
         p.scopedSlots.customRender = "link";
@@ -158,21 +198,34 @@ export default {
     };
   },
   methods: {
-    fetchData() {
-      http
-
-        .get(`/${this.entity}/list`, {
-          params: {
-            id: this.filter,
-            keyword: "",
-          },
-        })
-        .then((response) => {
-          this.data = response.data.data.items;
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
-        });
+    renderList(text, column) {
+      let item = column.status.find((p) => p.value == text);
+      return item ? item.text : "";
+    },
+    renderColorForList(text, column) {
+      let item = column.status.find((p) => p.value == text);
+      return item && item.color ? item.color : "blue";
+    },
+    fetchData(data) {
+      if (data) {
+        http
+          .post(`/${this.entity}/list`,data)
+          .then((response) => {
+            this.data = response.data.data.items;
+          })
+          .catch((error) => {
+            this.$message.error(error.message);
+          });
+      }else{
+        http
+          .post(`/${this.entity}/list`)
+          .then((response) => {
+            this.data = response.data.data.items;
+          })
+          .catch((error) => {
+            this.$message.error(error.message);
+          });
+      }
     },
     showDeleteConfirm(record) {
       const entity = this.entity;
@@ -248,8 +301,8 @@ export default {
           console.log(error);
         });
     },
-    openRecord(text) {
-      this.$emit("openRecord", text);
+    openRecord(record) {
+      this.$emit("openRecord", record);
     },
     save() {
       EventBus.$emit("saveEdit");
@@ -270,8 +323,28 @@ export default {
   mounted() {
     this.fetchData();
   },
+  created(){
+    EventBus.$on('filterDataByStatus',this.fetchData)
+  },
+  destroyed(){
+    EventBus.$off("filterDataByStatus",this.fetchData)
+  }
 };
 </script>
 
-<style scoped>
+<style>
+th.column-string,
+td.column-string {
+  text-align: left !important;
+}
+
+th.column-date,
+td.column-date {
+  text-align: center !important;
+}
+
+th.column-number,
+td.column-number {
+  text-align: right !important;
+}
 </style>

@@ -5,7 +5,7 @@ const fs = require("fs");
 class FoodController {
   //Lấy danh sách món ăn
   list(req, res, next) {
-    db.query("SELECT * FROM food", (err, result, field) => {
+    db.query("SELECT a.*,b.title AS name_of_type_id FROM food a JOIN food_type b ON a.type = b.id", (err, result, field) => {
       if (!err) {
         res.send({ data: { items: result } });
       } else {

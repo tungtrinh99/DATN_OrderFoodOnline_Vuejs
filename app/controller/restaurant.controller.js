@@ -4,11 +4,11 @@ const fs = require("fs");
 class RestaurantController {
   // Lấy danh sách nhà hàng
   list(req, res, next) {
-    const keyword = req.query.keyword;
+    const textSearch = req.body.textSearch || "";
     db.query(`
-              select a.*,b.full_address ,c.fullname as name_of_user_id from 
-              restaurant a join location b on a.location_id = b.id join user c on a.user_id = c.id
-              where a.title like "%${keyword}%" or b.full_address like "%${keyword}%"`,
+              select a.*,b.full_address ,c.fullname as name_of_user_id , d.title as name_of_restaurant_type_id from 
+              restaurant a join location b on a.location_id = b.id join user c on a.user_id = c.id join restaurant_type d on a.type_id = d.id
+              where a.title like "%${textSearch}%" or b.full_address like "%${textSearch}%"`,
       (err, result, field) => {
         if (!err) {
           res.send({
@@ -20,17 +20,14 @@ class RestaurantController {
           res.send(err)
         }
       })
-
-
-
   }
   // Lấy danh sách món ăn nhà hàng
   item(req, res, next) {
-    const id = req.query.id;
-    const keyword = req.query.keyword;
+    const id = req.body.id;
+    const textSearch = req.body.textSearch  ||"";
     db.query(`
-              select b.* , a.combo_id , a.cost , a.discount , a.content from restaurant_food as a join food as b on a.food_id = b.id 
-              where a.restaurant_id = ${id} and b.title like "%${keyword}%"`,
+              select b.* , a.restaurant_id , a.combo_id , a.cost , a.discount , a.content from restaurant_food as a join food as b on a.food_id = b.id 
+              where a.restaurant_id = ${id} and b.title like "%${textSearch}%"`,
       (err, result, field) => {
         if (!err) {
           res.send({
@@ -47,7 +44,7 @@ class RestaurantController {
 
 
   }
-  // thêm món nhà hàng
+  // thêm  nhà hàng
   save(req, res, next) {
     const data = req.body;
 
@@ -62,7 +59,7 @@ class RestaurantController {
         else console.log(err);
       });
   }
-  // cập nhật món nhà hàng
+  // cập nhật  nhà hàng
   update(req, res, next) {
     const id = req.query.id;
     const data = req.body;
@@ -82,11 +79,41 @@ class RestaurantController {
       }
     );
   }
-  //xóa món nhà hàng
+  //xóa nhà hàng
   delete(req, res, next) {
     const id = req.query.id;
     db.query(`
             DELETE FROM restaurant WHERE id = ${id}`,
+      (err, result, fields) => {
+        if (!err) res.send({
+          data: {
+            items: result
+          }
+        });
+        else console.log(err);
+      });
+  }
+  // xóa món ăn nhà hảng
+  deleteItem(req, res, next) {
+    const restaurantId = req.body.restaurant_id;
+    const foodId = req.body.food_id;
+    db.query(`
+            DELETE FROM restaurant_food WHERE food_id = ${foodId} AND restaurant_id = ${restaurantId}`,
+      (err, result, fields) => {
+        if (!err) res.send({
+          data: {
+            items: result
+          }
+        });
+        else console.log(err);
+      });
+  }
+  //Thêm món ăn nhà hàng
+  saveItem(req, res, next) {
+    const data = req.body;
+
+    db.query(`
+            INSERT INTO restaurant_food SET ?  `, data,
       (err, result, fields) => {
         if (!err) res.send({
           data: {

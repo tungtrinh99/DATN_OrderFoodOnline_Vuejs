@@ -304,7 +304,7 @@ export default {
       this.isShowUserInfo = true;
     },
     logout() {
-      localStorage.removeItem("user");
+      localStorage.removeItem("user_customer_id");
       localStorage.removeItem("cart");
       localStorage.removeItem("default_auth_token");
       this.defaultAuthToken ="";

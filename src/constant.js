@@ -16,13 +16,17 @@ const restaurantType = {
     QUANONLINE : 4
 }
 const orderStatus = {
-    KHOI_TAO : 1,
-    CHO_XAC_NHAN : 2 , 
-    DANG_VAN_CHUYEN : 3 ,
-    DA_HOAN_THANH : 4 , 
-    HUY : 5
+    CHO_XAC_NHAN : 1 , 
+    DANG_VAN_CHUYEN : 2 ,
+    DA_HOAN_THANH : 3 , 
+    HUY : 4
+}
+const userStatus = {
+    SAN_SANG : 1,
+    KHONG_SAN_SANG : 2
 }
 export default  {
+    title,
     genderText : [
         {
             value : gender.NAM,
@@ -52,24 +56,40 @@ export default  {
         }
 
     ],
-    title,
-    status : [
-        {
-            value : orderStatus.KHOI_TAO,
-            text:'Khởi tạo'
-        },
+    orderCustomerStatus : [
+        
         {
             value : orderStatus.CHO_XAC_NHAN,
-            text:'Chờ xác nhận'
+            text:'Chờ xác nhận',
+            color: '#f50',
+
         },{
             value : orderStatus.DANG_VAN_CHUYEN,
-            text:'Đang vận chuyển'
+            text:'Đang vận chuyển',
+            color: 'blue',
+
+
         },{
             value : orderStatus.DA_HOAN_THANH,
-            text:'Đã hoàn thành'
+            text:'Đã hoàn thành',
+            color: 'green',
+
         },{
             value : orderStatus.HUY,
-            text:'Hủy'
+            text:'Hủy',
+            color: '#343a40',
+
         }
+    ],
+    userStatus : [
+        {
+            value : userStatus.SAN_SANG,
+            text:'Sẵn sàng',
+        },
+        {
+            value : userStatus.KHONG_SAN_SANG,
+            text:'Không sẵn sàng',
+
+        },
     ]
 }

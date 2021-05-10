@@ -44,12 +44,26 @@
         </a-modal>
       </template>
     </a-page-header>
+    <a-tabs
+      v-if="isTabs"
+      :default-active-key="0"
+      @change="selectMenuItem"
+      :tabBarStyle="{ margin: '0' }"
+    >
+      <a-tab-pane
+        v-for="(item, index) in listStatusSorted"
+        :key="item.id"
+        :tab="item.text"
+      >
+      </a-tab-pane>
+    </a-tabs>
     <base-grid
       ref="grid"
       :column="column"
       :entity="entity"
       :key="key"
       :isAction="isAction"
+      @openRecord="openRecord($event)"
     ></base-grid>
   </div>
 </template>
@@ -65,7 +79,9 @@ import Location from "../../pages/Admin/Location/Form";
 
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
+import mixin from "@/mixin";
 export default {
+  mixins: [mixin],
   components: {
     "base-grid": BaseGrid,
     "form-goods": Goods,
@@ -91,6 +107,7 @@ export default {
     entity: String,
     isAction: Boolean,
     isAdd: Boolean,
+    isTabs: Boolean,
   },
   methods: {
     show() {
@@ -109,12 +126,25 @@ export default {
     openRecord(record) {
       this.$emit("openRecord", record);
     },
+    selectMenuItem(item) {
+      let Obj = {};
+      Obj.status = item;
+      EventBus.$emit("filterDataByStatus", Obj);
+    },
   },
   created() {
     EventBus.$on("reload", this.reload);
   },
   destroyed() {
     EventBus.$off("reload", this.reload);
+  },
+  computed: {
+    listStatusSorted: function () {
+      const compareStatus = (status1, status2) => {
+        return status1.sortOrder - status2.sortOrder;
+      };
+      return this.listStatus.concat().sort(compareStatus);
+    },
   },
 };
 </script>

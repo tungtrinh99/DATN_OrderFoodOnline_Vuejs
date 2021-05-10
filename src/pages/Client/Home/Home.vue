@@ -10,7 +10,7 @@
       <a-row>
         <a-col  :sm="24" :md="24" :lg="9">
           <div class="home-form">
-            <form-search></form-search>
+            <form-search :formData="listRestaurant"></form-search>
 
           </div>
         </a-col>
@@ -58,10 +58,8 @@ export default {
   methods: {
     fetchData() {
       http
-        .get("/restaurant/list",{
-          params : {
-            keyword : this.keyword
-          }
+        .post("/restaurant/list",{
+          textSearch : this.keyword
         })
         .then((response) => {
           this.listRestaurant = response.data.data.items;

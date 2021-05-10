@@ -5,7 +5,6 @@ class CustomerController {
   // Lấy danh sách người dùng
     list(req,res,next){
       
-        const role = req.query.id;
         db.query(`select * from user where role = 2`,(err, result, field)=>{
             if (!err) {
                 res.send({'data':{'items' : result}});

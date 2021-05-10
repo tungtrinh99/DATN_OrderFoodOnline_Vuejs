@@ -8,10 +8,10 @@ import Customer from "@/pages/admin/Customer/List.vue";
 import Merchant from "@/pages/admin/Merchant/List.vue";
 import Restaurant from "@/pages/admin/Restaurant/List.vue";
 import Location from "@/pages/admin/Location/List.vue";
+import Order from "@/pages/admin/Order/List.vue";
 import LoginPage from "@/pages/client/Login/Form.vue";
 import RegisterPage from "@/pages/client/Register/Form.vue";
 import LoginDashboard from "@/pages/admin/Login/Form.vue";
-
 
 
 const routes = [{
@@ -22,26 +22,26 @@ const routes = [{
         path: "home",
         name: "Trang chủ",
         component: Home,
-        
+
       },
       {
         path: "detail-restaurant",
         name: "Chi tiết món",
         component: RestaurantDetail,
-        
+
       },
       {
         path: "register",
         name: "Đăng kí",
         component: RegisterPage,
-        
+
 
       },
       {
         path: "/login",
         name: "Đăng nhập",
         component: LoginPage,
-        
+
 
       }
     ]
@@ -96,6 +96,14 @@ const routes = [{
         path: "location",
         title: "Địa điểm",
         component: Location,
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: "order",
+        title: "Đơn hàng",
+        component: Order,
         meta: {
           auth: true,
         },

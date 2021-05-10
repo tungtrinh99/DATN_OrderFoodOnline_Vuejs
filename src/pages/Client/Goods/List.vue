@@ -65,11 +65,9 @@ export default {
   methods: {
     fetchData() {
       http
-        .get("/restaurant-food/list", {
-          params: {
-            id: this.id,
-            keyword: this.keyword,
-          },
+        .post("/restaurant-food/list",{
+          id : this.id,
+          textSearch : this.keyword
         })
         .then((response) => {
           this.foodData = response.data.data.items;

@@ -26,7 +26,7 @@
             </a>
           </a-list-item-meta>
           <div class="cost">
-            <span 
+            <span
               >{{
                 Intl.NumberFormat("vi-VN").format(
                   Number.parseFloat(
@@ -341,6 +341,7 @@ export default {
   methods: {
     order() {
       let data = {
+        order_code: "T-" + Math.random().toString(18).substring(4),
         customer_id: this.formData.id,
         restaurant_id: this.restaurantData.id,
         drive_id: null,
@@ -352,7 +353,6 @@ export default {
         grand_total: this.grandTotal,
         location_destination: this.restaurantData.full_address,
         location_arrival: this.formData.address,
-        customer_full_name: this.formData.fullname,
         distant: 1,
         create_at: moment(),
         update_at: moment(),
@@ -379,7 +379,6 @@ export default {
                   .post("/order-item/save", item)
                   .then((response) => {
                     if (res.data.errorCode == 1) {
-                      console.log(response);
                     } else {
                       console.log();
                     }
@@ -392,7 +391,7 @@ export default {
             this.$message.success("Đặt hàng thành công");
             this.orderDetailVisible = false;
             localStorage.removeItem("cart");
-            this.fetchData()
+            this.fetchData();
           } else {
             this.$message.error(res.data.message);
           }
@@ -411,11 +410,29 @@ export default {
       this.discountCodeVisible = true;
     },
     showOrderDetail() {
-      this.orderDetailVisible = true;
-      if (this.discount) {
-        this.grandTotal = this.cost + this.ship - this.discount;
+      let defaultToken = JSON.parse(localStorage.getItem("default_auth_token"));
+      if (defaultToken) {
+        if (this.cartData.length) {
+          this.orderDetailVisible = true;
+          if (this.discount) {
+            this.grandTotal = this.cost + this.ship - this.discount;
+          } else {
+            this.grandTotal = this.cost + this.ship;
+          }
+        }else{
+          this.$notification["warning"]({
+          message: "Thông báo",
+          description:
+            "Vui lòng chọn món",
+        });
+        }
       } else {
-        this.grandTotal = this.cost + this.ship;
+        this.$notification["warning"]({
+          message: "Cảnh báo đăng nhập",
+          description:
+            "Bạn phải thực hiện đăng nhập trước khi tiến hành đặt hàng.",
+        });
+        this.$router.push("/login");
       }
     },
     fetchData() {
