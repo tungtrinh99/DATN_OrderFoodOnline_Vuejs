@@ -108,6 +108,10 @@ export default {
                   "default_auth_token",
                   JSON.stringify(response.data.accessToken)
                 );
+                localStorage.setItem(
+                  "user_address",
+                  JSON.stringify({address:response.data.user.full_address,marker:{lat:response.data.user.latitude,lng:response.data.user.longitude}})
+                );
                 this.$router.back();
                 EventBus.$emit("login");
               }

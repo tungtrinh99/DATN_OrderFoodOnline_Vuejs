@@ -187,7 +187,7 @@ export default {
     },
     getListLocation() {
       http
-        .get("/location/list")
+        .post ("/location/list")
         .then((response) => {
           this.listLocation = response.data.data.items;
         })

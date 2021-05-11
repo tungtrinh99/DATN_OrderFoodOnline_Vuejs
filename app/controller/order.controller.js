@@ -49,7 +49,6 @@ class OrderController {
   // lưu đơn mới
   save(req, res, next) {
 
-
     let data = req.body;
 
     db.query('INSERT INTO `orders` SET ?  ', data, (err, result, fields) => {

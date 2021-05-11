@@ -74,7 +74,7 @@ class AuthController {
         errorMessage: 'Tên đăng nhập hoặc mật khẩu không được để trống!'
       })
     } else {
-      db.query(`select * from user where username = ? and role = ${role}`, [username], (err, result, fields) => {
+      db.query(`select a.*,b.full_address,b.longitude,b.latitude from user a JOIN location b ON a.address = b.id where a.username = ? and a.role = ${role}`, [username], (err, result, fields) => {
         if (!result || !bcrypt.compareSync(password, result[0].password)) {
           res.send({
             errorCode: 0,

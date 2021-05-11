@@ -69,7 +69,7 @@
         title="Xác nhận đơn hàng"
         v-model="orderDetailVisible"
         :width="900"
-        :bodyStyle="{ padding: '8px', height: '450px', overflow: 'auto' }"
+        :bodyStyle="{ padding: '8px', height: '500px', overflow: 'auto' }"
       >
         <div slot="footer">
           <a-button type="primary" :style="{ width: '100%' }" @click="order"
@@ -79,16 +79,17 @@
         <a-row>
           <a-col :span="10">
             <div>
-              <img
-                class="restaurant-avatar"
-                :src="
-                  require(`../../../public/images/${
-                    Object.keys(restaurantData).length !== 0
-                      ? restaurantData.avatar_id
-                      : '3eae291f-bf6d-41f8-a8b8-eb41cfaecece.jpg'
-                  }`)
-                "
-              />
+              <GmapMap
+                :center="center"
+                :zoom="12"
+                style="width: 100%; height: 300px"
+              >
+                <GmapMarker
+                  :key="index"
+                  v-for="(m, index) in markers"
+                  :position="m.position"
+                />
+              </GmapMap>
             </div>
             <div class="direction-content">
               <div class="direction-info">
@@ -107,7 +108,7 @@
                       </span>
                     </div>
                     <div class="direction-address">
-                      <span> {{ formData ? formData.address : "" }}</span>
+                      <span> {{ customerAddress.address }}</span>
                     </div>
                   </div>
                 </div>
@@ -116,11 +117,69 @@
                 <div class="direction-time">
                   <a-icon type="clock-circle" /><span class="txt-bold">
                     Dự kiến:
-                    {{ moment().add(15, "minute").format("HH:mm - DD/MM") }}
+                    {{ moment().add(15, "minute").format("HH:mm - DD/MM") }} -
                   </span>
+                  <span style="color: red">
+                    {{ Number.parseFloat(calcDistance).toFixed(2) }} km</span
+                  >
                 </div>
-                <div class="change-info">
-                  Thay đổi thông tin nhận hàng<a-icon type="right" />
+                <div class="change-info-location">
+                  <span @click="showFormChangeInfo"
+                    >Thay đổi địa điểm nhận hàng</span
+                  >
+                  <a-modal
+                    title="Sửa thông tin địa điểm giao hàng"
+                    v-model="locationVisible"
+                    :width="900"
+                    :bodyStyle="{ padding: '8px', height: '550px' }"
+                    :footer="false"
+                  >
+                    <a-list
+                      class="discount-code-list"
+                      item-layout="horizontal"
+                      :data-source="listAddress"
+                    >
+                      <div slot="header">
+                        <div class="modal-order-promo-code__title">
+                          <span>Chọn địa điểm giao hàng</span>
+
+                          <a-button @click="showMap"
+                            >Thêm địa chỉ <a-icon type="plus" />
+                          </a-button>
+                          <a-modal
+                            title="Bạn muốn giao đến đâu ?"
+                            v-model="mapVisible"
+                            :width="900"
+                            :bodyStyle="{ padding: '8px', height: '550px' }"
+                          >
+                            <template slot="footer">
+                              <a-button
+                                type="primary"
+                                style="width: 100%"
+                                @click="addMarker"
+                                >Xong</a-button
+                              >
+                            </template>
+                            <GoogleMap @addToListAddress="fetchListAddress" />
+                          </a-modal>
+                        </div>
+                      </div>
+                      <a-list-item slot="renderItem" slot-scope="item">
+                        <a slot="actions">
+                          <a-button type="primary" @click="setAddress(item)"
+                            >Áp dụng</a-button
+                          >
+                        </a>
+                        <a-list-item-meta :description="item.address">
+                          <a slot="title"
+                            >{{ formData.fullname }} -
+                            {{ formData.phone_number }}</a
+                          >
+                          <a-avatar slot="avatar" icon="environment" />
+                        </a-list-item-meta>
+                      </a-list-item>
+                    </a-list>
+                  </a-modal>
                 </div>
               </div>
             </div>
@@ -222,7 +281,7 @@
                           title="Khuyến mãi"
                           v-model="discountCodeVisible"
                           :width="900"
-                          :bodyStyle="{ padding: '8px', height: '500px' }"
+                          :bodyStyle="{ padding: '8px', height: '550px' }"
                           :footer="false"
                         >
                           <a-list
@@ -315,14 +374,22 @@
 import EventBus from "../../event-bus";
 import http from "../../http-common";
 import moment from "moment";
-
+// import utils from "./../../utils";
+import GoogleMap from "../GoogleMap";
+import mixin from "./../../mixin";
 export default {
+  mixins: [mixin],
   props: {
     id: Number,
     restaurantData: Object,
     discountCodeData: Array,
   },
+  components: {
+    GoogleMap,
+  },
   data() {
+    let customerAddress = JSON.parse(localStorage.getItem("user_address"));
+    let listAddress = [customerAddress];
     return {
       moment,
       cartData: [],
@@ -336,9 +403,71 @@ export default {
       discount: null,
       grandTotal: null,
       discountCode: "",
+      customerAddress,
+      listAddress,
+      center: { lat: 21.0278, lng: 105.8342 },
+      markers: {
+        position: {
+          lat: this.restaurantData.longitude,
+          lng: this.restaurantData.latitude,
+        },
+      },
+      locationVisible: false,
+      mapVisible: false,
     };
   },
+  computed: {
+    calcDistance() {
+      return this.distanceInKmBetweenEarthCoordinates(
+        this.customerAddress.marker.lat,
+        this.customerAddress.marker.lng,
+        this.restaurantData.latitude,
+        this.restaurantData.longitude
+      );
+    },
+  },
   methods: {
+    setAddress(data) {
+      localStorage.removeItem("user_address");
+      localStorage.setItem("user_address", JSON.stringify(data));
+      this.customerAddress = JSON.parse(localStorage.getItem("user_address"));
+      this.locationVisible = false;
+    },
+    fetchListAddress(data) {
+      this.listAddress.push(data);
+    },
+    addMarker() {
+      EventBus.$emit("addMarker");
+      this.mapVisible = false;
+    },
+    showMap() {
+      this.mapVisible = true;
+    },
+    showFormChangeInfo() {
+      this.locationVisible = true;
+    },
+    degreesToRadians(degrees) {
+      return (degrees * Math.PI) / 180;
+    },
+
+    distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+      var earthRadiusKm = 6371;
+
+      var dLat = this.degreesToRadians(lat2 - lat1);
+      var dLon = this.degreesToRadians(lon2 - lon1);
+
+      lat1 = this.degreesToRadians(lat1);
+      lat2 = this.degreesToRadians(lat2);
+
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) *
+          Math.sin(dLon / 2) *
+          Math.cos(lat1) *
+          Math.cos(lat2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return earthRadiusKm * c;
+    },
     order() {
       let data = {
         order_code: "T-" + Math.random().toString(18).substring(4),
@@ -352,15 +481,15 @@ export default {
         fee: null,
         grand_total: this.grandTotal,
         location_destination: this.restaurantData.full_address,
-        location_arrival: this.formData.address,
-        distant: 1,
+        location_arrival: this.customerAddress.address,
+        distant: this.calcDistance,
         create_at: moment(),
         update_at: moment(),
         content: null,
       };
 
       http
-        .post("/order/save", data)
+        .post("/orders/save", data)
         .then((res) => {
           if (res.data.errorCode == 1) {
             var orderId = res.data.data.insertId;
@@ -419,12 +548,11 @@ export default {
           } else {
             this.grandTotal = this.cost + this.ship;
           }
-        }else{
+        } else {
           this.$notification["warning"]({
-          message: "Thông báo",
-          description:
-            "Vui lòng chọn món",
-        });
+            message: "Thông báo",
+            description: "Vui lòng chọn món",
+          });
         }
       } else {
         this.$notification["warning"]({
@@ -472,7 +600,7 @@ export default {
     },
     getUserInfo(value) {
       http
-        .get("/user/detail", {
+        .get("/customer/detail", {
           params: {
             id: value,
           },
@@ -487,7 +615,6 @@ export default {
   },
   created: function () {
     this.fetchData();
-
     EventBus.$on("reload", this.reload);
     EventBus.$on("emptyCart", this.fetchData);
   },
@@ -498,7 +625,6 @@ export default {
   mounted() {
     this.getUserInfo(this.userID);
   },
-  beforeMount() {},
 };
 </script>
 <style scoped>
@@ -647,10 +773,10 @@ export default {
   font-weight: 700 !important;
 }
 
-.change-info {
+.change-info-location {
   font-size: 14px;
   color: #0288d1;
-  padding: 10px;
+  padding: 10px 0;
   position: relative;
   cursor: pointer;
   display: flex;
@@ -674,5 +800,8 @@ export default {
   color: #363636;
   background: #ebebeb;
   margin-bottom: -12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

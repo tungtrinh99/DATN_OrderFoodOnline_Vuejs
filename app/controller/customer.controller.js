@@ -51,7 +51,7 @@ class CustomerController {
   detail(req, res, next) {
     var id = req.query.id;
 
-    db.query(`SELECT * FROM user WHERE id = ${id} and role = '2'`, (err, result, field) => {
+    db.query(`SELECT a.* , b.full_address, b.longitude,b.latitude FROM user a JOIN location b ON a.address = b.id WHERE a.id = ${id} and role = '2'`, (err, result, field) => {
       if (!err) {
         res.send({ data: { items: result } });
       } else {

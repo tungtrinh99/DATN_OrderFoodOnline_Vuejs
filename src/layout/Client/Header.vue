@@ -53,7 +53,7 @@
       @close="onClose"
     >
       <p :style="[pStyle, pStyle2]">Thông tin khách hàng</p>
-      <a-avatar
+      <!-- <a-avatar
         shape="square"
         :size="64"
         icon="user"
@@ -62,7 +62,7 @@
             defaultAuthToken ? formData.avatar_id : avatarDefault
           }`)
         "
-      />
+      /> -->
       <p :style="pStyle">Cá nhân</p>
       <a-row>
         <a-col :span="12">
@@ -241,6 +241,7 @@ export default {
         active: 1,
         avatarId: "",
         role: 2,
+        fullAddress:""
       },
       formData: {},
       labelCol: { span: 6 },
@@ -290,6 +291,7 @@ export default {
             this.user.address = this.formData.address;
             this.user.active = this.formData.active;
             this.user.avatarId = this.formData.avatar_id;
+            this.user.fullAddress = this.formData.full_address
           })
           .catch((err) => {
             console.log(err);
@@ -307,6 +309,8 @@ export default {
       localStorage.removeItem("user_customer_id");
       localStorage.removeItem("cart");
       localStorage.removeItem("default_auth_token");
+      localStorage.removeItem("user_address");
+
       this.defaultAuthToken ="";
       this.onClose();
       EventBus.$emit("emptyCart");
