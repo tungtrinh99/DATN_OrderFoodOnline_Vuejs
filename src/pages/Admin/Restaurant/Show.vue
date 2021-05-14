@@ -83,6 +83,7 @@
         }"
         :columns="columns"
         :data-source="listFood"
+        :pagination="false"
       />
       <div slot="footer">
         <a-button type="primary" @click="save">Lưu</a-button>

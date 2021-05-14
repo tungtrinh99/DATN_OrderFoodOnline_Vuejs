@@ -1,5 +1,21 @@
 <template>
   <div class="menu-restaurant">
+    <a-list
+      class="discount-code-list"
+      item-layout="horizontal"
+      :data-source="discountCodeList"
+      style="background-color : #fbf9d8;border: 1px dashed #575757"
+    >
+      
+      <a-list-item slot="renderItem" slot-scope="item">
+        
+        <a-list-item-meta :description="item.content">
+          <a slot="title">{{ item.code }}</a>
+          <a-avatar style="height:32px;width:32px" slot="avatar" icon="gift" />
+        </a-list-item-meta>
+       
+      </a-list-item>
+    </a-list>
     <a-input-search
       placeholder="Tìm món"
       style="width: 100%"
@@ -52,6 +68,7 @@ import EventBus from "../../../event-bus";
 export default {
   props: {
     id: Number,
+    discountCodeList: Array,
   },
   data() {
     return {
@@ -65,9 +82,9 @@ export default {
   methods: {
     fetchData() {
       http
-        .post("/restaurant-food/list",{
-          id : this.id,
-          textSearch : this.keyword
+        .post("/restaurant-food/list", {
+          id: this.id,
+          textSearch: this.keyword,
         })
         .then((response) => {
           this.foodData = response.data.data.items;
@@ -161,8 +178,11 @@ export default {
 .ant-list-item-meta {
   align-items: center;
 }
-.ant-list-item-meta-description{
-  font-size:12px;
+.ant-list-item-meta-description {
+  font-size: 12px;
   text-align: left;
+}
+.ant-list-item {
+  padding : 12px 8px
 }
 </style>

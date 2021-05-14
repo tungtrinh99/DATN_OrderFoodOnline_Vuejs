@@ -128,7 +128,7 @@ class RestaurantController {
     const id = req.query.id;
 
     db.query(`
-            SELECT a.* , b.longitude , b.latitude , b.full_address FROM restaurant a join location b on a.location_id = b.id  WHERE a.id = ${id}`,
+            SELECT a.* , b.longitude , b.latitude , b.full_address ,c.title as name_of_restaurant_type_id FROM restaurant a JOIN location b ON a.location_id = b.id JOIN restaurant_type c ON a.type_id = c.id WHERE a.id = ${id}`,
       (err, result, field) => {
         if (!err) {
           res.send({

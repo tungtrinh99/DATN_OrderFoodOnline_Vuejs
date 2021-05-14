@@ -7,7 +7,7 @@
         :data-source="cartData"
       >
         <div slot="header">
-          <h3 :style="{ textAlign: 'left' }">Chi tiết đơn hàng</h3>
+          <h3 :style="{ textAlign: 'left',fontWeight : '700' }">Chi tiết đơn hàng</h3>
 
           <div class="user">
             <span

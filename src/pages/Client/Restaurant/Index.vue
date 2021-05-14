@@ -7,14 +7,18 @@
             <img
               class="detail-restaurant-img"
               :src="
-                require(`../../../../public/images/${Object.keys(formData).length !== 0 ? formData.avatar_id : '3eae291f-bf6d-41f8-a8b8-eb41cfaecece.jpg'}`)
+                require(`../../../../public/images/${
+                  Object.keys(formData).length !== 0
+                    ? formData.avatar_id
+                    : '3eae291f-bf6d-41f8-a8b8-eb41cfaecece.jpg'
+                }`)
               "
             />
           </a-col>
           <a-col :span="1"></a-col>
           <a-col :span="13">
             <div class="detail-restaurant-info">
-              <a-breadcrumb>
+              <a-breadcrumb style="margin-bottom: 18px">
                 <a-breadcrumb-item href="/">
                   <a-icon type="home" @click="backHome" />
                   <span @click="backHome">Home</span>
@@ -23,11 +27,45 @@
                   {{ formData.title }}
                 </a-breadcrumb-item>
               </a-breadcrumb>
+              <div class="kind-restaurant">
+                <span>{{ formData.name_of_restaurant_type_id }}</span>
+              </div>
               <div class="name-restaurant">
                 <h1>{{ formData.title }}</h1>
               </div>
               <div class="address-restaurant">
                 <span>{{ formData.full_address }}</span>
+              </div>
+              <div class="rating">
+                <div class="stars">
+                  <span class="full"
+                    ><a-icon
+                      theme="twoTone"
+                      type="star"
+                      two-tone-color="#ffc107" /></span
+                  ><span class="full"
+                    ><a-icon
+                      theme="twoTone"
+                      type="star"
+                      two-tone-color="#ffc107" /></span
+                  ><span class="full"
+                    ><a-icon
+                      theme="twoTone"
+                      type="star"
+                      two-tone-color="#ffc107" /></span
+                  ><span class="full"
+                    ><a-icon
+                      theme="twoTone"
+                      type="star"
+                      two-tone-color="#ffc107" /></span
+                  ><span class="full"
+                    ><a-icon
+                      theme="twoTone"
+                      type="star"
+                      two-tone-color="#ffc107"
+                  /></span>
+                </div>
+                đánh giá
               </div>
               <div class="status-restaurant">
                 <div class="opentime-status">
@@ -35,13 +73,32 @@
                 </div>
                 <div class="time">
                   <a-icon type="clock-circle" />
-                  <span>{{ formData.opentime }}</span> -
-                  <span>{{ formData.closetime }}</span>
+                  <span>{{
+                    moment(formData.opentime, "HH:mm").format("HH:mm")
+                  }}</span>
+                  -
+                  <span>{{
+                    moment(formData.closetime, "HH:mm").format("HH:mm")
+                  }}</span>
                 </div>
               </div>
               <div class="cost-restaurant">
                 <span><a-icon type="dollar" /> 20,000 - 45,000</span>
               </div>
+              <div class="link-merchant">
+                <a-button
+                  type="primary"
+                  style="
+                    height: 40px;
+                    background-color: #525252;
+                    border-color: #525252;
+                  "
+                >
+                  <a-icon type="home" style="font-size: 18px" /> Dành cho chủ
+                  quán
+                </a-button>
+              </div>
+              <a-divider style="margin-top: 16px"></a-divider>
             </div>
           </a-col>
         </a-row>
@@ -50,12 +107,13 @@
     <div class="menu-restaurant container">
       <a-row>
         <a-col :span="15">
-          <list-food :id="id"></list-food>
+          <list-food :id="id" :discountCodeList="discountCodeList"></list-food>
         </a-col>
         <a-col :span="1"></a-col>
-        <a-col :span="8" :style="{position :'sticky',top:'64px'}">
-          <cart :restaurantData = "formData"
-                :discountCodeData = "discountCodeList"
+        <a-col :span="8" :style="{ position: 'sticky', top: '64px' }">
+          <cart
+            :restaurantData="formData"
+            :discountCodeData="discountCodeList"
           ></cart>
         </a-col>
       </a-row>
@@ -66,12 +124,14 @@
 import ListFood from "../Goods/List";
 import Cart from "../../../components/Cart/List";
 import http from "../../../http-common";
+import moment from "moment";
 export default {
   data() {
     return {
+      moment,
       id: null,
       formData: {},
-      discountCodeList : []
+      discountCodeList: [],
     };
   },
   components: {
@@ -96,8 +156,8 @@ export default {
           this.$message.error(error.message);
         });
     },
-    getDiscountCode(){
-       http
+    getDiscountCode() {
+      http
         .get("/restaurant-discount/list", {
           params: {
             id: this.id,
@@ -109,8 +169,7 @@ export default {
         .catch((error) => {
           this.$message.error(error.message);
         });
-    }
-    
+    },
   },
   created() {
     this.id = JSON.parse(localStorage.getItem("restaurant_id"));
@@ -165,6 +224,9 @@ export default {
 }
 .time {
   padding-left: 8px;
+  font-size: 15px;
+  display: inline-block;
+  vertical-align: middle;
 }
 .cost-restaurant {
   color: #959595;
@@ -184,7 +246,29 @@ export default {
   font-size: 13px;
   margin-bottom: 2px;
 }
-.status-restaurant  {
-margin-bottom : 6px
+.status-restaurant {
+  margin-bottom: 6px;
 }
+.kind-restaurant {
+  font-size: 11px;
+  color: #959595;
+  text-transform: uppercase;
+  display: -ms-flexbox;
+  display: flex;
+}
+.rating {
+  margin-bottom: 4px;
+  font-size: 14px;
+  display: flex;
+  justify-content: flex-start;
+}
+.stars {
+  margin-right: 8px;
+}
+.link-merchant {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 </style>
