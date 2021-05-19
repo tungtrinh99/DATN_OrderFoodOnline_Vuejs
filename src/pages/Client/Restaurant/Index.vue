@@ -83,7 +83,20 @@
                 </div>
               </div>
               <div class="cost-restaurant">
-                <span><a-icon type="dollar" /> 20,000 - 45,000</span>
+                <span
+                  ><a-icon type="dollar" />
+                  {{
+                    Intl.NumberFormat("vi-VN").format(
+                      Number.parseFloat(getMinCost).toFixed(0)
+                    )
+                  }}
+                  -
+                  {{
+                    Intl.NumberFormat("vi-VN").format(
+                      Number.parseFloat(getMaxCost).toFixed(0)
+                    )
+                  }}</span
+                >
               </div>
               <div class="link-merchant">
                 <a-button
@@ -98,7 +111,29 @@
                   quán
                 </a-button>
               </div>
-              <a-divider style="margin-top: 16px"></a-divider>
+              <div class="utility-restaurant clearfix">
+                <div class="utility-item">
+                  <div class="utility-title">Phí dịch vụ</div>
+                  <div class="utility-content">
+                    <span class="txt-bold txt-red"> 0.0% Phí phục vụ </span>
+                  </div>
+                  <span
+                    class="icon icon-partner-vi"
+                    data-toggle="modal"
+                    data-target="#modal-verify-merchant"
+                  ></span>
+                </div>
+                <div class="utility-item">
+                  <div class="utility-title">Dịch vụ bởi</div>
+                  <div class="utility-content">
+                    <span class="txt-bold txt-red">Now</span>
+                  </div>
+                </div>
+                <div class="utility-item">
+                  <div class="utility-title">Chuẩn bị</div>
+                  <div class="utility-content">12 Phút</div>
+                </div>
+              </div>
             </div>
           </a-col>
         </a-row>
@@ -107,7 +142,11 @@
     <div class="menu-restaurant container">
       <a-row>
         <a-col :span="15">
-          <list-food :id="id" :discountCodeList="discountCodeList"></list-food>
+          <list-food
+            :id="id"
+            :discountCodeList="discountCodeList"
+            @
+          ></list-food>
         </a-col>
         <a-col :span="1"></a-col>
         <a-col :span="8" :style="{ position: 'sticky', top: '64px' }">
@@ -132,11 +171,25 @@ export default {
       id: null,
       formData: {},
       discountCodeList: [],
+      foodData: [],
     };
   },
   components: {
     "list-food": ListFood,
     Cart,
+  },
+  computed: {
+    getMinCost() {
+      let listCost = this.foodData.map((item) => item.cost);
+      let min = Math.min(...listCost);
+      return min;
+    },
+
+    getMaxCost() {
+      let listCost = this.foodData.map((item) => item.cost);
+      let max = Math.max(...listCost);
+      return max;
+    },
   },
   methods: {
     backHome() {
@@ -144,10 +197,8 @@ export default {
     },
     fetchData() {
       http
-        .get("/restaurant/detail", {
-          params: {
-            id: this.id,
-          },
+        .post("/restaurant/detail", {
+          id: this.id,
         })
         .then((response) => {
           this.formData = response.data.data.items[0];
@@ -170,11 +221,25 @@ export default {
           this.$message.error(error.message);
         });
     },
+    getFood() {
+      http
+        .post("/restaurant-food/list", {
+          id: this.id,
+          textSearch: this.keyword,
+        })
+        .then((response) => {
+          this.foodData = response.data.data.items;
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    },
   },
   created() {
-    this.id = JSON.parse(localStorage.getItem("restaurant_id"));
+    this.id = JSON.parse(localStorage.getItem("client_restaurant_id"));
     this.fetchData();
     this.getDiscountCode();
+    this.getFood();
   },
 };
 </script>
@@ -270,5 +335,44 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-
+.utility-restaurant {
+  border-top: 1px solid #ebebeb;
+  margin-top: 16px;
+}
+.utility-item {
+  float: left;
+  width: 140px;
+  position: relative;
+  padding: 10px;
+  margin-bottom: 30px;
+}
+.utility-title {
+  color: #959595;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.utility-content {
+  font-size: 14px;
+}
+.utility-item:after {
+  content: "";
+  width: 1px;
+  height: 20px;
+  position: absolute;
+  top: 22px;
+  left: 0;
+  background-color: #ebebeb;
+}
+.utility-content {
+  font-size: 14px;
+  color: #cf2127;
+  font-weight: 700;
+}
+.utility-item:first-child {
+  padding-left: 0;
+}
+.utility-item:first-child:after {
+  width: 0;
+  height: 0;
+}
 </style>

@@ -3,7 +3,7 @@ const title = {
     restaurant : 'Quán ăn',
     user : 'Người dùng',
     location : 'Địa chỉ',
-    order : 'Đơn hàng'
+    order : 'Đơn hàng',
 }
 const gender = {
     NAM : 1,

@@ -6,44 +6,31 @@ class OrderController {
   list(req, res, next) {
     let status = req.body.status;
     let textSearch = req.body.textSearch || "";
-
-    if (status) {
-      db.query(`SELECT a.*,b.title as name_of_restaurant_id,c.fullname as name_of_customer_id FROM orders a JOIN restaurant b ON a.restaurant_id = b.id JOIN user c ON a.customer_id = c.id WHERE a.order_code like "%${textSearch}" AND a.status = ${status} `, (err, result, field) => {
-        if (!err) {
-          res.send({
-            'errorCode': 1,
-            'data': {
-              'items': result
-            }
-          });
-
-        } else {
-          res.send({
-            'errorCode': 0,
-            'message': err
-          });
-
-        }
-      })
-    }else{
-      db.query(`SELECT a.*,b.title as name_of_restaurant_id,c.fullname as name_of_customer_id FROM orders a JOIN restaurant b ON a.restaurant_id = b.id JOIN user c ON a.customer_id = c.id WHERE a.order_code like "%${textSearch}"`, (err, result, field) => {
-        if (!err) {
-          res.send({
-            'errorCode': 1,
-            'data': {
-              'items': result
-            }
-          });
-
-        } else {
-          res.send({
-            'errorCode': 0,
-            'message': err
-          });
-
-        }
-      })
+    let restaurant_id = req.body.id;
+    var query = `SELECT a.*,b.title as name_of_restaurant_id,c.fullname as name_of_customer_id FROM orders a JOIN restaurant b ON a.restaurant_id = b.id JOIN user c ON a.customer_id = c.id WHERE a.order_code LIKE "%${textSearch}%"`;
+    if(status){
+      query = query +' '+`AND a.status = ${status}`
     }
+    if(restaurant_id){
+      query = query +" "+`AND a.restaurant_id = ${restaurant_id}`
+    }
+    db.query(query, (err, result, field) => {
+      if (!err) {
+        res.send({
+          'errorCode': 1,
+          'data': {
+            'items': result
+          }
+        });
+
+      } else {
+        res.send({
+          'errorCode': 0,
+          'message': err
+        });
+
+      }
+    })
   }
 
   // lưu đơn mới

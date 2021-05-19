@@ -12,8 +12,10 @@ import Order from "@/pages/admin/Order/List.vue";
 import LoginPage from "@/pages/client/Login/Form.vue";
 import RegisterPage from "@/pages/client/Register/Form.vue";
 import LoginDashboard from "@/pages/admin/Login/Form.vue";
-
-
+import OrderRestaurant from "@/pages/Merchant/Order/List.vue";
+import FoodRestaurant from "@/pages/Merchant/Goods/List.vue";
+import LoginMerchant from "@/pages/Merchant/Login/Form.vue";
+import MerchantDashboardLayout from "@/layout/merchant/DashboardLayout.vue"
 const routes = [{
     path: "/",
     component: Index,
@@ -121,5 +123,38 @@ const routes = [{
       title: "Đăng nhập",
     },
   },
+  {
+    path: "/merchant/login",
+    name: "Đăng nhập đối tác",
+    component: LoginMerchant,
+    meta: {
+      authMerchant: false,
+      title: "Đăng nhập",
+    },
+  },
+  {
+    path: "/merchant",
+    component: MerchantDashboardLayout,
+    redirect: "merchant/order",
+    meta: {
+      auth: true
+    },
+    children: [{
+        path: "order",
+        title: "Đơn hàng",
+        component: OrderRestaurant,
+        meta: {
+          authMerchant: true
+        }
+      },{
+        path: "food",
+        title: "Đồ ăn",
+        component: FoodRestaurant,
+        meta: {
+          authMerchant: true
+        }
+      },
+    ]
+    }
 ]
 export default routes;

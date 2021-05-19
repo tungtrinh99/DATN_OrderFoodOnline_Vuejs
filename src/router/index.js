@@ -12,11 +12,22 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   let adminLoggedIn = JSON.parse(localStorage.getItem('admin_logged_in'));
+  let merchantLoggedIn = JSON.parse(localStorage.getItem('merchant_logged_in'));
   let customerLoggedIn = JSON.parse(localStorage.getItem('default_auth_token'));
   if (to.matched.some(record => record.meta.auth)) {
 
     if (!adminLoggedIn) {
       next('/admin/login');
+    } else {
+      next();
+    }
+  } else {
+    next()
+  } 
+  if (to.matched.some(record => record.meta.authMerchant)) {
+
+    if (!merchantLoggedIn) {
+      next('/merchant/login');
     } else {
       next();
     }

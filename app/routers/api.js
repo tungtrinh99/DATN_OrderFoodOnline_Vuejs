@@ -29,12 +29,14 @@ router.post('/food/uploadFiles', upload.single('file'), food.upload);
 
 //restaurant
 router.post('/restaurant/list', restaurant.list);
-router.get('/restaurant/detail', restaurant.detail);
+router.post('/restaurant/detail', restaurant.detail);
 router.post('/restaurant/save', restaurant.save);
 router.post('/restaurant/update', restaurant.update);
 router.get('/restaurant/delete', restaurant.delete);
 router.get('/restaurant-type/list', restaurant.type);
 router.post('/restaurant-food/list', restaurant.item);
+router.get('/restaurant-food/detail', restaurant.detailItem);
+router.post('/restaurant-food/update', restaurant.updateItem);
 router.post('/restaurant-food/delete', restaurant.deleteItem);
 router.post('/restaurant-food/save', restaurant.saveItem);
 

@@ -90,6 +90,12 @@
           :id="id"
           @hideModal="hideModal"
         ></form-edit-restaurant>
+        <form-edit-food-in-merchant-website
+          v-if="entity == 'restaurant-food'"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+        ></form-edit-food-in-merchant-website>
       </a-modal>
     </div>
   </div>
@@ -101,13 +107,14 @@ import Constant from "../../constant";
 import EventBus from "../../event-bus";
 import moment from "moment";
 import constant from "../../constant";
+import Lang from "../../common/Lang";
 
 import Food from "../../pages/Admin/Goods/FormEdit";
 import Customer from "../../pages/Admin/Customer/FormEdit";
 import Merchant from "../../pages/Admin/Merchant/FormEdit";
 import Restaurant from "../../pages/Admin/Restaurant/FormEdit";
 import Location from "../../pages/Admin/Location/FormEdit";
-
+import FoodMerchant from "../../pages/Merchant/Goods/FormEdit";
 export default {
   components: {
     "form-edit-food": Food,
@@ -115,6 +122,7 @@ export default {
     "form-edit-merchant": Merchant,
     "form-edit-restaurant": Restaurant,
     "form-edit-location": Location,
+    "form-edit-food-in-merchant-website":FoodMerchant
   },
   props: {
     column: {
@@ -135,8 +143,8 @@ export default {
         scopedSlots: { customRender: "action" },
       });
     }
-
-    const title = Constant[this.entity];
+  
+    const title = Lang[this.entity] || "";
     var tmp = this.column.map((p) => {
       switch (p.dataType) {
         case "number":
@@ -218,7 +226,10 @@ export default {
           });
       }else{
         http
-          .post(`/${this.entity}/list`)
+          .post(`/${this.entity}/list`,{
+              id : JSON.parse(localStorage.getItem('merchant_restaurant_id'))
+            }
+          )
           .then((response) => {
             this.data = response.data.data.items;
           })

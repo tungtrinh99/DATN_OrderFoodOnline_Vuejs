@@ -131,6 +131,7 @@ export default {
       this.keyword = value;
       this.fetchData();
     },
+    
   },
   created: function () {
     this.fetchData();

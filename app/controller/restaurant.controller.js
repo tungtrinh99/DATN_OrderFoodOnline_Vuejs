@@ -123,12 +123,51 @@ class RestaurantController {
         else console.log(err);
       });
   }
+    //Cập nhật món ăn nhà hàng
+    updateItem(req, res, next) {
+      var id = req.query.id;
+      var data = req.body;
+      db.query(
+        `UPDATE restaurant_food SET ? WHERE food_id = ${id}`,
+        data,
+        (err, result, field) => {
+          if (!err) {
+            res.send({ data: { items: result } });
+          } else {
+            console.log(err);
+          }
+        }
+    );
+    }
   //Lấy chi tiết 1 nhà hàng
-  detail(req, res, next) {
+   detail(req, res, next) {
+    const id = req.body.id;
+    const userId = req.body.userId;
+    if (userId) {
+      var query = `SELECT a.* , b.longitude , b.latitude , b.full_address ,c.title as name_of_restaurant_type_id FROM restaurant a JOIN location b ON a.location_id = b.id JOIN restaurant_type c ON a.type_id = c.id WHERE a.user_id = ${userId}`
+    } else {
+      query = `
+      SELECT a.* , b.longitude , b.latitude , b.full_address ,c.title as name_of_restaurant_type_id FROM restaurant a JOIN location b ON a.location_id = b.id JOIN restaurant_type c ON a.type_id = c.id WHERE a.id = ${id}`
+    }
+    db.query(query,
+      (err, result, field) => {
+        if (!err) {
+          res.send({
+            data: {
+              items: result
+            }
+          });
+        } else {
+          console.log(err);
+        }
+      })
+  }
+  //Lấy chi tiết 1 nhà hàng
+  detailItem(req, res, next) {
     const id = req.query.id;
-
-    db.query(`
-            SELECT a.* , b.longitude , b.latitude , b.full_address ,c.title as name_of_restaurant_type_id FROM restaurant a JOIN location b ON a.location_id = b.id JOIN restaurant_type c ON a.type_id = c.id WHERE a.id = ${id}`,
+    const query = `SELECT * FROM restaurant_food WHERE food_id = ${id}`;
+    
+    db.query(query,
       (err, result, field) => {
         if (!err) {
           res.send({

@@ -366,11 +366,52 @@ const orders = [{
 
   }
 ];
+const food_restaurant = [{
+  title: "Ảnh",
+  dataIndex: "avatar_id",
+  key: "avatar",
+  fixed: "left",
+  width: 80,
+  dataType: "file"
+},
+{
+  title: "Mã sản phẩm",
+  dataIndex: "food_id",
+  fixed: "left",
+
+  key: "id",
+  width: 120,
+},
+
+{
+  title: "Loại đồ ăn",
+  dataIndex: "name_of_type_id",
+  key: "type",
+  width: 100
+},
+{
+  title: "Tên",
+  dataIndex: "title",
+  key: "title",
+  width: 500
+},{
+  title: "Giá",
+  dataIndex: "cost",
+  key: "cost",
+  width: 500
+},{
+  title: "Giảm giá",
+  dataIndex: "discount",
+  key: "discount",
+  width: 500
+}
+];
 export default {
   food,
   customer,
   merchant,
   restaurant,
   location,
-  orders
+  orders,
+  food_restaurant
 };

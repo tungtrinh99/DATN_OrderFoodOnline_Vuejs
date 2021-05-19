@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     nextPage(id) {
-      localStorage.setItem("restaurant_id", JSON.stringify(id));
+      localStorage.setItem("client_restaurant_id", JSON.stringify(id));
     },
     
   },

@@ -41,6 +41,11 @@
             v-if="entity == 'location'"
             @hideModal="hideModal"
           ></form-location>
+           <form-add-restaurant-food
+            :entity="entity"
+            v-if="entity == 'restaurant-food'"
+            @hideModal="hideModal"
+          ></form-add-restaurant-food>
         </a-modal>
       </template>
     </a-page-header>
@@ -76,10 +81,14 @@ import Customer from "../../pages/Admin/Customer/Form";
 import Merchant from "../../pages/Admin/Merchant/Form";
 import Restaurant from "../../pages/Admin/Restaurant/Form";
 import Location from "../../pages/Admin/Location/Form";
+import FoodMerchant from "../../pages/Merchant/Goods/Form";
+
 
 import Constant from "../../constant";
+
 import EventBus from "../../event-bus";
 import mixin from "@/mixin";
+import Lang from "../../common/Lang"
 export default {
   mixins: [mixin],
   components: {
@@ -89,10 +98,11 @@ export default {
     "form-merchant": Merchant,
     "form-restaurant": Restaurant,
     "form-location": Location,
+    "form-add-restaurant-food":FoodMerchant
   },
   data() {
-    const column = ColumnConfig[this.entity];
-    const title = Constant[this.entity];
+    const column = ColumnConfig[this.entity === "restaurant-food"?"food_restaurant":this.entity];
+    const title = Lang[this.entity] || "";
 
     return {
       visible: false,
