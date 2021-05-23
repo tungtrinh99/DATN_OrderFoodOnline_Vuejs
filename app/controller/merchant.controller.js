@@ -5,7 +5,7 @@ class MerchantController {
   // Lấy danh sách người dùng
     list(req,res,next){
       
-        db.query(`select * from user where role = 4`,(err, result, field)=>{
+        db.query(`select user.*,location.full_address from user join location on user.address = location.id where role = 4 `,(err, result, field)=>{
             if (!err) {
                 res.send({'data':{'items' : result}});
         

@@ -114,7 +114,9 @@ export default {
                 );
                 localStorage.setItem("merchant_logged_in", 1);
                  http
-                  .post("/restaurant/detail", { userId: data.id })
+                  .get("/restaurant/detail", { params:{
+                    userId: data.id
+                  } })
                   .then((res) => {
                     localStorage.setItem(
                       "merchant_restaurant_id",

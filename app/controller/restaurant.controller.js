@@ -26,7 +26,7 @@ class RestaurantController {
     const id = req.body.id;
     const textSearch = req.body.textSearch || "";
     db.query(`
-              select b.* , a.restaurant_id , a.combo_id , a.cost , a.discount , a.content from restaurant_food as a join food as b on a.food_id = b.id 
+              select b.* , a.restaurant_id , a.combo_id , a.cost , a.discount , a.content , c.title AS name_of_food_type from restaurant_food as a join food as b on a.food_id = b.id JOIN food_type AS c ON b.type = c.id
               where a.restaurant_id = ${id} and b.title like "%${textSearch}%"`,
       (err, result, field) => {
         if (!err) {
@@ -95,8 +95,8 @@ class RestaurantController {
   }
   // xóa món ăn nhà hảng
   deleteItem(req, res, next) {
-    const restaurantId = req.body.restaurant_id;
-    const foodId = req.body.food_id;
+    const restaurantId = req.query.restaurant_id;
+    const foodId = req.query.id;
     db.query(`
             DELETE FROM restaurant_food WHERE food_id = ${foodId} AND restaurant_id = ${restaurantId}`,
       (err, result, fields) => {
@@ -141,8 +141,8 @@ class RestaurantController {
     }
   //Lấy chi tiết 1 nhà hàng
    detail(req, res, next) {
-    const id = req.body.id;
-    const userId = req.body.userId;
+    const id = req.query.id;
+    const userId = req.query.userId;
     if (userId) {
       var query = `SELECT a.* , b.longitude , b.latitude , b.full_address ,c.title as name_of_restaurant_type_id FROM restaurant a JOIN location b ON a.location_id = b.id JOIN restaurant_type c ON a.type_id = c.id WHERE a.user_id = ${userId}`
     } else {
@@ -165,7 +165,8 @@ class RestaurantController {
   //Lấy chi tiết 1 nhà hàng
   detailItem(req, res, next) {
     const id = req.query.id;
-    const query = `SELECT * FROM restaurant_food WHERE food_id = ${id}`;
+    const restaurant_id=req.query.restaurant_id;
+    const query = `SELECT * FROM restaurant_food WHERE food_id = ${id} AND restaurant_id=${restaurant_id}`;
     
     db.query(query,
       (err, result, field) => {

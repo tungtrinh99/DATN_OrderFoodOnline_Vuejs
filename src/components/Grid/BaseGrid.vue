@@ -242,7 +242,7 @@ export default {
       const entity = this.entity;
       const component = this;
       this.$confirm({
-        title: `Bạn có muốn xóa ${this.title} ${record} không?`,
+        title: `Bạn có muốn xóa ${component.title} ${record} không?`,
         okText: "Xác nhận",
         okType: "danger",
         cancelText: "Hủy",
@@ -252,6 +252,7 @@ export default {
             .get(`/${entity}/delete`, {
               params: {
                 id: record,
+                restaurant_id : JSON.parse(localStorage.getItem('merchant_restaurant_id'))
               },
             })
             .then((response) => {
@@ -274,6 +275,7 @@ export default {
         .get(`${this.entity}/detail`, {
           params: {
             id: record,
+            restaurant_id : JSON.parse(localStorage.getItem('merchant_restaurant_id'))
           },
         })
         .then((response) => {

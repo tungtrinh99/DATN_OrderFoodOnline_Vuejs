@@ -81,12 +81,7 @@ export default {
               key: "order",
               title: "Đơn hàng",
               path: "order"
-            },
-            {
-              key: "order-customer",
-              title: "Đơn hàng khách hàng",
-              path: "order-customer"
-            },
+            }
             
           ]
         },

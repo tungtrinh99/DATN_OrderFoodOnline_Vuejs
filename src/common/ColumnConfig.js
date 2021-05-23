@@ -87,7 +87,7 @@ const customer = [{
     width: 120
   }, {
     title: "Địa chỉ",
-    dataIndex: "address",
+    dataIndex: "full_address",
     key: "address",
     width: 200,
     ellipsis: true
@@ -153,7 +153,7 @@ const merchant = [{
     width: 120
   }, {
     title: "Địa chỉ",
-    dataIndex: "address",
+    dataIndex: "full_address",
     key: "address",
     width: 200,
     ellipsis: true
@@ -266,12 +266,20 @@ const location = [{
   }
 ];
 const orders = [{
+    title: "Mã",
+    dataIndex: "id",
+    key: "id",
+    width: 80,
+    fixed: "left",
+    isCodeIndex :true
+
+},
+  {
     title: "Mã đơn hàng",
     dataIndex: "order_code",
     key: "order_code",
-    width: 200,
+    width: 150,
     fixed: "left",
-    isCodeIndex :true
 
   },
   {
@@ -375,17 +383,8 @@ const food_restaurant = [{
   dataType: "file"
 },
 {
-  title: "Mã sản phẩm",
-  dataIndex: "food_id",
-  fixed: "left",
-
-  key: "id",
-  width: 120,
-},
-
-{
   title: "Loại đồ ăn",
-  dataIndex: "name_of_type_id",
+  dataIndex: "name_of_food_type",
   key: "type",
   width: 100
 },

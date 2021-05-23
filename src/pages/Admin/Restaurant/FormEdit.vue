@@ -37,24 +37,7 @@
     <a-form-model-item label="Giờ đóng cửa" ref="closetime" prop="closetime">
       <a-time-picker placeholder="Chọn giờ" v-model="restaurant.closetime" />
     </a-form-model-item>
-    <a-form-model-item label="Chủ quán" ref="user" prop="user">
-      <a-select
-        show-search
-        :value="restaurant.user_id"
-        placeholder="Vui lòng chọn chủ quán"
-        style="width: 100%"
-        :default-active-first-option="false"
-        :show-arrow="true"
-        :filter-option="false"
-        :not-found-content="null"
-        :allowClear="true"
-        @change="handleChangeUser"
-      >
-        <a-select-option v-for="d in listUser" :key="d.id">
-          {{ d.user_code + "-" + d.fullname }}
-        </a-select-option>
-      </a-select>
-    </a-form-model-item>
+    
     <a-form-model-item label="Địa chỉ" ref="location_id" prop="location_id">
       <a-select
         show-search
@@ -113,7 +96,6 @@ export default {
   created() {
     EventBus.$on("saveEdit", this.save);
     EventBus.$on("data", this.fetchDataEdit);
-    this.getListUser();
     this.getListLocation();
     this.getListTypeRestaurant();
   },
@@ -132,7 +114,6 @@ export default {
         title: "",
         opentime: "",
         closetime: "",
-        user_id: "",
         phone_number: null,
         location_id: "",
         avatar_id: "",
@@ -147,7 +128,6 @@ export default {
       imageUrl: "",
       dateFormatList: ["DD/MM/YYYY", "DD/MM/YY"],
       listLocation:[],
-      listUser:[],
       listTypeRestaurant:[]
     };
   },
@@ -157,7 +137,7 @@ export default {
       this.restaurant.title = data.title;
       this.restaurant.opentime = moment(data.opentime,"HH:mm:ss");
       this.restaurant.closetime = moment(data.closetime,"HH:mm:ss");
-      this.restaurant.user_id = data.user_id;
+      
       this.restaurant.phone_number = data.phone_number;
       this.restaurant.location_id = data.location_id;
       this.restaurant.avatar_id = data.avatar_id;
@@ -169,7 +149,7 @@ export default {
         title: this.restaurant.title,
         opentime: this.restaurant.opentime,
         closetime: this.restaurant.closetime,
-        user_id: this.restaurant.user_id,
+        
         phone_number: this.restaurant.phone_number,
         location_id: this.restaurant.location_id,
         avatar_id: this.restaurant.avatar_id,
@@ -209,20 +189,7 @@ export default {
           this.$message.error(error.message);
         });
     },
-    getListUser() {
-      http
-        .get("/user/list", {
-          params: {
-            id: 4,
-          },
-        })
-        .then((response) => {
-          this.listUser = response.data.data.items;
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
-        });
-    },
+    
     getListTypeRestaurant() {
       http
         .get("/restaurant-type/list")

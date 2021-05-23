@@ -75,6 +75,23 @@ class OrderController {
       }
     );
   }
+  detail(req, res, next) {
+    let id = req.query.id;
+    db.query(
+      `SELECT a.*,b.fullname as name_of_customer FROM orders a JOIN user b ON a.customer_id = b.id  WHERE a.id = ${id}`,
+      (err, result, field) => {
+        if (!err) {
+          res.send({
+            data: {
+              items: result
+            }
+          });
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  }
 }
 
 module.exports = new OrderController;

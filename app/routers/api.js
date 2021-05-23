@@ -29,7 +29,7 @@ router.post('/food/uploadFiles', upload.single('file'), food.upload);
 
 //restaurant
 router.post('/restaurant/list', restaurant.list);
-router.post('/restaurant/detail', restaurant.detail);
+router.get('/restaurant/detail', restaurant.detail);
 router.post('/restaurant/save', restaurant.save);
 router.post('/restaurant/update', restaurant.update);
 router.get('/restaurant/delete', restaurant.delete);
@@ -37,13 +37,13 @@ router.get('/restaurant-type/list', restaurant.type);
 router.post('/restaurant-food/list', restaurant.item);
 router.get('/restaurant-food/detail', restaurant.detailItem);
 router.post('/restaurant-food/update', restaurant.updateItem);
-router.post('/restaurant-food/delete', restaurant.deleteItem);
+router.get('/restaurant-food/delete', restaurant.deleteItem);
 router.post('/restaurant-food/save', restaurant.saveItem);
 
 router.get('/restaurant-location/list', restaurant.address);
 router.get('/restaurant-discount/list', restaurant.discount)
 //user
-router.post('/user/list', user.list);
+router.get('/user/list', user.list);
 router.get('/user/detail', user.detail);
 router.post('/user/save', user.save);
 router.post('/user/update', user.update);
@@ -62,7 +62,7 @@ router.post('/customer/update', customer.update);
 router.get('/customer/delete', customer.delete);
 
 // location
-router.post('/location/list', location.list);
+router.get('/location/list', location.list);
 router.post('/location/save', location.save);
 router.post('/location/update', location.update);
 router.get('/location/detail', location.detail);
@@ -80,11 +80,11 @@ router.post('/auth/login', auth.login);
 router.post('/orders/list', order.list);
 router.post('/orders/save', order.save);
 router.post('/orders/update', order.update);
-
+router.get('/order/detail',order.detail)
 
 
 //order-detail
-router.post('/order-item/list', orderItems.list);
+router.get('/order-item/list', orderItems.list);
 router.post('/order-item/save', orderItems.save);
 
 module.exports = router;

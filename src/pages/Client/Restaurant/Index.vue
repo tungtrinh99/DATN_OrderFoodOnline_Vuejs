@@ -197,8 +197,10 @@ export default {
     },
     fetchData() {
       http
-        .post("/restaurant/detail", {
-          id: this.id,
+        .get("/restaurant/detail", {
+          params:{
+            id: this.id,
+          }
         })
         .then((response) => {
           this.formData = response.data.data.items[0];

@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     openRecord(value) {
-      let detailRestaurant = http.post("/restaurant/detail", {
+      let detailRestaurant = http.get("/restaurant/detail", {
         params: { id: value },
       });
       let foodRestaurant = http.post("/restaurant-food/list", { id: value });

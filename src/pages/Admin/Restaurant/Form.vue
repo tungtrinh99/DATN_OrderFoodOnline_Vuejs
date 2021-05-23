@@ -43,25 +43,7 @@
         v-model="restaurant.closetime"
       />
     </a-form-model-item>
-    <a-form-model-item label="Chủ quán" ref="user" prop="user">
-      <a-select
-        show-search
-        :value="restaurant.user_id"
-        placeholder="Vui lòng chọn chủ quán"
-        style="width: 100%"
-        :default-active-first-option="false"
-        :show-arrow="true"
-        :filter-option="false"
-        :not-found-content="null"
-        :allowClear="true"
-        @focus="getListUser"
-        @change="handleChangeUser"
-      >
-        <a-select-option v-for="d in listUser" :key="d.id">
-          {{ d.user_code + "-" + d.fullname }}
-        </a-select-option>
-      </a-select>
-    </a-form-model-item>
+    
     <a-form-model-item label="Địa chỉ" ref="location_id" prop="location_id">
       <a-select
         show-search
@@ -135,7 +117,6 @@ export default {
       title: "",
       opentime: moment(),
       closetime: moment(),
-      user_id: "",
       phone_number: null,
       location_id: "",
       avatar_id: "",
@@ -150,7 +131,6 @@ export default {
       loading: false,
       imageUrl: "",
       listLocation: [],
-      listUser: [],
       listTypeRestaurant: [],
     };
   },
@@ -160,7 +140,6 @@ export default {
         title: this.restaurant.title,
         opentime: this.restaurant.opentime,
         closetime: this.restaurant.opentime,
-        user_id: this.restaurant.user_id,
         phone_number: this.restaurant.phone_number,
         avatar_id: this.restaurant.avatar_id,
         type_id: this.restaurant.type_id,
@@ -187,7 +166,7 @@ export default {
     },
     getListLocation() {
       http
-        .post ("/location/list")
+        .get ("/location/list")
         .then((response) => {
           this.listLocation = response.data.data.items;
         })
@@ -195,20 +174,7 @@ export default {
           this.$message.error(error.message);
         });
     },
-    getListUser() {
-      http
-        .get("/user/list", {
-          params: {
-            id: 4,
-          },
-        })
-        .then((response) => {
-          this.listUser = response.data.data.items;
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
-        });
-    },
+    
     getListTypeRestaurant() {
       http
         .get("/restaurant-type/list")
@@ -222,9 +188,7 @@ export default {
     handleChange(value) {
       this.restaurant.location_id = value;
     },
-    handleChangeUser(value) {
-      this.restaurant.user_id = value;
-    },
+    
     handleChangeType(value) {
       this.restaurant.type_id = value;
     },

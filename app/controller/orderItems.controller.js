@@ -4,9 +4,8 @@ const fs = require("fs");
 class OrderItemsController {
   // Lấy danh sách chi tiết đơn hàng
   list(req, res, next) {
-
-    let id = req.query.id
-    db.query(`select * from order_item where order_id = ${id}`, (err, result, field) => {
+    let id = req.query.id;
+    db.query(`select a.*,b.avatar_id,b.title as name_of_food from order_item a JOIN food b ON a.food_id = b.id  where order_id = ${id}`, (err, result, field) => {
       if (!err) {
         res.send({
           'data': {
