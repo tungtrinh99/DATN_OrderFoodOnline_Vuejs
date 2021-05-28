@@ -180,7 +180,7 @@ export default {
     save() {
       const data = {
         title: this.formData.title,
-        full_address: this.formData.title +","+ this.wardTitle +","+ this.districtTitle+","+this.provinceTitle,
+        full_address: this.formData.title +" , "+ this.wardTitle +" , "+ this.districtTitle+" , "+this.provinceTitle,
         province_id: this.formData.province_id,
         district_id: this.formData.district_id,
         ward_id: this.formData.ward_id,

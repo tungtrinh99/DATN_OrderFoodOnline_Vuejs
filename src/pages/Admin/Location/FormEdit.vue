@@ -23,6 +23,7 @@
         :allowClear="true"
         @focus="getListProvince"
         @change="handleChangeProvince"
+
       >
         <a-select-option v-for="d in listProvince" :key="d.value">
           {{ d.text }}
@@ -43,6 +44,8 @@
         :allowClear="true"
         @focus="getListDistrict"
         @change="handleChangeDistrict"
+        :disabled="isDistrictDisabled"
+
       >
         <a-select-option v-for="d in listDistrict" :key="d.value">
           {{ d.text }}
@@ -63,6 +66,8 @@
         :allowClear="true"
         @focus="getListWard"
         @change="handleChangeWard"
+        :disabled="isWardDisabled"
+
       >
         <a-select-option v-for="d in listWard" :key="d.value">
           {{ d.text }}
@@ -93,18 +98,12 @@ export default {
     var rules = RuleConfig[this.entity];
     let formData = {
       title: "",
-      province: {
-        key : void 0,
-        label : ""
-      },
-      district: {
-        key : void 0,
-        label : ""
-      },
-      ward: {
-        key : void 0,
-        label : ""
-      },
+      province: void 0,
+      district:void 0 ,
+      ward: void 0,
+      province_id : null,
+      district_id: null,
+      ward_id : null
     };
     return {
       formData,
@@ -118,24 +117,30 @@ export default {
       listProvince: [],
       listDistrict: [],
       listWard: [],
+      provinceTitle: "",
+      districtTitle: "",
+      wardTitle: "",
+      isWardDisabled : false,
+      isDistrictDisabled : false , 
     };
   },
   methods: {
     fetchDataEdit(data) {
       this.formData.title = data.title;
-      this.formData.province.key = data.province_id;
-      this.formData.province.label = data.province_title;
-      this.formData.district.key = data.district_id;
-      this.formData.district.label = data.district_title;
-      this.formData.ward.key = data.ward_id;
-      this.formData.ward.label = data.ward_title;
+      this.formData.province= {key : data.province_id , label : data.province_title};
+      this.formData.district = {key : data.district_id , label : data.district_title};
+      this.formData.ward = {key : data.ward_id , label : data.ward_title};
+      this.provinceTitle = data.province_title;
+      this.districtTitle = data.district_title;
+      this.wardTitle = data.ward_title;
     },
     save() {
       var data = {
         title: this.formData.title,
-        province_id: this.formData.province.key,
-        district_id: this.formData.district.key,
-        ward_id: this.formData.ward.key,
+        full_address: this.formData.title +" , "+ this.wardTitle +" , "+ this.districtTitle+" , "+this.provinceTitle,
+        province_id: this.formData.province_id,
+        district_id: this.formData.district_id,
+        ward_id: this.formData.ward_id,
       };
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -177,6 +182,13 @@ export default {
 
     handleChangeProvince(data) {
       this.formData.province = data;
+      this.formData.province_id = data.key;
+      this.provinceTitle = this.listProvince.find(item=>item.value === data.key).text;
+      if(!this.provinceTitle) return ;
+      this.formData.district = void 0;
+      this.formData.ward = void 0;
+      this.isWardDisabled  = true;
+
     },
     getListDistrict() {
       http
@@ -187,7 +199,7 @@ export default {
         })
         .then((response) => {
           let data = response.data.data.items.map((d) => ({
-            value: d.province_id,
+            value: d.district_id,
             text: d.title,
           }));
           this.listDistrict = this.listDistrict.concat(data);
@@ -197,7 +209,13 @@ export default {
         });
     },
     handleChangeDistrict(data) {
-      this.formData.district = data
+      this.formData.district = data;
+      this.formData.district_id = data.key;
+      this.districtTitle = this.listDistrict.find(item=>item.value === data.key).text
+      if(!this.districtTitle) return ;
+      this.formData.ward = void 0;
+      this.isWardDisabled = false;
+
     },
     getListWard() {
       http
@@ -218,7 +236,11 @@ export default {
         });
     },
     handleChangeWard(data) {
-      this.formData.ward = data
+      this.formData.ward = data;
+      this.formData.ward_id = data.key;
+
+      this.wardTitle = this.listWard.find(item=>item.value === data.key).text
+      if(!this.wardTitle) return ;
     },
   },
 };

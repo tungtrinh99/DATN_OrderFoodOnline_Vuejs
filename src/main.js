@@ -7,10 +7,7 @@ import VueCookie from 'vue-cookie';
 import 'ant-design-vue/dist/antd.css';
 import * as VueGoogleMaps from 'vue2-google-maps'
 import App from './App';
-import VueMapbox from "vue-mapbox";
-import Mapbox from "mapbox-gl";
 
-Vue.use(VueMapbox, { mapboxgl: Mapbox });
 Vue.config.productionTip = false
 Vue.use(Antd);
 Vue.use(VueCookie);

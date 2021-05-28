@@ -102,7 +102,6 @@ const location = {
     message: "Bạn chưa nhập tên địa điểm",
     trigger: "blur"
   }],
-  
   // province: [{
   //   required: true,
   //   message: "Bạn chưa nhập tỉnh/thành phố ",
