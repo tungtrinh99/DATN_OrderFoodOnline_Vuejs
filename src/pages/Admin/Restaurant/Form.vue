@@ -6,7 +6,7 @@
     :rules="rules"
     ref="ruleForm"
   >
-    <a-form-model-item label="Ảnh nhà hàng" prop="avatar_id">
+    <a-form-model-item label="Ảnh quán ăn" prop="avatar_id">
       <a-upload
         name="file"
         list-type="picture-card"
@@ -28,40 +28,44 @@
         </div>
       </a-upload>
     </a-form-model-item>
-    <a-form-model-item label="Tên nhà hàng" ref="title" prop="title">
+    <a-form-model-item label="Tên quán " ref="title" prop="title">
       <a-input v-model="restaurant.title" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Giờ mở cửa" ref="opentime" prop="opentime">
-      <a-time-picker
-        placeholder="Chọn giờ"
-        v-model="restaurant.opentime"
-      />
+      <a-time-picker placeholder="Chọn giờ" v-model="restaurant.opentime" />
     </a-form-model-item>
     <a-form-model-item label="Giờ đóng cửa" ref="closetime" prop="closetime">
-      <a-time-picker
-        placeholder="Chọn giờ"
-        v-model="restaurant.closetime"
-      />
+      <a-time-picker placeholder="Chọn giờ" v-model="restaurant.closetime" />
     </a-form-model-item>
-    
+
     <a-form-model-item label="Địa chỉ" ref="location_id" prop="location_id">
-      <a-select
-        show-search
-        :value="restaurant.location_id"
-        placeholder="Vui lòng chọn địa chỉ quán"
-        style="width: 100%"
-        :default-active-first-option="false"
-        :show-arrow="true"
-        :filter-option="false"
-        :not-found-content="null"
-        :allowClear="true"
-        @focus="getListLocation"
-        @change="handleChange"
-      >
-        <a-select-option v-for="d in listLocation" :key="d.id">
-          {{ d.full_address }}
-        </a-select-option>
-      </a-select>
+      <div class="select">
+        <a-select
+          show-search
+          :value="restaurant.location_id"
+          placeholder="Vui lòng chọn địa chỉ quán"
+          style="width: 100%"
+          :default-active-first-option="false"
+          :show-arrow="true"
+          :filter-option="false"
+          :allowClear="true"
+          @focus="getListLocation"
+          @change="handleChange"
+        >
+          <a-select-option v-for="d in listLocation" :key="d.id">
+            {{ d.full_address }}
+          </a-select-option>
+        </a-select>
+        <a-button
+          :style="`
+                border-left:none;
+                margin-left:-5px;
+                border-top-left-radius:0;
+                border-bottom-left-radius:0`"
+        >
+          <a-icon type="environment" />
+        </a-button>
+      </div>
     </a-form-model-item>
     <a-form-model-item label="Số điện thoại" ref="phone_res" prop="phone_res">
       <a-input
@@ -69,6 +73,35 @@
         type="text"
         :allowClear="true"
       />
+    </a-form-model-item>
+    <a-form-model-item label="Người dùng" ref="user" prop="user">
+      <div class="select">
+        <a-select
+          show-search
+          :value="restaurant.user_id"
+          placeholder="Vui lòng chọn người dùng"
+          style="width: 100%; border-left: none"
+          :default-active-first-option="false"
+          :show-arrow="true"
+          :filter-option="false"
+          :allowClear="true"
+          @focus="getListUser"
+          @change="handleChangeUser"
+        >
+          <a-select-option v-for="d in listUser" :key="d.id">
+            {{ d.fullname + " " + d.username }}
+          </a-select-option>
+        </a-select>
+        <a-button
+          :style="`
+                border-left:none;
+                margin-left:-5px;
+                border-top-left-radius:0;
+                border-bottom-left-radius:0`"
+        >
+          <a-icon type="user" />
+        </a-button>
+      </div>
     </a-form-model-item>
     <a-form-model-item label="Kiểu quán" ref="type" prop="type">
       <a-select
@@ -89,7 +122,6 @@
         </a-select-option>
       </a-select>
     </a-form-model-item>
-    
   </a-form-model>
 </template>
 <script>
@@ -99,9 +131,8 @@ import RuleConfig from "../../../common/RuleConfig";
 import moment from "moment";
 import mixin from "../../../mixin";
 
-
 export default {
-  mixins : [mixin],
+  mixins: [mixin],
   created() {
     EventBus.$on("save", this.save);
   },
@@ -121,6 +152,7 @@ export default {
       location_id: "",
       avatar_id: "",
       type_id: "",
+      user_id: null,
     };
     return {
       moment,
@@ -132,6 +164,7 @@ export default {
       imageUrl: "",
       listLocation: [],
       listTypeRestaurant: [],
+      listUser: [],
     };
   },
   methods: {
@@ -145,6 +178,7 @@ export default {
         type_id: this.restaurant.type_id,
         slug: this.convertSlug(this.restaurant.title),
         location_id: this.restaurant.location_id,
+        user_id: this.restaurant.user_id,
       };
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -166,7 +200,7 @@ export default {
     },
     getListLocation() {
       http
-        .get ("/location/list")
+        .post("/location/list")
         .then((response) => {
           this.listLocation = response.data.data.items;
         })
@@ -174,7 +208,18 @@ export default {
           this.$message.error(error.message);
         });
     },
-    
+    getListUser() {
+      http
+        .post("/merchant/list", {
+          active: 0,
+        })
+        .then((response) => {
+          this.listUser = response.data.data.items;
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    },
     getListTypeRestaurant() {
       http
         .get("/restaurant-type/list")
@@ -188,9 +233,12 @@ export default {
     handleChange(value) {
       this.restaurant.location_id = value;
     },
-    
+
     handleChangeType(value) {
       this.restaurant.type_id = value;
+    },
+    handleChangeUser(value) {
+      this.restaurant.user_id = value;
     },
     filterOption(input, option) {
       return (
@@ -250,3 +298,9 @@ export default {
   mounted() {},
 };
 </script>
+<style scoped>
+.select {
+  display: flex;
+  position: relative;
+}
+</style>

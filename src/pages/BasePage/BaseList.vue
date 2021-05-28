@@ -68,6 +68,7 @@
       :entity="entity"
       :key="key"
       :isAction="isAction"
+      :isMerchant ="isMerchant"
       @openRecord="openRecord($event)"
     ></base-grid>
   </div>
@@ -118,6 +119,7 @@ export default {
     isAction: Boolean,
     isAdd: Boolean,
     isTabs: Boolean,
+    isMerchant : Boolean
   },
   methods: {
     show() {

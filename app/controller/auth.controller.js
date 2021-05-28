@@ -13,7 +13,7 @@ class AuthController {
       password,
       passwordConfirm,
       avatar_id,
-     
+
     } = req.body;
     db.query(`select username from user where username = ?`, [username], (err, result, fields) => {
       if (err) {
@@ -40,7 +40,7 @@ class AuthController {
             username: username,
             password: hashedPassword,
             role: 2,
-            avatar_id : avatar_id
+            avatar_id: avatar_id
           }, (error, result, fields) => {
             if (!error) {
               res.send({
@@ -74,11 +74,17 @@ class AuthController {
         errorMessage: 'Tên đăng nhập hoặc mật khẩu không được để trống!'
       })
     } else {
-      db.query(`select a.*,b.full_address,b.longitude,b.latitude from user a JOIN location b ON a.address = b.id where a.username = ? and a.role = ${role}`, [username], (err, result, fields) => {
-        if (!result || !bcrypt.compareSync(password, result[0].password)) {
+      db.query(`select a.*,b.full_address,b.longitude,b.latitude from user a JOIN location b ON a.address = b.id where a.username = ? and a.role = ${role} AND a.active = 1`, [username], (err, result, fields) => {
+        if(result.length === 0){
           res.send({
             errorCode: 0,
-            errorMessage: 'Tên đăng nhập hoặc mật khẩu không đúng!'
+            errorMessage: 'Tài khoản đăng nhập không tồn tại hoặc không còn hiệu lực !',
+          })
+        }
+        else if (!result || !bcrypt.compareSync(password, result[0].password)) {
+          res.send({
+            errorCode: 0,
+            errorMessage: 'Tên đăng nhập hoặc mật khẩu không đúng!',
           })
         } else {
           let id = result[0].id;
@@ -97,10 +103,13 @@ class AuthController {
           res.send({
             errorCode: 1,
             errorMessage: 'Đăng nhập thành công!',
-            accessToken : token,
+            accessToken: token,
             user: result[0]
           })
+
+
         }
+
       })
     }
 

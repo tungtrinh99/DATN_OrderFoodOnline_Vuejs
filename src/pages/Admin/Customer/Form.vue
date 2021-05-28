@@ -79,7 +79,8 @@ import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 import moment from "moment";
-
+const bcrypt = require('bcryptjs');
+ 
 export default {
   created() {
     EventBus.$on("save", this.save);
@@ -128,7 +129,7 @@ export default {
         username: this.user.username,
         avatar_id: this.user.avatarId,
         user_code: this.user.userCode,
-        password: this.user.password,
+        password: bcrypt.hashSync(this.user.password, 8),
         email: this.user.email,
         fullname: this.user.fullname,
         gender: this.user.gender,

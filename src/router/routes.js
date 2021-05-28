@@ -15,7 +15,8 @@ import LoginDashboard from "@/pages/admin/Login/Form.vue";
 import OrderRestaurant from "@/pages/Merchant/Order/List.vue";
 import FoodRestaurant from "@/pages/Merchant/Goods/List.vue";
 import LoginMerchant from "@/pages/Merchant/Login/Form.vue";
-import MerchantDashboardLayout from "@/layout/merchant/DashboardLayout.vue"
+import MerchantDashboardLayout from "@/layout/Merchant/DashboardLayout.vue";
+import DashboardMerchant from "@/pages/merchant/Dashboard/Dashboard.vue"
 const routes = [{
     path: "/",
     component: Index,
@@ -154,6 +155,14 @@ const routes = [{
           authMerchant: true
         }
       },
+      {
+        path: "dashboard",
+        title: "Tổng quan",
+        component: DashboardMerchant,
+        meta: {
+          authMerchant: true
+        }
+      }
     ]
     }
 ]

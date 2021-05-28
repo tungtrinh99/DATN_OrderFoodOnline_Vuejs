@@ -6,6 +6,7 @@
       :isAction="isAction"
       :isAdd="isAdd"
       :isTabs="isTabs"
+      :isMerchant = "isMerchant"
       @openRecord="openRecord($event)"
     ></base-list>
     <show
@@ -31,6 +32,7 @@ export default {
       isAction: false,
       isAdd: false,
       isTabs: false,
+      isMerchant : true,
       show: false,
       formData :{},
       listItemOfOrder : []

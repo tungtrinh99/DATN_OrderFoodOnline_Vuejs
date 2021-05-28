@@ -41,6 +41,7 @@
         :allowClear="true"
         @focus="getListDistrict"
         @change="handleChangeDistrict"
+        :disabled="isDistrictDisabled"
       >
         <a-select-option v-for="d in listDistrict" :key="d.district_id">
           {{ d.title }}
@@ -60,6 +61,7 @@
         :allowClear="true"
         @focus="getListWard"
         @change="handleChangeWard"
+        :disabled="isWardDisabled"
       >
         <a-select-option v-for="d in listWard" :key="d.ward_id">
           {{ d.title }}
@@ -104,6 +106,11 @@ export default {
       listProvince: [],
       listDistrict: [],
       listWard: [],
+      provinceTitle : "",
+      districtTitle : "",
+      wardTitle : "",
+      isDistrictDisabled : true,
+      isWardDisabled : true
     };
   },
   methods: {
@@ -120,6 +127,13 @@ export default {
 
     handleChangeProvince(data) {
       this.formData.province_id = data;
+      this.provinceTitle = this.listProvince.find(item=>item.province_id === data).title
+      if(!this.provinceTitle) return ;
+      this.isDistrictDisabled = false;
+      this.formData.district_id = null;
+      this.formData.ward_id = null;
+      this.isWardDisabled = true;
+
     },
     getListDistrict() {
       http
@@ -137,6 +151,12 @@ export default {
     },
     handleChangeDistrict(data) {
       this.formData.district_id = data;
+      this.districtTitle = this.listDistrict.find(item=>item.district_id === data).title
+      if(!this.districtTitle) return ;
+      this.isWardDisabled = false;
+      this.formData.ward_id = null;
+
+
     },
     getListWard() {
       http
@@ -154,11 +174,13 @@ export default {
     },
     handleChangeWard(data) {
       this.formData.ward_id = data;
+      this.wardTitle = this.listWard.find(item=>item.ward_id === data).title
+      if(!this.wardTitle) return ;
     },
     save() {
       const data = {
         title: this.formData.title,
-        full_address: "",
+        full_address: this.formData.title +","+ this.wardTitle +","+ this.districtTitle+","+this.provinceTitle,
         province_id: this.formData.province_id,
         district_id: this.formData.district_id,
         ward_id: this.formData.ward_id,

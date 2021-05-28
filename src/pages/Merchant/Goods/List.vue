@@ -6,6 +6,7 @@
       :isAction="isAction"
       :isAdd="isAdd"
       :isTabs="isTabs"
+      :isMerchant="isMerchant"
     ></base-list>
   </div>
 </template>
@@ -20,6 +21,7 @@ export default {
       isAction: true,
       isAdd: true,
       isTabs: false,
+      isMerchant : true
     };
   },
   components: {

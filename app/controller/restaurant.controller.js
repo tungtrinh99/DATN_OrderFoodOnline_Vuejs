@@ -95,7 +95,7 @@ class RestaurantController {
   }
   // xóa món ăn nhà hảng
   deleteItem(req, res, next) {
-    const restaurantId = req.query.restaurant_id;
+    const restaurantId = req.body.restaurant_id;
     const foodId = req.query.id;
     db.query(`
             DELETE FROM restaurant_food WHERE food_id = ${foodId} AND restaurant_id = ${restaurantId}`,

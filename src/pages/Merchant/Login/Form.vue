@@ -127,7 +127,7 @@ export default {
                     console.log(err);
                   })
                   
-                this.$router.push("/merchant/food");
+                this.$router.push("/merchant/dashboard");
               }
             })
             .catch((error) => {

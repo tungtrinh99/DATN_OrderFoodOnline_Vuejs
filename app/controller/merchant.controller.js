@@ -2,24 +2,36 @@ const db = require('../config/db.config');
 const fs = require("fs");
 
 class MerchantController {
-  // Lấy danh sách người dùng
-    list(req,res,next){
-      
-        db.query(`select user.*,location.full_address from user join location on user.address = location.id where role = 4 `,(err, result, field)=>{
-            if (!err) {
-                res.send({'data':{'items' : result}});
-        
-              } else {
-                console.log(err);
-              }
-        })
+  // Lấy danh sách đối tác
+  list(req, res, next) {
+    let active = req.body.active;
+    var query = `select user.*,location.full_address from user join location on user.address = location.id where role = 4 `;
+    if(active !== undefined){
+      query = query +' '+ `AND user.active = ${active}`;  
     }
-    // thêm  người dùng
+    db.query(query, (err, result, field) => {
+      if (!err) {
+        res.send({
+          'data': {
+            'items': result
+          }
+        });
+
+      } else {
+        console.log(err);
+      }
+    })
+  }
+  // thêm  người dùng
   save(req, res, next) {
     var data = req.body;
 
     db.query(`INSERT INTO user SET ?  `, data, (err, result, fields) => {
-      if (!err) res.send({ data: { items: result } });
+      if (!err) res.send({
+        data: {
+          items: result
+        }
+      });
       else console.log(err);
     });
   }
@@ -32,7 +44,11 @@ class MerchantController {
       data,
       (err, result, field) => {
         if (!err) {
-          res.send({ data: { items: result } });
+          res.send({
+            data: {
+              items: result
+            }
+          });
         } else {
           console.log(err);
         }
@@ -43,7 +59,11 @@ class MerchantController {
   delete(req, res, next) {
     var id = req.query.id;
     db.query(`DELETE FROM user WHERE id = ${id}`, (err, result, fields) => {
-      if (!err) res.send({ data: { items: result } });
+      if (!err) res.send({
+        data: {
+          items: result
+        }
+      });
       else console.log(err);
     });
   }
@@ -53,7 +73,11 @@ class MerchantController {
 
     db.query(`SELECT * FROM user WHERE id = ${id}`, (err, result, field) => {
       if (!err) {
-        res.send({ data: { items: result } });
+        res.send({
+          data: {
+            items: result
+          }
+        });
       } else {
         console.log(err);
       }

@@ -55,7 +55,7 @@ export default {
           children: [
             {
               key: "calendar",
-              title: "Lịch biểu",
+              title: "Tổng quan",
               path: "dashboard"
             }
           ]

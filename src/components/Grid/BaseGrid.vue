@@ -42,11 +42,7 @@
           </a-tooltip>
         </span>
         <span slot="gender" slot-scope="text">{{ getTextGender(text) }}</span>
-        <a
-          slot="link"
-          slot-scope="text"
-          @click="openRecord(text)"
-          
+        <a slot="link" slot-scope="text" @click="openRecord(text)"
           >{{ text }}
         </a>
         <span slot="date" slot-scope="text">{{
@@ -122,7 +118,7 @@ export default {
     "form-edit-merchant": Merchant,
     "form-edit-restaurant": Restaurant,
     "form-edit-location": Location,
-    "form-edit-food-in-merchant-website":FoodMerchant
+    "form-edit-food-in-merchant-website": FoodMerchant,
   },
   props: {
     column: {
@@ -130,6 +126,7 @@ export default {
     },
     entity: String,
     isAction: Boolean,
+    isMerchant: Boolean,
   },
   data() {
     var cols = [];
@@ -143,7 +140,7 @@ export default {
         scopedSlots: { customRender: "action" },
       });
     }
-  
+
     const title = Lang[this.entity] || "";
     var tmp = this.column.map((p) => {
       switch (p.dataType) {
@@ -217,19 +214,19 @@ export default {
     fetchData(data) {
       if (data) {
         http
-          .post(`/${this.entity}/list`,data)
+          .post(`/${this.entity}/list`, data)
           .then((response) => {
             this.data = response.data.data.items;
           })
           .catch((error) => {
             this.$message.error(error.message);
           });
-      }else{
+      } 
+      else if (this.isMerchant) {
         http
-          .post(`/${this.entity}/list`,{
-              id : JSON.parse(localStorage.getItem('merchant_restaurant_id'))
-            }
-          )
+          .post(`/${this.entity}/list`, {
+            id: JSON.parse(localStorage.getItem("merchant_restaurant_id")),
+          })
           .then((response) => {
             this.data = response.data.data.items;
           })
@@ -237,6 +234,16 @@ export default {
             this.$message.error(error.message);
           });
       }
+      else if (!data) {
+        http
+          .post(`/${this.entity}/list`)
+          .then((response) => {
+            this.data = response.data.data.items;
+          })
+          .catch((error) => {
+            this.$message.error(error.message);
+          });
+      } 
     },
     showDeleteConfirm(record) {
       const entity = this.entity;
@@ -252,7 +259,9 @@ export default {
             .get(`/${entity}/delete`, {
               params: {
                 id: record,
-                restaurant_id : JSON.parse(localStorage.getItem('merchant_restaurant_id'))
+                restaurant_id: JSON.parse(
+                  localStorage.getItem("merchant_restaurant_id")
+                ),
               },
             })
             .then((response) => {
@@ -275,7 +284,9 @@ export default {
         .get(`${this.entity}/detail`, {
           params: {
             id: record,
-            restaurant_id : JSON.parse(localStorage.getItem('merchant_restaurant_id'))
+            restaurant_id: JSON.parse(
+              localStorage.getItem("merchant_restaurant_id")
+            ),
           },
         })
         .then((response) => {
@@ -336,12 +347,12 @@ export default {
   mounted() {
     this.fetchData();
   },
-  created(){
-    EventBus.$on('filterDataByStatus',this.fetchData)
+  created() {
+    EventBus.$on("filterDataByStatus", this.fetchData);
   },
-  destroyed(){
-    EventBus.$off("filterDataByStatus",this.fetchData)
-  }
+  destroyed() {
+    EventBus.$off("filterDataByStatus", this.fetchData);
+  },
 };
 </script>
 

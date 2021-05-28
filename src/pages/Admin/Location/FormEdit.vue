@@ -93,9 +93,18 @@ export default {
     var rules = RuleConfig[this.entity];
     let formData = {
       title: "",
-      province: {},
-      district: {},
-      ward: {},
+      province: {
+        key : void 0,
+        label : ""
+      },
+      district: {
+        key : void 0,
+        label : ""
+      },
+      ward: {
+        key : void 0,
+        label : ""
+      },
     };
     return {
       formData,

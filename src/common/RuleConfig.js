@@ -78,11 +78,11 @@ const restaurant = {
     message: "Bạn chưa nhập địa chỉ ",
     trigger: "blur"
   }],
-  // user: [{
-  //   required: true,
-  //   message: "Bạn chưa chọn chủ quán",
-  //   trigger: "blur"
-  // }],
+  user: [{
+    required: true,
+    message: "Bạn chưa chọn chủ quán",
+    trigger: "blur"
+  }],
   // phone_res: [{
   //   required: true,
   //   message: "Bạn chưa nhập số điện thoại",

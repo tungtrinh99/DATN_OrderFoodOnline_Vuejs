@@ -64,7 +64,7 @@
         </div>
       </a-list>
     </div>
-    <div class="order-detail">
+    <div class="order-detail" v-if="customerId">
       <a-modal
         title="Xác nhận đơn hàng"
         v-model="orderDetailVisible"
@@ -390,6 +390,7 @@ export default {
   data() {
     let customerAddress = JSON.parse(localStorage.getItem("user_address"));
     let listAddress = [customerAddress];
+    let customerId = JSON.parse(localStorage.getItem("user_customer_id"));
     return {
       moment,
       cartData: [],
@@ -414,6 +415,7 @@ export default {
       },
       locationVisible: false,
       mapVisible: false,
+      customerId
     };
   },
   computed: {

@@ -37,7 +37,7 @@ router.get('/restaurant-type/list', restaurant.type);
 router.post('/restaurant-food/list', restaurant.item);
 router.get('/restaurant-food/detail', restaurant.detailItem);
 router.post('/restaurant-food/update', restaurant.updateItem);
-router.get('/restaurant-food/delete', restaurant.deleteItem);
+router.post('/restaurant-food/delete', restaurant.deleteItem);
 router.post('/restaurant-food/save', restaurant.saveItem);
 
 router.get('/restaurant-location/list', restaurant.address);
@@ -62,7 +62,7 @@ router.post('/customer/update', customer.update);
 router.get('/customer/delete', customer.delete);
 
 // location
-router.get('/location/list', location.list);
+router.post('/location/list', location.list);
 router.post('/location/save', location.save);
 router.post('/location/update', location.update);
 router.get('/location/detail', location.detail);

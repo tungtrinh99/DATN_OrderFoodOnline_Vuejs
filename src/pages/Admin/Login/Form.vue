@@ -100,8 +100,12 @@ export default {
           http
             .post("/auth/login", values)
             .then((response) => {
-              if (response.data.errorCode == 0) {
+              if (response.data.errorCode === 0) {
                 this.notify = response.data.errorMessage;
+                this.$notification["error"]({
+                  message: "Thông báo đăng nhập",
+                  description: this.notify,
+                });
               } else {
                 this.$notification["success"]({
                   message: "Thông báo đăng nhập",

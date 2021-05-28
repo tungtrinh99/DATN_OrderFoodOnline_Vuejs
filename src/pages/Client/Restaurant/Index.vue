@@ -145,7 +145,6 @@
           <list-food
             :id="id"
             :discountCodeList="discountCodeList"
-            @
           ></list-food>
         </a-col>
         <a-col :span="1"></a-col>

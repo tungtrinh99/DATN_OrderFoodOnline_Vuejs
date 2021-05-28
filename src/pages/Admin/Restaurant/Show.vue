@@ -139,13 +139,17 @@ export default {
         cancelText: "Huỷ",
         onOk() {
           http
-            .post("/restaurant-food/delete", {
-              food_id: value.id,
-              restaurant_id: value.restaurant_id,
-            })
+            .post(
+              "/restaurant-food/delete",
+              {
+                restaurant_id: value.restaurant_id,
+              },
+              {params: {
+                id: value.id,
+              }}
+            )
             .then((res) => {
               component.$message.success(`Xoá món ${name} thành công`);
-               
             })
             .catch((err) => {
               console.log(err);
