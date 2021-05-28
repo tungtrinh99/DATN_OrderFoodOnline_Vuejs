@@ -51,8 +51,15 @@
     <a-form-model-item label="Ngày sinh" ref="birthDate" prop="birth_date">
       <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY"  />
     </a-form-model-item>
-    <a-form-model-item label="Giới tính" ref="gender" prop="gender">
-      <a-input v-model="user.gender" type="text" :allowClear="true" />
+   <a-form-model-item label="Giới tính" ref="gender" prop="gender">
+      <a-select
+        :value="user.gender"
+        style="width: 120px"
+        @change="handleChangeGender"
+      >
+        <a-select-option :key="1"> Nam </a-select-option>
+        <a-select-option :key="2"> Nữ </a-select-option>
+      </a-select>
     </a-form-model-item>
     <a-form-model-item
       label="Số điện thoại"
@@ -61,17 +68,37 @@
     >
       <a-input v-model="user.phoneNumber" type="text" :allowClear="true" />
     </a-form-model-item>
-    <a-form-model-item label="Địa chỉ" ref="address" prop="address">
-      <a-input v-model="user.address" type="text" :allowClear="true" />
+    <a-form-model-item label="Địa chỉ" ref="location_id" prop="location_id">
+      <div class="select">
+        <a-select
+          show-search
+          :value="user.address"
+          placeholder="Vui lòng chọn địa chỉ quán"
+          style="width: 100%; border-left: none"
+          :default-active-first-option="false"
+          :show-arrow="true"
+          :filter-option="false"
+          :not-found-content="null"
+          :allowClear="true"
+          @change="handleChange"
+        >
+          <a-select-option v-for="d in listLocation" :key="d.id">
+            {{ d.full_address }}
+          </a-select-option>
+        </a-select>
+        <a-button
+          @click="showUser"
+          :style="`
+                border-left:none;
+                margin-left:-5px;
+                border-top-left-radius:0;
+                border-bottom-left-radius:0`"
+        >
+          <a-icon type="environment" />
+        </a-button>
+      </div>
     </a-form-model-item>
-    <a-form-model-item label="Trạng thái" ref="active" prop="active">
-      <a-input-number
-        :min="0"
-        :max="1"
-        v-model="user.active"
-        :style="{ width: '50%' }"
-      />
-    </a-form-model-item>
+    
   </a-form-model>
 </template>
 <script>
@@ -83,6 +110,7 @@ const bcrypt = require('bcryptjs');
 
 export default {
   created() {
+    this.getListLocation();
     EventBus.$on("save", this.save);
   },
   destroyed() {
@@ -117,9 +145,27 @@ export default {
       wrapperCol: { span: 16 },
       loading: false,
       imageUrl: "",
+      listLocation:[]
     };
   },
   methods: {
+    showUser() {},
+    getListLocation(){
+      http
+        .post("/location/list")
+        .then((response) => {
+          this.listLocation = response.data.data.items;
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    },
+    handleChange(value) {
+      this.user.address = value;
+    },
+    handleChangeGender(value) {
+      this.user.gender = value;
+    },
     onChangeDate(date, dateString) {
       this.user.birthDate = dateString;
     },
@@ -217,3 +263,10 @@ export default {
   mounted() {},
 };
 </script>
+</script>
+<style scoped>
+.select {
+  display: flex;
+  position: relative;
+}
+</style>

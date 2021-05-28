@@ -91,14 +91,7 @@
         </a-button>
       </div>
     </a-form-model-item>
-    <a-form-model-item label="Trạng thái" ref="active" prop="active">
-      <a-input-number
-        :min="0"
-        :max="1"
-        v-model="user.active"
-        :style="{ width: '50%' }"
-      />
-    </a-form-model-item>
+    
   </a-form-model>
 </template>
 <script>
