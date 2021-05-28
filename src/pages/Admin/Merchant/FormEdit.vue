@@ -38,17 +38,25 @@
       <a-input v-model="user.username" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Mật khẩu" ref="password" prop="password">
-      <a-input-password v-model="user.password"   />
+      <a-input-password v-model="user.password" />
     </a-form-model-item>
     <a-form-model-item label="Email" ref="email" prop="email">
       <a-input v-model="user.email" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Ngày sinh" ref="birthDate" prop="birth_date">
-      <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY"/>
+      <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY" />
     </a-form-model-item>
     <a-form-model-item label="Giới tính" ref="gender" prop="gender">
-      <a-input v-model="user.gender" type="text" :allowClear="true" />
+      <a-select
+        :value="user.gender"
+        style="width: 120px"
+        @change="handleChangeGender"
+      >
+        <a-select-option :key="1"> Nam </a-select-option>
+        <a-select-option :key="2"> Nữ </a-select-option>
+      </a-select>
     </a-form-model-item>
+
     <a-form-model-item
       label="Số điện thoại"
       ref="phoneNumber"
@@ -56,8 +64,35 @@
     >
       <a-input v-model="user.phoneNumber" type="text" :allowClear="true" />
     </a-form-model-item>
-    <a-form-model-item label="Địa chỉ" ref="address" prop="address">
-      <a-input v-model="user.address" type="text" :allowClear="true" />
+    <a-form-model-item label="Địa chỉ" ref="location_id" prop="location_id">
+      <div class="select">
+        <a-select
+          show-search
+          :value="user.address"
+          placeholder="Vui lòng chọn địa chỉ quán"
+          style="width: 100%; border-left: none"
+          :default-active-first-option="false"
+          :show-arrow="true"
+          :filter-option="false"
+          :not-found-content="null"
+          :allowClear="true"
+          @change="handleChange"
+        >
+          <a-select-option v-for="d in listLocation" :key="d.id">
+            {{ d.full_address }}
+          </a-select-option>
+        </a-select>
+        <a-button
+          @click="showUser"
+          :style="`
+                border-left:none;
+                margin-left:-5px;
+                border-top-left-radius:0;
+                border-bottom-left-radius:0`"
+        >
+          <a-icon type="environment" />
+        </a-button>
+      </div>
     </a-form-model-item>
     <a-form-model-item label="Trạng thái" ref="active" prop="active">
       <a-input-number
@@ -74,10 +109,11 @@ import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 import moment from "moment";
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 
 export default {
   created() {
+    this.getListLocation();
     EventBus.$on("saveEdit", this.save);
     EventBus.$on("data", this.fetchDataEdit);
   },
@@ -113,11 +149,29 @@ export default {
       loading: false,
       imageUrl: "",
       dateFormatList: ["DD/MM/YYYY", "DD/MM/YY"],
+      listLocation: [],
     };
   },
   methods: {
     moment,
-    onChangeDate(date, dateString){
+    showUser() {},
+    getListLocation() {
+      http
+        .post("/location/list")
+        .then((response) => {
+          this.listLocation = response.data.data.items;
+        })
+        .catch((error) => {
+          this.$message.error(error.message);
+        });
+    },
+    handleChange(value) {
+      this.user.address = value;
+    },
+    handleChangeGender(value) {
+      this.user.gender = value;
+    },
+    onChangeDate(date, dateString) {
       this.user.birthDate = dateString;
     },
     fetchDataEdit(data) {
@@ -223,3 +277,9 @@ export default {
   mounted() {},
 };
 </script>
+<style scoped>
+.select {
+  display: flex;
+  position: relative;
+}
+</style>
