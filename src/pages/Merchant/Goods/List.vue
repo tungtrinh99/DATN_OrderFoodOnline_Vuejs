@@ -16,7 +16,7 @@ const entity = "restaurant-food";
 export default {
   data() {
     return {
-      title: "Đơn hàng",
+      title: "Đồ ăn",
       entity,
       isAction: true,
       isAdd: true,

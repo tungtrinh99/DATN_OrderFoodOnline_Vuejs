@@ -67,17 +67,7 @@
             </div>
           </a-form>
 
-          <div class="text-center p-t-12">
-            <span class="txt1"> Quên </span>
-            <a class="txt2" href="#"> Tên đăng nhập / Mật khẩu? </a>
-          </div>
-
-          <div class="text-center p-t-136">
-            <a class="txt2" href="#">
-              Tạo tài khoản mới
-              <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-            </a>
-          </div>
+          
         </form>
       </div>
     </div>
@@ -163,7 +153,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding: 177px 130px 33px 95px;
+  padding: 130px 130px;
 }
 .login100-pic {
   width: 316px;

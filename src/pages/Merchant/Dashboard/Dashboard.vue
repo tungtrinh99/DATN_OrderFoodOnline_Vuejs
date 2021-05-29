@@ -18,13 +18,11 @@ export default {
     OverviewCard,
   },
   methods: {
-    getRestaurantId(){
-      return JSON.parse(localStorage.getItem("merchant_restaurant_id"))
-    },
+    
     getOverviewData() {
       http
         .post("/orders/list", {
-          id: this.getRestaurantId(),
+          id: this.idRestaurant,
         })
         .then((res) => {
           this.overviewCard[2].count = res.data.total_order;
@@ -83,10 +81,11 @@ export default {
     ];
     return {
       overviewCard,
+      idRestaurant : null
     };
   },
   created(){
-    this.getRestaurantId();
+    this.idRestaurant = JSON.parse(localStorage.getItem("merchant_restaurant_id"));
   }
 };
 </script>

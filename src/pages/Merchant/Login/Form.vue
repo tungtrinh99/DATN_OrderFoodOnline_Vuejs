@@ -66,18 +66,6 @@
               </button>
             </div>
           </a-form>
-
-          <div class="text-center p-t-12">
-            <span class="txt1"> Quên </span>
-            <a class="txt2" href="#"> Tên đăng nhập / Mật khẩu? </a>
-          </div>
-
-          <div class="text-center p-t-136">
-            <a class="txt2" href="#">
-              Tạo tài khoản mới
-              <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-            </a>
-          </div>
         </form>
       </div>
     </div>
@@ -102,6 +90,10 @@ export default {
             .then((response) => {
               if (response.data.errorCode == 0) {
                 this.notify = response.data.errorMessage;
+                this.$notification["error"]({
+                  message: "Thông báo đăng nhập",
+                  description: this.notify,
+                });
               } else {
                 let data = response.data.user;
                 this.$notification["success"]({
@@ -113,21 +105,22 @@ export default {
                   JSON.stringify(data.id)
                 );
                 localStorage.setItem("merchant_logged_in", 1);
-                 http
-                  .get("/restaurant/detail", { params:{
-                    userId: data.id
-                  } })
+                http
+                  .get("/restaurant/detail", {
+                    params: {
+                      userId: data.id,
+                    },
+                  })
                   .then((res) => {
                     localStorage.setItem(
                       "merchant_restaurant_id",
                       JSON.stringify(res.data.data.items[0].id)
                     );
+                    this.$router.push("/merchant/dashboard");
                   })
-                  .catch(err=>{
+                  .catch((err) => {
                     console.log(err);
-                  })
-                  
-                this.$router.push("/merchant/dashboard");
+                  });
               }
             })
             .catch((error) => {
@@ -174,7 +167,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding: 177px 130px 33px 95px;
+  padding: 130px 130px;
 }
 .login100-pic {
   width: 316px;

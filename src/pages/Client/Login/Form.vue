@@ -62,7 +62,7 @@
           "
           target="_blank"
           href="https://now.vn/gioi-thieu#footer-bottom"
-          >Chính sách quy định của Foody</a
+          >Chính sách quy định của Nghiện Ăn</a
         >
       </div>
     </a-form>
