@@ -4,10 +4,13 @@ export default {
     ,
     restaurant : 'Quán ăn'
     ,
-    user:'Người dùng'
+    customer:'Khách hàng'
+    ,
+    merchant:'Đối tác'
     ,
     location:'Địa điểm'
     ,
     order:'Đơn hàng'
+    ,'restaurant-food' :'Đồ ăn'
     
 }

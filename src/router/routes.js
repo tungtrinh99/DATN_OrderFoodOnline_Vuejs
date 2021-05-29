@@ -16,7 +16,10 @@ import OrderRestaurant from "@/pages/Merchant/Order/List.vue";
 import FoodRestaurant from "@/pages/Merchant/Goods/List.vue";
 import LoginMerchant from "@/pages/Merchant/Login/Form.vue";
 import MerchantDashboardLayout from "@/layout/Merchant/DashboardLayout.vue";
-import DashboardMerchant from "@/pages/merchant/Dashboard/Dashboard.vue"
+import DashboardMerchant from "@/pages/merchant/Dashboard/Dashboard.vue";
+
+const appName = " | Nghiện ăn";
+
 const routes = [{
     path: "/",
     component: Index,
@@ -25,26 +28,34 @@ const routes = [{
         path: "home",
         name: "Trang chủ",
         component: Home,
-
+        meta : {
+          title : 'Trang chủ' + appName
+        }
       },
       {
         path: "detail-restaurant",
         name: "Chi tiết món",
         component: RestaurantDetail,
-
+        meta : {
+          title : 'Quán ăn' + appName
+        }
       },
       {
         path: "register",
         name: "Đăng kí",
         component: RegisterPage,
-
+        meta : {
+          title : 'Đăng kí' + appName
+        }
 
       },
       {
         path: "/login",
         name: "Đăng nhập",
         component: LoginPage,
-
+        meta : {
+          title : 'Đăng nhập' + appName
+        }
 
       }
     ]
@@ -61,15 +72,17 @@ const routes = [{
         title: "Tổng quan",
         component: Dashboard,
         meta: {
-          auth: true
+          auth: true,
+          title : 'Tổng quan' +appName
         }
       },
       {
         path: "food",
-        title: "Đồ ăn",
+        title: "Món ăn",
         component: Goods,
         meta: {
           auth: true,
+          title : 'Món ăn' +appName
         },
       },
       {
@@ -78,14 +91,16 @@ const routes = [{
         component: Customer,
         meta: {
           auth: true,
+          title : 'Khách hàng' +appName
         },
       },
       {
         path: "merchant",
-        title: "Chủ quán",
+        title: "Đối tác",
         component: Merchant,
         meta: {
           auth: true,
+          title : 'Đối tác' +appName
         },
       },
       {
@@ -94,6 +109,7 @@ const routes = [{
         component: Restaurant,
         meta: {
           auth: true,
+          title : 'Quán ăn' +appName
         },
       }, {
         path: "location",
@@ -101,6 +117,7 @@ const routes = [{
         component: Location,
         meta: {
           auth: true,
+          title : 'Địa điểm' +appName
         },
       },
       {
@@ -109,6 +126,7 @@ const routes = [{
         component: Order,
         meta: {
           auth: true,
+          title : 'Đơn hàng' +appName
         },
       },
 
@@ -130,7 +148,7 @@ const routes = [{
     component: LoginMerchant,
     meta: {
       authMerchant: false,
-      title: "Đăng nhập",
+      title: "Đăng nhập" + appName,
     },
   },
   {
@@ -138,21 +156,26 @@ const routes = [{
     component: MerchantDashboardLayout,
     redirect: "merchant/order",
     meta: {
-      auth: true
+      auth: true,
+
     },
     children: [{
         path: "order",
         title: "Đơn hàng",
         component: OrderRestaurant,
         meta: {
-          authMerchant: true
+          authMerchant: true,
+          title: "Đơn hàng" + appName,
+
         }
       },{
         path: "food",
-        title: "Đồ ăn",
+        title: "Món ăn",
         component: FoodRestaurant,
         meta: {
-          authMerchant: true
+          authMerchant: true,
+          title: "Món ăn" + appName,
+
         }
       },
       {
@@ -160,7 +183,9 @@ const routes = [{
         title: "Tổng quan",
         component: DashboardMerchant,
         meta: {
-          authMerchant: true
+          authMerchant: true,
+          title: "Tổng quan" + appName,
+
         }
       }
     ]

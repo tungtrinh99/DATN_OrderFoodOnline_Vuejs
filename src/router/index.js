@@ -14,6 +14,13 @@ router.beforeEach((to, from, next) => {
   let adminLoggedIn = JSON.parse(localStorage.getItem('admin_logged_in'));
   let merchantLoggedIn = JSON.parse(localStorage.getItem('merchant_logged_in'));
   let customerLoggedIn = JSON.parse(localStorage.getItem('default_auth_token'));
+  const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title);
+
+  // If a route with a title was found, set the document (page) title to that value.
+  if (nearestWithTitle) document.title = nearestWithTitle.meta.title;
+
+
+  next();
   if (to.matched.some(record => record.meta.auth)) {
 
     if (!adminLoggedIn) {
