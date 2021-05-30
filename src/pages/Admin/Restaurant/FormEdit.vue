@@ -45,13 +45,14 @@
             show-search
             :value="restaurant.location_id"
             placeholder="Vui lòng chọn địa chỉ quán"
-            style="width: 100%; border-left: none"
+            style="width: 87%; border-left: none"
             :default-active-first-option="false"
             :show-arrow="true"
             :filter-option="false"
             :not-found-content="null"
             :allowClear="true"
             @change="handleChange"
+            @focus="getListLocation"
           >
             <a-select-option v-for="d in listLocation" :key="d.id">
               {{ d.full_address }}
@@ -65,7 +66,7 @@
                 border-top-left-radius:0;
                 border-bottom-left-radius:0`"
           >
-            <a-icon type="environment" />
+            <a-icon type="plus" />
           </a-button>
         </div>
       </a-form-model-item>
@@ -100,21 +101,20 @@
       </a-form-model-item>
     </a-form-model>
     <a-modal
-      width="80%"
-      v-model="visibleUser"
-      :title="'Địa điểm'"
+      width="50%"
+      v-model="visibleLocation"
+      :title="'Thêm địa điểm'"
       cancelText="Đóng"
-      okText="Chọn"
+      okText="Lưu"
+      @ok="saveLocation"
       centered
       :bodyStyle="{
         padding: '16px',
-        height: '80vh',
-        overflow: 'hidden',
+        height: '70vh',
+        overflow: 'auto',
       }"
     >
-      <list
-        
-      ></list>
+      <list @closeForm="closeForm"></list>
     </a-modal>
   </div>
 </template>
@@ -164,13 +164,19 @@ export default {
       dateFormatList: ["DD/MM/YYYY", "DD/MM/YY"],
       listLocation: [],
       listTypeRestaurant: [],
-      visibleUser: false,
+      visibleLocation: false,
     };
   },
   methods: {
     moment,
+    saveLocation() {
+      EventBus.$emit("saveLocation");
+    },
+    closeForm() {
+      this.visibleLocation = false;
+    },
     showUser() {
-      this.visibleUser = true;
+      this.visibleLocation = true;
     },
     fetchDataEdit(data) {
       this.restaurant.title = data.title;

@@ -15,6 +15,11 @@
           okText="Lưu"
           cancelText="Hủy"
           @ok="save"
+          :bodyStyle="{
+            padding: '16px',
+            height: '70vh',
+            overflow: 'auto',
+          }"
         >
           <form-goods
             :entity="entity"
@@ -41,7 +46,7 @@
             v-if="entity == 'location'"
             @hideModal="hideModal"
           ></form-location>
-           <form-add-restaurant-food
+          <form-add-restaurant-food
             :entity="entity"
             v-if="entity == 'restaurant-food'"
             @hideModal="hideModal"
@@ -68,7 +73,7 @@
       :entity="entity"
       :key="key"
       :isAction="isAction"
-      :isMerchant ="isMerchant"
+      :isMerchant="isMerchant"
       @openRecord="openRecord($event)"
     ></base-grid>
   </div>
@@ -84,12 +89,11 @@ import Restaurant from "../../pages/Admin/Restaurant/Form";
 import Location from "../../pages/Admin/Location/Form";
 import FoodMerchant from "../../pages/Merchant/Goods/Form";
 
-
 import Constant from "../../constant";
 
 import EventBus from "../../event-bus";
 import mixin from "@/mixin";
-import Lang from "../../common/Lang"
+import Lang from "../../common/Lang";
 export default {
   mixins: [mixin],
   components: {
@@ -99,10 +103,13 @@ export default {
     "form-merchant": Merchant,
     "form-restaurant": Restaurant,
     "form-location": Location,
-    "form-add-restaurant-food":FoodMerchant
+    "form-add-restaurant-food": FoodMerchant,
   },
   data() {
-    const column = ColumnConfig[this.entity === "restaurant-food"?"food_restaurant":this.entity];
+    const column =
+      ColumnConfig[
+        this.entity === "restaurant-food" ? "food_restaurant" : this.entity
+      ];
     const title = Lang[this.entity] || "";
 
     return {
@@ -119,7 +126,7 @@ export default {
     isAction: Boolean,
     isAdd: Boolean,
     isTabs: Boolean,
-    isMerchant : Boolean
+    isMerchant: Boolean,
   },
   methods: {
     show() {

@@ -1,4 +1,5 @@
 <template>
+<div style="height: 100%; width: 100%">
   <a-form-model
     :label-col="labelCol"
     :wrapper-col="wrapperCol"
@@ -75,13 +76,20 @@
       </a-select>
     </a-form-model-item>
   </a-form-model>
+  <open-street-map @coordinates="getCoordinates"></open-street-map>
+  </div>
+
 </template>
 <script>
 import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 import moment from "moment";
+import Osm from "../../../components/OpenStreetMap"
 export default {
+   components: {
+    "open-street-map": Osm,
+  },
   created() {
     EventBus.$on("saveEdit", this.save);
     EventBus.$on("data", this.fetchDataEdit);
@@ -103,7 +111,9 @@ export default {
       ward: void 0,
       province_id : null,
       district_id: null,
-      ward_id : null
+      ward_id : null,
+      lat: null,
+      lng: null,
     };
     return {
       formData,
@@ -125,6 +135,10 @@ export default {
     };
   },
   methods: {
+    getCoordinates(value){
+      this.formData.lng = value.lng;
+      this.formData.lat = value.lat;
+    },
     fetchDataEdit(data) {
       this.formData.title = data.title;
       this.formData.province= {key : data.province_id , label : data.province_title};
@@ -141,6 +155,8 @@ export default {
         province_id: this.formData.province_id,
         district_id: this.formData.district_id,
         ward_id: this.formData.ward_id,
+        longitude: this.formData.lng,
+        latitude: this.formData.lat,
       };
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {

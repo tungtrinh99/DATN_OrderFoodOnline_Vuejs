@@ -55,6 +55,11 @@
         okText="Lưu"
         cancelText="Hủy"
         @ok="save"
+        :bodyStyle="{
+          padding: '16px',
+          height: '70vh',
+          overflow: 'auto',
+        }"
       >
         <form-edit-food
           v-if="entity == 'food'"
@@ -221,8 +226,7 @@ export default {
           .catch((error) => {
             this.$message.error(error.message);
           });
-      } 
-      else if (this.isMerchant) {
+      } else if (this.isMerchant) {
         http
           .post(`/${this.entity}/list`, {
             id: JSON.parse(localStorage.getItem("merchant_restaurant_id")),
@@ -233,8 +237,7 @@ export default {
           .catch((error) => {
             this.$message.error(error.message);
           });
-      }
-      else if (!data) {
+      } else if (!data) {
         http
           .post(`/${this.entity}/list`)
           .then((response) => {
@@ -243,7 +246,7 @@ export default {
           .catch((error) => {
             this.$message.error(error.message);
           });
-      } 
+      }
     },
     showDeleteConfirm(record) {
       const entity = this.entity;

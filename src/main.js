@@ -7,13 +7,13 @@ import VueCookie from 'vue-cookie';
 import 'ant-design-vue/dist/antd.css';
 import * as VueGoogleMaps from 'vue2-google-maps'
 import App from './App';
-
+import 'leaflet/dist/leaflet.css';
 Vue.config.productionTip = false
 Vue.use(Antd);
 Vue.use(VueCookie);
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyDNI_ZWPqvdS6r6gPVO50I4TlYkfkZdXh8',
+    key: 'AIzaSyBBrtsMZRBgaFoi3p3wMFQOyVO4TB45n2A',
     libraries: 'places',
   }
 });
