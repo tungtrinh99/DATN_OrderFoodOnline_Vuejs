@@ -7,7 +7,9 @@
         :data-source="cartData"
       >
         <div slot="header">
-          <h3 :style="{ textAlign: 'left',fontWeight : '700' }">Chi tiết đơn hàng</h3>
+          <h3 :style="{ textAlign: 'left', fontWeight: '700' }">
+            Chi tiết đơn hàng
+          </h3>
 
           <div class="user">
             <span
@@ -78,18 +80,8 @@
         </div>
         <a-row>
           <a-col :span="10">
-            <div>
-              <GmapMap
-                :center="center"
-                :zoom="12"
-                style="width: 100%; height: 300px"
-              >
-                <GmapMarker
-                  :key="index"
-                  v-for="(m, index) in markers"
-                  :position="m.position"
-                />
-              </GmapMap>
+            <div style="height : 300px;border : 1px solid #eee">
+              <open-street-map :waypoints = "waypoints"></open-street-map>
             </div>
             <div class="direction-content">
               <div class="direction-info">
@@ -376,6 +368,7 @@ import http from "../../http-common";
 import moment from "moment";
 // import utils from "./../../utils";
 import GoogleMap from "../GoogleMap";
+import Osm from "../../components/Maps/OpenStreetMap";
 import mixin from "./../../mixin";
 export default {
   mixins: [mixin],
@@ -386,11 +379,17 @@ export default {
   },
   components: {
     GoogleMap,
+    "open-street-map": Osm,
   },
   data() {
     let customerAddress = JSON.parse(localStorage.getItem("user_address"));
     let listAddress = [customerAddress];
     let customerId = JSON.parse(localStorage.getItem("user_customer_id"));
+    let restaurantInfo = JSON.parse(localStorage.getItem("client_restaurant_info"));
+    let waypoints = [
+      { lat : restaurantInfo.latitude , lng : restaurantInfo.longitude },
+      { lat: customerAddress.marker.lat , lng: customerAddress.marker.lng },
+    ];
     return {
       moment,
       cartData: [],
@@ -409,13 +408,14 @@ export default {
       center: { lat: 21.0278, lng: 105.8342 },
       markers: {
         position: {
-          lat: this.restaurantData.longitude,
-          lng: this.restaurantData.latitude,
+          lat: this.restaurantData.latitude,
+          lng: this.restaurantData.longitude,
         },
       },
       locationVisible: false,
       mapVisible: false,
-      customerId
+      customerId,
+      waypoints,
     };
   },
   computed: {
@@ -427,6 +427,7 @@ export default {
         this.restaurantData.longitude
       );
     },
+   
   },
   methods: {
     setAddress(data) {

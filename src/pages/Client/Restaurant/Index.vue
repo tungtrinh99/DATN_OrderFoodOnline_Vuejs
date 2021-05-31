@@ -237,7 +237,7 @@ export default {
     },
   },
   created() {
-    this.id = JSON.parse(localStorage.getItem("client_restaurant_id"));
+    this.id = JSON.parse(localStorage.getItem("client_restaurant_info")).id;
     this.fetchData();
     this.getDiscountCode();
     this.getFood();

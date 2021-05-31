@@ -1,7 +1,7 @@
 <template>
   <div class="item-restaurant">
     <router-link class="item-content" :to="'/detail-restaurant'">
-      <div @click="nextPage(data.id)">
+      <div @click="nextPage(data)">
         <div class="img-restaurant">
           <img
             :src="require(`../../../public/images/${data.avatar_id}`)"
@@ -43,8 +43,8 @@ export default {
     data: Object,
   },
   methods: {
-    nextPage(id) {
-      localStorage.setItem("client_restaurant_id", JSON.stringify(id));
+    nextPage(data) {
+      localStorage.setItem("client_restaurant_info", JSON.stringify(data));
     },
     
   },

@@ -12,8 +12,16 @@
         :url="url"
         :attribution="attribution"
       />
-       
+       <l-marker v-for="(marker,index) in waypoints" :key="index" :lat-lng="marker">
+        <l-popup>
+          <div >
+            I am a popup
+          </div>
+        </l-popup>
+      </l-marker>
+      <l-routing-machine :waypoints="waypoints"/>
     </l-map>
+    
 </template>
 <script>
 import { latLng } from "leaflet";
@@ -22,6 +30,7 @@ import LGeosearch from "vue2-leaflet-geosearch";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { Icon } from "leaflet";
 delete Icon.Default.prototype._getIconUrl;
+import LRoutingMachine from "./LRoutingMachine"
 Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
@@ -37,17 +46,23 @@ export default {
     LPopup,
     LTooltip,
     LGeosearch,
+    LRoutingMachine 
   },
-  
+  props:{
+    waypoints : {
+      type : Array,
+      default : {}
+    }
+  },
   data() {
    
     return {
-      zoom: 13,
+      zoom: 14,
       center: latLng(21.0278, 105.8342),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      currentZoom: 11.5,
+      currentZoom: 13,
       currentCenter: latLng(21.0278, 105.8342),
       showParagraph: false,
       mapOptions: {
@@ -57,6 +72,10 @@ export default {
       geosearchOptions: {
         provider: new OpenStreetMapProvider(),
       },
+      markers : [
+        {lat : 21.004856735069424  , lng : 105.82219399999997}
+        ,{lat : 21.035668435608027, lng :105.8524185}
+      ]
       
     };
   },
@@ -75,3 +94,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+
+</style>

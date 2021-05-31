@@ -13,7 +13,7 @@
   >
     <a-select-option v-for="d in data" :key="d.id">
       <router-link class="item-content" :to="'/detail-restaurant'">
-        <div class="item-restaurant" @click="nextPage(d.id)">
+        <div class="item-restaurant" @click="nextPage(d)">
           <div class="img-restaurant">
             <img
               :src="require('../../../public/images/' + d.avatar_id)"
@@ -43,8 +43,8 @@ export default {
     };
   },
   methods: {
-    nextPage(id) {
-      localStorage.setItem("client_restaurant_id", JSON.stringify(id));
+    nextPage(data) {
+      localStorage.setItem("client_restaurant_info", JSON.stringify(data));
     },
     fetchData() {
       http

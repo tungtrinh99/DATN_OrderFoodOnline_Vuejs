@@ -6,7 +6,7 @@ class RestaurantController {
   list(req, res, next) {
     const textSearch = req.body.textSearch || "";
     db.query(`
-              select a.*,b.full_address , c.fullname as name_of_user_id , d.title as name_of_restaurant_type_id from 
+              select a.*,b.full_address,b.longitude,b.latitude , c.fullname as name_of_user_id , d.title as name_of_restaurant_type_id from 
               restaurant a join location b on a.location_id = b.id join user c on a.user_id = c.id join restaurant_type d on a.type_id = d.id
               where a.title like "%${textSearch}%" or b.full_address like "%${textSearch}%"`,
       (err, result, field) => {
@@ -26,7 +26,7 @@ class RestaurantController {
     const id = req.body.id;
     const textSearch = req.body.textSearch || "";
     db.query(`
-              select b.* , a.restaurant_id , a.combo_id , a.cost , a.discount , a.content , c.title AS name_of_food_type from restaurant_food as a join food as b on a.food_id = b.id JOIN food_type AS c ON b.type = c.id
+              select b.* , a.restaurant_id , a.combo_id , a.cost , a.discount , a.content , c.title AS name_of_food_type from restaurant_food as a join food as b on a.food_id = b.id JOIN food_type AS c ON b.type = c.id 
               where a.restaurant_id = ${id} and b.title like "%${textSearch}%"`,
       (err, result, field) => {
         if (!err) {

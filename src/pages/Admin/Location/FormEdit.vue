@@ -76,7 +76,7 @@
       </a-select>
     </a-form-model-item>
   </a-form-model>
-  <open-street-map @coordinates="getCoordinates"></open-street-map>
+  <open-street-map @coordinates="getCoordinates" :waypoints="waypoints"></open-street-map>
   </div>
 
 </template>
@@ -85,7 +85,7 @@ import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 import moment from "moment";
-import Osm from "../../../components/OpenStreetMap"
+import Osm from "../../../components/Maps/OpenStreetMap"
 export default {
    components: {
     "open-street-map": Osm,
@@ -132,6 +132,7 @@ export default {
       wardTitle: "",
       isWardDisabled : false,
       isDistrictDisabled : false , 
+      waypoints : []
     };
   },
   methods: {
