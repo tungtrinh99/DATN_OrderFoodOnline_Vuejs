@@ -19,7 +19,6 @@ class OrderController {
         res.send({
           'errorCode': 1,
           'total_order': result.length,
-          'total_cost':result.reduce((a,b)=>a.grand_total+b.grand_total),
           'data': {
             'items': result
           },

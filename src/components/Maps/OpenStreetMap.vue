@@ -95,5 +95,7 @@ export default {
 };
 </script>
 <style scoped>
-
+.leaflet-top.leaflet-right{
+  display : none;
+}
 </style>

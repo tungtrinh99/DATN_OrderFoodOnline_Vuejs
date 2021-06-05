@@ -340,7 +340,6 @@ export default {
       this.$emit("reload");
     },
     renderStatus(text) {
-      var title = "title";
       return this.status.find((p) => p.value == text).title;
     },
     getTextGender(index) {

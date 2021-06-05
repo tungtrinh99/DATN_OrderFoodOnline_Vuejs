@@ -1,7 +1,7 @@
 <template>
   <div ref="reportOrder" id="reportOrder">
     <div class="order-title">Hóa đơn bán hàng</div>
-    <div class="order-datetime">Thời gian : {{ convertDate }}</div>
+    <div class="order-datetime">{{ convertDate }}</div>
     <br />
     <div class="order-info">
       <span><b>Nhà hàng</b> : {{ data.name_of_restaurant }}</span
@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     convertDate() {
-      return moment(this.data.create_at).format("HH:mm DD/MM/YYYY");
+      return moment(this.data.create_at).format("HH:mm - DD/MM/YYYY");
     },
   },
   created() {

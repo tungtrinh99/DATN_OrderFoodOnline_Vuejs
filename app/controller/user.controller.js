@@ -67,6 +67,7 @@ class UserController {
       'data': file.filename
     })
   }
+ 
 }
 
 module.exports = new UserController;

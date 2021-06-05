@@ -31,7 +31,12 @@ export default {
           styleClass: 'badge badge-secondary',
           sortOrder: 4,
         },
-
+        {
+          id: 5,
+          text: "Đang tìm tài xế",
+          styleClass: 'badge badge-secondary',
+          sortOrder: 5,
+        },
       ],
     }
   },

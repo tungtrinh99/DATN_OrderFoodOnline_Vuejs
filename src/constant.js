@@ -19,7 +19,8 @@ const orderStatus = {
     CHO_XAC_NHAN : 1 , 
     DANG_VAN_CHUYEN : 2 ,
     DA_HOAN_THANH : 3 , 
-    HUY : 4
+    HUY : 4,
+    DANG_TIM_TAI_XE : 5
 }
 const userStatus = {
     SAN_SANG : 1,
@@ -61,7 +62,7 @@ export default  {
         {
             value : orderStatus.CHO_XAC_NHAN,
             text:'Chờ xác nhận',
-            color: '#cccc00',
+            color: 'orange',
 
         },{
             value : orderStatus.DANG_VAN_CHUYEN,
@@ -77,7 +78,13 @@ export default  {
         },{
             value : orderStatus.HUY,
             text:'Hủy',
-            color: '#343a40',
+            color: 'purple',
+
+        },
+        {
+            value : orderStatus.DANG_TIM_TAI_XE,
+            text:'Đang tìm tài xế',
+            color: 'red',
 
         }
     ],

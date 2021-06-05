@@ -16,6 +16,7 @@ const customer = require('../controller/customer.controller');
 const auth = require("../controller/auth.controller");
 const order = require("../controller/order.controller");
 const orderItems = require("../controller/orderItems.controller");
+const vehicle = require("../controller/vehicle.controller");
 
 //goods
 router.post('/food/list', food.list);
@@ -87,4 +88,6 @@ router.get('/order/detail',order.detail)
 router.get('/order-item/list', orderItems.list);
 router.post('/order-item/save', orderItems.save);
 
+//danh sách tài xế
+router.get('/driver/list',vehicle.list);
 module.exports = router;

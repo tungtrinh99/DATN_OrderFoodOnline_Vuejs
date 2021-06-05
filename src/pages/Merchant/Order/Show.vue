@@ -43,7 +43,7 @@
                 <span>{{ orderStatusText }}</span>
               </div>
               <div class="doh-button-wrapper" v-if="formData.status == 1">
-                <a-button-group :size="size">
+                <a-button-group>
                   <a-button type="primary" @click="applyOrder">
                     <a-icon type="check" />Xác nhận
                   </a-button>
@@ -83,11 +83,9 @@
                   </a-descriptions-item>
 
                   <a-descriptions-item label="Địa chỉ">
-                    {{ formData.location_destination }}
-                  </a-descriptions-item>
-                  <a-descriptions-item label="Địa điểm trả hàng">
                     {{ formData.location_arrival }}
                   </a-descriptions-item>
+                 
                 </a-descriptions>
               </div>
             </a-col>
@@ -283,7 +281,7 @@ export default {
         .post(
           "/orders/update",
           {
-            status: 2,
+            status: 5,
           },
           {
             params: {
@@ -306,10 +304,10 @@ export default {
     cancelOrder() {
       let component = this;
       this.$confirm({
-        title: `Bạn có huỷ đơn hàng ${component.formData.order_code} không?`,
-        okText: "Xác nhận",
+        title: `Bạn có muốn huỷ xác nhận đơn hàng ${component.formData.order_code} không?`,
+        okText: "Có",
         okType: "danger",
-        cancelText: "Hủy",
+        cancelText: "Không",
 
         onOk() {
           http
