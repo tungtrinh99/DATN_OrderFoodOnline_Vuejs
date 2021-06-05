@@ -35,7 +35,6 @@ export default {
   methods: {
     setPlace(place) {
       this.currentPlace = place;
-      console.log(place);
     }, 
     addMarker() {
       if (this.currentPlace) {

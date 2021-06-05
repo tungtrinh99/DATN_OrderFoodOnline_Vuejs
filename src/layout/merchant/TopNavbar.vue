@@ -30,7 +30,7 @@
       <a-row>
         <a-col :span="24">
           <a-descriptions
-            title="Thông tin người dùng"
+            title="Thông tin tài khoản"
             :column="1"
             :size="'middle'"
             :style="{

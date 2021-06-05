@@ -265,6 +265,7 @@ export default {
 }
 .detail-restaurant-img {
   width: 100%;
+  border: 1px solid #ebebeb;
 }
 .detail-restaurant-info {
   text-align: left;

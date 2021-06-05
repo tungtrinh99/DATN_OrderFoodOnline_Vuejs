@@ -473,7 +473,8 @@ export default {
     },
     order() {
       let data = {
-        order_code: "T-" + Math.random().toString(18).substring(4),
+        // order_code: "T-" + Math.random().toString(18).substring(4),
+        order_code : Math.floor(Math.random() * (100000 - 1)) + 1,
         customer_id: this.formData.id,
         restaurant_id: this.restaurantData.id,
         drive_id: null,

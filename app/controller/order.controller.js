@@ -82,7 +82,7 @@ class OrderController {
   detail(req, res, next) {
     let id = req.query.id;
     db.query(
-      `SELECT a.*,b.fullname as name_of_customer FROM orders a JOIN user b ON a.customer_id = b.id  WHERE a.id = ${id}`,
+      `SELECT a.*,b.fullname as name_of_customer,b.phone_number as customer_phone , b.avatar_id as customer_avatar , b.user_code, c.title as name_of_restaurant FROM  orders a JOIN user b ON a.customer_id = b.id join restaurant c ON a.restaurant_id = c.id WHERE a.id = ${id}`,
       (err, result, field) => {
         if (!err) {
           res.send({

@@ -4,54 +4,14 @@
       style="border: 1px solid rgb(235, 237, 240)"
       :title="textTitle"
     >
+      <template slot="subTitle"
+        ><a-icon type="undo" @click="reload" />
+      </template>
       <template slot="extra">
-        <a-icon type="undo" @click="reload" />
         <a-button key="1" type="primary" @click="show" v-if="isAdd">
           Thêm mới
         </a-button>
-        <a-modal
-          v-model="visible"
-          :title="title"
-          okText="Lưu"
-          cancelText="Hủy"
-          @ok="save"
-          :bodyStyle="{
-            padding: '16px',
-            height: '70vh',
-            overflow: 'auto',
-          }"
-        >
-          <form-goods
-            :entity="entity"
-            v-if="entity == 'food'"
-            @hideModal="hideModal"
-          ></form-goods>
-          <form-customer
-            :entity="entity"
-            v-if="entity == 'customer'"
-            @hideModal="hideModal"
-          ></form-customer>
-          <form-merchant
-            :entity="entity"
-            v-if="entity == 'merchant'"
-            @hideModal="hideModal"
-          ></form-merchant>
-          <form-restaurant
-            :entity="entity"
-            v-if="entity == 'restaurant'"
-            @hideModal="hideModal"
-          ></form-restaurant>
-          <form-location
-            :entity="entity"
-            v-if="entity == 'location'"
-            @hideModal="hideModal"
-          ></form-location>
-          <form-add-restaurant-food
-            :entity="entity"
-            v-if="entity == 'restaurant-food'"
-            @hideModal="hideModal"
-          ></form-add-restaurant-food>
-        </a-modal>
+
       </template>
     </a-page-header>
     <a-tabs
@@ -76,6 +36,49 @@
       :isMerchant="isMerchant"
       @openRecord="openRecord($event)"
     ></base-grid>
+    <a-modal
+      v-model="visible"
+      :title="title"
+      okText="Lưu"
+      cancelText="Hủy"
+      @ok="save"
+      :bodyStyle="{
+        padding: '16px',
+        height: '70vh',
+        overflow: 'auto',
+      }"
+    >
+      <form-goods
+        :entity="entity"
+        v-if="entity == 'food'"
+        @hideModal="hideModal"
+      ></form-goods>
+      <form-customer
+        :entity="entity"
+        v-if="entity == 'customer'"
+        @hideModal="hideModal"
+      ></form-customer>
+      <form-merchant
+        :entity="entity"
+        v-if="entity == 'merchant'"
+        @hideModal="hideModal"
+      ></form-merchant>
+      <form-restaurant
+        :entity="entity"
+        v-if="entity == 'restaurant'"
+        @hideModal="hideModal"
+      ></form-restaurant>
+      <form-location
+        :entity="entity"
+        v-if="entity == 'location'"
+        @hideModal="hideModal"
+      ></form-location>
+      <form-add-restaurant-food
+        :entity="entity"
+        v-if="entity == 'restaurant-food'"
+        @hideModal="hideModal"
+      ></form-add-restaurant-food>
+    </a-modal>
   </div>
 </template>
 
@@ -90,7 +93,6 @@ import Location from "../../pages/Admin/Location/Form";
 import FoodMerchant from "../../pages/Merchant/Goods/Form";
 
 import Constant from "../../constant";
-
 import EventBus from "../../event-bus";
 import mixin from "@/mixin";
 import Lang from "../../common/Lang";
@@ -127,6 +129,7 @@ export default {
     isAdd: Boolean,
     isTabs: Boolean,
     isMerchant: Boolean,
+    isExport: Boolean,
   },
   methods: {
     show() {
@@ -150,6 +153,7 @@ export default {
       Obj.status = item;
       EventBus.$emit("filterDataByStatus", Obj);
     },
+
   },
   created() {
     EventBus.$on("reload", this.reload);

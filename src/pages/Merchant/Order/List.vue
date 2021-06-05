@@ -3,10 +3,8 @@
     <base-list
       :textTitle="title"
       :entity="entity"
-      :isAction="isAction"
-      :isAdd="isAdd"
-      :isTabs="isTabs"
       :isMerchant = "isMerchant"
+      :isExport="isExport"
       @openRecord="openRecord($event)"
     ></base-list>
     <show
@@ -29,13 +27,13 @@ export default {
     return {
       title: "Đơn hàng",
       entity,
-      isAction: false,
-      isAdd: false,
+     
       isTabs: false,
       isMerchant : true,
       show: false,
       formData :{},
-      listItemOfOrder : []
+      listItemOfOrder : [],
+      isExport: true
     };
   },
   components: {

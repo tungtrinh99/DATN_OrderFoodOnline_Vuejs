@@ -61,7 +61,7 @@ export default  {
         {
             value : orderStatus.CHO_XAC_NHAN,
             text:'Chờ xác nhận',
-            color: '#f50',
+            color: '#cccc00',
 
         },{
             value : orderStatus.DANG_VAN_CHUYEN,
