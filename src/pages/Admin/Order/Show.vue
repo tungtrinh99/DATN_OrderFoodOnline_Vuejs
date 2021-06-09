@@ -41,7 +41,7 @@
                 ></div>
                 <span>{{ orderStatusText }}</span>
               </div>
-              <div class="doh-button-wrapper" v-if="formData.status == 5">
+              <div class="doh-button-wrapper" v-if="formData.status == 2">
                 <a-button @click="findDriver">
                   <a-icon type="car" />Gán tài xế
                 </a-button>
@@ -115,9 +115,11 @@
                     </a-popover>
 
                     <a-step title="Chờ xác nhận" />
+                    <a-step title="Đang tìm tài xế" />
                     <a-step title="Đang vận chuyển" />
                     <a-step title="Hoàn thành" />
                     <a-step title="Hủy" />
+
                   </a-steps>
                 </div>
               </div>
@@ -222,7 +224,7 @@
     <a-modal
       :title="'Danh sách tài xế'"
       v-model="showDriver"
-      width="50%"
+      width="30%"
       :bodyStyle="{
         padding: '16px',
         height: 'auto',
@@ -238,17 +240,22 @@
         item-layout="horizontal"
         :data-source="listDriver"
       >
-       
         <a-list-item slot="renderItem" slot-scope="item">
           <a slot="actions">
-            <a-button type="primary" @click="setDriver(item)"
-              >Gán đơn</a-button
+            
+<span
+              ></span
             >
+            <a-button type="primary" @click="setDriver(item)">Gán đơn</a-button>
           </a>
-          <a-list-item-meta :description="item.plates">
-            <a slot="title"
-              >Tài xế : {{item.name_of_driver}}</a
-            >
+          <a-list-item-meta :description="`Khoảng cách đến nhà hàng : ${distanceInKmBetweenEarthCoordinates(
+                  item.latitude,
+                  item.longitude,
+                  formData.latitude,
+                  formData.longitude
+                ).toFixed(2)}
+                km`">
+            <a  style="display:flex;align-items:center;justify-content:space-between" slot="title">{{ item.name_of_driver }} ( {{item.plates}} )<span class="doh-stt-icon" :style="{background :item.status == 1 ? 'red' : 'green',display:'block'}"></span></a>
             <a-avatar slot="avatar" icon="user" />
           </a-list-item-meta>
         </a-list-item>
@@ -283,7 +290,7 @@ export default {
       this.$emit("close");
     },
     findDriver() {
-        this.showDriver = true;
+      this.showDriver = true;
     },
     closeDriver() {
       this.showDriver = false;
@@ -298,33 +305,82 @@ export default {
           console.log(err);
         });
     },
-    setDriver(value){
+    setDriver(value) {
+      if (value.status == 0) {
         http
-        .post(
-          "/orders/update",
-          {
-            drive_id: value.driver_id,
-            status : 2
-          },
-          {
-            params: {
-              id: this.formData.id,
+          .post(
+            "/orders/update",
+            {
+              drive_id: value.driver_id,
+              status: 2,
             },
-          }
-        )
-        .then((res) => {
-          this.$notification["success"]({
-            message: "Thông báo",
-            description: `Gán đơn thành công cho tài xế ${value.name_of_driver}`,
+            {
+              params: {
+                id: this.formData.id,
+              },
+            }
+          )
+          .then((res) => {
+            this.$notification["success"]({
+              message: "Thông báo",
+              description: `Gán đơn thành công cho tài xế ${value.name_of_driver}`,
+            });
+
+            http
+              .post(
+                "/driver/update",
+                { status: 1 },
+                {
+                  params: {
+                    id: value.driver_id,
+                  },
+                }
+              )
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+
+            this.closeDriver();
+            this.close();
+            EventBus.$emit("reload");
+          })
+          .catch((err) => {
+            console.log(err);
           });
-          this.closeDriver();
-          this.close()
-          EventBus.$emit("reload");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+      }
+      else{
+        this.$notification["error"]({
+              message: "Thông báo",
+              description: `Tài xế ${value.name_of_driver} đang được gán một đơn khác`,
+            });
+
+      }
+    },
+    degreesToRadians(degrees) {
+      return (degrees * Math.PI) / 180;
+    },
+
+    distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+      var earthRadiusKm = 6371;
+
+      var dLat = this.degreesToRadians(lat2 - lat1);
+      var dLon = this.degreesToRadians(lon2 - lon1);
+
+      lat1 = this.degreesToRadians(lat1);
+      lat2 = this.degreesToRadians(lat2);
+
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) *
+          Math.sin(dLon / 2) *
+          Math.cos(lat1) *
+          Math.cos(lat2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return earthRadiusKm * c;
+    },
   },
   computed: {
     orderStatusText() {
@@ -416,4 +472,5 @@ tr:last-child td {
   font-size: 14px;
   color: #888888;
 }
+
 </style>

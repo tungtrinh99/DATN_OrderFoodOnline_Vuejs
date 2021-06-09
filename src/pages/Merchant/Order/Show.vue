@@ -281,7 +281,7 @@ export default {
         .post(
           "/orders/update",
           {
-            status: 5,
+            status: 2,
           },
           {
             params: {
@@ -314,7 +314,7 @@ export default {
             .post(
               "/orders/update",
               {
-                status: 4,
+                status: 5,
               },
               {
                 params: {

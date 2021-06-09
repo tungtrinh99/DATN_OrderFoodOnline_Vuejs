@@ -17,10 +17,10 @@ const restaurantType = {
 }
 const orderStatus = {
     CHO_XAC_NHAN : 1 , 
-    DANG_VAN_CHUYEN : 2 ,
-    DA_HOAN_THANH : 3 , 
-    HUY : 4,
-    DANG_TIM_TAI_XE : 5
+    DANG_VAN_CHUYEN : 3 ,
+    DA_HOAN_THANH : 4 , 
+    HUY : 5,
+    DANG_TIM_TAI_XE : 2
 }
 const userStatus = {
     SAN_SANG : 1,

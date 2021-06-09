@@ -14,28 +14,28 @@ export default {
           sortOrder: 1,
         },
         {
-          id: 2,
-          text: "Đang vận chuyển",
-          styleClass: 'badge badge-secondary',
-          sortOrder: 2,
-        },
-        {
           id: 3,
-          text: "Đã hoàn thành",
+          text: "Đang vận chuyển",
           styleClass: 'badge badge-secondary',
           sortOrder: 3,
         },
         {
           id: 4,
-          text: "Đã hủy",
+          text: "Đã hoàn thành",
           styleClass: 'badge badge-secondary',
           sortOrder: 4,
         },
         {
           id: 5,
-          text: "Đang tìm tài xế",
+          text: "Đã hủy",
           styleClass: 'badge badge-secondary',
           sortOrder: 5,
+        },
+        {
+          id: 2,
+          text: "Đang tìm tài xế",
+          styleClass: 'badge badge-secondary',
+          sortOrder: 2,
         },
       ],
     }

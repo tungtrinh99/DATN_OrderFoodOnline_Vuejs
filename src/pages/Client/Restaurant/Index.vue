@@ -37,35 +37,11 @@
                 <span>{{ formData.full_address }}</span>
               </div>
               <div class="rating">
-                <div class="stars">
-                  <span class="full"
-                    ><a-icon
-                      theme="twoTone"
-                      type="star"
-                      two-tone-color="#ffc107" /></span
-                  ><span class="full"
-                    ><a-icon
-                      theme="twoTone"
-                      type="star"
-                      two-tone-color="#ffc107" /></span
-                  ><span class="full"
-                    ><a-icon
-                      theme="twoTone"
-                      type="star"
-                      two-tone-color="#ffc107" /></span
-                  ><span class="full"
-                    ><a-icon
-                      theme="twoTone"
-                      type="star"
-                      two-tone-color="#ffc107" /></span
-                  ><span class="full"
-                    ><a-icon
-                      theme="twoTone"
-                      type="star"
-                      two-tone-color="#ffc107"
-                  /></span>
-                </div>
-                đánh giá
+                <span>
+                  <a-rate v-model="rate" :tooltips="descRate" />
+                  <span class="ant-rate-text">{{ descRate[rate - 1] }}</span>
+                </span>
+               
               </div>
               <div class="status-restaurant">
                 <div class="opentime-status">
@@ -142,10 +118,7 @@
     <div class="menu-restaurant container">
       <a-row>
         <a-col :span="15">
-          <list-food
-            :id="id"
-            :discountCodeList="discountCodeList"
-          ></list-food>
+          <list-food :id="id" :discountCodeList="discountCodeList"></list-food>
         </a-col>
         <a-col :span="1"></a-col>
         <a-col :span="8" :style="{ position: 'sticky', top: '64px' }">
@@ -171,6 +144,8 @@ export default {
       formData: {},
       discountCodeList: [],
       foodData: [],
+      rate: 3,
+      descRate: ["Rất không tốt", "Không tốt", "Bình thường", "Tốt", "Rất tốt"],
     };
   },
   components: {
@@ -197,9 +172,9 @@ export default {
     fetchData() {
       http
         .get("/restaurant/detail", {
-          params:{
+          params: {
             id: this.id,
-          }
+          },
         })
         .then((response) => {
           this.formData = response.data.data.items[0];
@@ -325,13 +300,9 @@ export default {
 }
 .rating {
   margin-bottom: 4px;
-  font-size: 14px;
-  display: flex;
-  justify-content: flex-start;
+  
 }
-.stars {
-  margin-right: 8px;
-}
+
 .link-merchant {
   margin-top: 10px;
   display: flex;

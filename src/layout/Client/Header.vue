@@ -36,89 +36,121 @@
                 class="user-avatar"
                 @click="showUserInfo"
               >
-              <a-icon type="user"></a-icon>
+                <a-icon type="user"></a-icon>
               </a-avatar>
               <a-button @click="login" v-else>Đăng nhập</a-button>
-              
             </div>
           </div>
         </div>
       </a-layout-header>
     </a-layout>
     <a-drawer
-      width="480"
+      width="320"
       placement="right"
       :closable="false"
       :visible="isShowUserInfo"
       @close="onClose"
+      :bodyStyle="{ background: '#fff' }"
     >
       <p :style="[pStyle, pStyle2]">Thông tin khách hàng</p>
-      <!-- <a-avatar
+      <a-avatar
         shape="square"
         :size="64"
         icon="user"
         :src="
           require(`../../../public/images/${
-            defaultAuthToken ? formData.avatar_id : avatarDefault
+            formData.avatar_id ? formData.avatar_id : avatarDefault
           }`)
         "
-      /> -->
+      />
       <p :style="pStyle">Cá nhân</p>
       <a-row>
-        <a-col :span="12">
+        <a-col :span="24">
           <div class="person-info">
-            <span>Họ tên</span>
+            <span>Họ tên : </span>
             <span>{{ formData ? formData.fullname : "" }}</span>
-          </div>
-        </a-col>
-        <a-col :span="12">
-          <div class="person-info">
-            <span>Giới tính</span>
-            <span>{{ formData ? formData.gender : "" }}</span>
           </div>
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="12">
+        <a-col :span="24">
           <div class="person-info">
-            <span>Ngày sinh</span>
-            <span>{{ formData ? moment(formData.birth_date).format("DD-MM-YYYY") : "" }}</span>
+            <span>Ngày sinh : </span>
+            <span>{{
+              formData ? moment(formData.birth_date).format("DD-MM-YYYY") : ""
+            }}</span>
           </div>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="24">
           <div class="person-info">
-            <span>Số điện thoại</span>
+            <span>Số điện thoại : </span>
             <span>{{ formData ? formData.phone_number : "" }}</span>
           </div>
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="12">
+        <a-col :span="24">
           <div class="person-info">
-            <span>Email</span>
+            <span>Email : </span>
             <span>{{ formData ? formData.email : "" }}</span>
           </div>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="24">
           <div class="person-info">
-            <span>Địa chỉ</span>
-            <span>{{ formData ? formData.address : "" }}</span>
+            <span>Địa chỉ : </span>
+            <span>{{ formData ? formData.full_address : "" }}</span>
           </div>
         </a-col>
       </a-row>
-      <p :style="pStyle">Giỏ hàng</p>
-      <a-button
-        type="primary"
-        :style="{ width: '90%', position: 'absolute', bottom: '50px' }"
-        @click="showFormEdit"
-        >Sửa thông tin</a-button
-      >
-      <a-button
-        type="danger"
-        :style="{ width: '90%', position: 'absolute', bottom: '10px' }"
-        @click="logout"
-        >Đăng xuất</a-button
-      >
+      <p :style="pStyle">Đơn hàng</p>
+      <a-tabs default-active-key="1" style="height: 480px;position : relative;overflow : auto">
+        <a-tab-pane key="0" tab="Lịch sử">
+          <a-list item-layout="horizontal" :data-source="cart">
+            <a-list-item slot="renderItem" slot-scope="item, index">
+              <a-list-item-meta
+                :description="moment(item.create_at).format('DD/MM/YYYY HH:mm')"
+              >
+                <a
+                  slot="title"
+                  style="font-size: 12px"
+                  @click="showOrder(item)"
+                  >{{ item.name_of_restaurant_id }}</a
+                >
+                <a-avatar slot="avatar" :src="require('@/assets/dish.png')" />
+              </a-list-item-meta>
+            </a-list-item>
+          </a-list>
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="Đơn hàng hiện tại" force-render >
+          <a-list item-layout="horizontal" :data-source="currentCart">
+            <a-list-item slot="renderItem" slot-scope="item, index">
+              <a-list-item-meta
+                :description="moment(item.create_at).format('DD/MM/YYYY HH:mm')"
+              >
+                <a
+                  slot="title"
+                  @click="showOrder(item)"
+                  style="font-size: 12px"
+                  >{{ item.name_of_restaurant_id }}</a
+                >
+                <a-avatar slot="avatar" :src="require('@/assets/dish.png')" />
+              </a-list-item-meta>
+            </a-list-item>
+          </a-list>
+        </a-tab-pane>
+      </a-tabs>
+
+      <div class="group-button">
+        <a-button
+          type="primary"
+          :style="{ width: '100%', marginBottom: '8px' }"
+          @click="showFormEdit"
+          >Sửa thông tin</a-button
+        >
+        <a-button type="danger" :style="{ width: '100%' }" @click="logout"
+          >Đăng xuất</a-button
+        >
+      </div>
     </a-drawer>
     <a-modal
       v-model="isShowFormEdit"
@@ -196,14 +228,177 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <a-modal
+      v-model="isShowHistoryOrder"
+      width="40%"
+      :dialog-style="{ top: '20px' }"
+      :closable="false"
+      :footer="false"
+    >
+      <a-row>
+        <a-col :span="9">
+          <img
+            :src="
+              require(`../../../public/images/${
+                detailOrder.avatar_of_restaurant
+                  ? detailOrder.avatar_of_restaurant
+                  : 'avatar_default.jpg'
+              }`)
+            "
+            style="width: 100%; border: 1px solid #eee; border-radius: 4px"
+            alt=""
+          />
+        </a-col>
+        <a-col :span="1"> </a-col>
+        <a-col :span="14">
+          <div class="history-order">
+            <div class="history-order-top">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 8px;
+                "
+              >
+                <div class="history-order-logo">
+                  <img
+                    :src="require(`@/assets/mini_logo.png`)"
+                    style="width: 24px"
+                    alt=""
+                  />
+                </div>
+                <div class="history-order-time">
+                  {{ moment(detailOrder.create_at).format("DD/MM/YYYY HH:mm") }}
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <div class="history-order-status">
+                  <b>{{listStatus.find(item =>item.id === detailOrder.status) ? listStatus.find(item =>item.id === detailOrder.status).text : ''}}</b>
+                </div>
+                <div class="history-order-code">
+                  Mã đơn hàng {{ detailOrder.order_code }}
+                </div>
+              </div>
+            </div>
+            <div class="history-order-content">
+              <div class="delivery-info">
+                <div class="title">
+                  <span>Thông tin giao hàng</span>
+                </div>
+                <div class="delivery-info-content">
+                  <div class="restaurant-address">
+                    <span>Vị trí nhà hàng</span>
+                    <div class="restaurant-address-text">
+                      <b>{{ detailOrder.location_destination }}</b>
+                    </div>
+                  </div>
+                  <div class="customer-address">
+                    <span>Địa điểm giao hàng</span>
+                    <div class="customer-address-text">
+                      <b>{{ detailOrder.location_arrival }}</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-history-order">
+                <div class="title">
+                  <span>Chi tiết đơn hàng</span>
+                </div>
+                <div class="detail-history-order-list-item">
+                  <div
+                    class="item"
+                    v-for="(item, index) in listOrderItem"
+                    :key="index"
+                  >
+                    <div class="item-text">{{ item.name_of_food }}</div>
+                    <div class="item-quantity">x {{ item.quantity }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-pay">
+                <div class="title">
+                  <span>Chi tiết thanh toán</span>
+                </div>
+                <div class="detail-pay-list-item">
+                  <div class="item">
+                    <div class="item-text">Phí giao hàng</div>
+                    <div class="item-quantity">
+                      {{
+                        Intl.NumberFormat("vi-VN").format(
+                          Number.parseFloat(detailOrder.shipping).toFixed(0)
+                        )
+                      }}
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="item-text">Giảm giá</div>
+                    <div class="item-quantity">
+                      {{
+                        detailOrder.promo
+                          ? Intl.NumberFormat("vi-VN").format(
+                              Number.parseFloat(detailOrder.promo).toFixed(0)
+                            )
+                          : 0
+                      }}
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="item-text"><b>Tổng thanh toán</b></div>
+                    <div class="item-quantity">
+                      <b>{{
+                        Intl.NumberFormat("vi-VN").format(
+                          Number.parseFloat(detailOrder.grand_total).toFixed(0)
+                        )
+                      }}</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="history-order-footer"
+              v-if="
+                detailOrder.status == 1 ||
+                detailOrder.status == 2 ||
+                detailOrder.status == 3
+              "
+            >
+              <a-button
+                type="primary"
+                v-if="detailOrder.status == 3"
+                @click="completeOrder(detailOrder)"
+                >Đã nhận được đơn hàng</a-button
+              >
+              <a-button
+                type="danger"
+                v-if="detailOrder.status == 1 || detailOrder.status == 2"
+                @click="cancelOrder(detailOrder)"
+                >Hủy đơn hàng</a-button
+              >
+            </div>
+          </div>
+        </a-col>
+      </a-row>
+    </a-modal>
   </div>
 </template>
 <script>
 import EventBus from "../../event-bus";
 import http from "../../http-common";
 import RuleConfig from "../../common/RuleConfig";
-import moment from 'moment';
+import moment from "moment";
+import mixin from "@/mixin";
+
 export default {
+  mixins: [mixin],
+
   data() {
     var rules = RuleConfig["customer"];
 
@@ -220,14 +415,13 @@ export default {
         color: "rgba(0,0,0,0.85)",
         lineHeight: "24px",
         display: "block",
-        marginBottom: "16px",
-        marginTop: "16px",
+        marginBottom: "0",
       },
       pStyle2: {
         marginBottom: "24px",
       },
       key: 0,
-      avatarDefault: "images-1618931863247.jpg",
+      avatarDefault: "avatar_default.jpg",
       user: {
         username: "",
         userCode: "",
@@ -241,14 +435,71 @@ export default {
         active: 1,
         avatarId: "",
         role: 2,
-        fullAddress:""
+        fullAddress: "",
       },
       formData: {},
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
+      cart: [],
+      currentCart: [],
+      isShowHistoryOrder: false,
+      detailOrder: {},
+      listOrderItem: [],
     };
   },
   methods: {
+    completeOrder(data) {
+      http
+        .post("/orders/update", { status: 4 }, { params: { id: data.id } })
+        .then((res) => {
+          this.$message.success("Xác nhận đơn thành công");
+          this.isShowHistoryOrder = false;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    cancelOrder(data) {
+      const component = this;
+      this.$confirm({
+        title: `Bạn có muốn hủy đơn ${data.order_code} không?`,
+        okText: "Xác nhận",
+        okType: "danger",
+        cancelText: "Hủy",
+
+        onOk() {
+          http
+            .post("/orders/update", { status: 5 }, { params: { id: data.id } })
+            .then((res) => {
+              component.$message.success("Hủy đơn hàng thành công");
+              component.isShowHistoryOrder = false;
+            })
+            .catch((err) => {
+              component.$message.error(err);
+            });
+        },
+      });
+      
+    },
+    getStatus() {
+      this.listStatus.find((item) => item.id === this.detailOrder.status);
+    },
+    showOrder(data) {
+      this.isShowHistoryOrder = true;
+      this.detailOrder = data;
+      http
+        .get("/order-item/list", {
+          params: {
+            id: data.id,
+          },
+        })
+        .then((res) => {
+          this.listOrderItem = res.data.data.items;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     goHome() {
       this.$router.push("/home");
     },
@@ -291,18 +542,45 @@ export default {
             this.user.address = this.formData.address;
             this.user.active = this.formData.active;
             this.user.avatarId = this.formData.avatar_id;
-            this.user.fullAddress = this.formData.full_address
+            this.user.fullAddress = this.formData.full_address;
           })
           .catch((err) => {
             console.log(err);
           });
       }
     },
+    getHistoryCart() {
+      http
+        .post("/orders/list", {
+          customer_id: localStorage.getItem("user_customer_id"),
+        })
+        .then((res) => {
+          this.cart = res.data.data.items;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getCurrentCart() {
+      http
+        .post("/orders/list", {
+          customer_id: localStorage.getItem("user_customer_id"),
+          not_status: [4, 5],
+        })
+        .then((res) => {
+          this.currentCart = res.data.data.items;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     router(path) {
       this.$router.push({ path: path.code });
     },
     showUserInfo() {
       this.getInfoUser();
+      this.getHistoryCart();
+      this.getCurrentCart();
       this.isShowUserInfo = true;
     },
     logout() {
@@ -311,7 +589,7 @@ export default {
       localStorage.removeItem("default_auth_token");
       localStorage.removeItem("user_address");
 
-      this.defaultAuthToken ="";
+      this.defaultAuthToken = "";
       this.onClose();
       EventBus.$emit("emptyCart");
       this.$notification["success"]({
@@ -415,15 +693,14 @@ export default {
         });
     },
   },
-  mounted(){
+  mounted() {
     this.getInfoUser();
-
   },
   created() {
     this.getTypeRestaurant();
-    EventBus.$on('login',this.getInfoUser)
+    EventBus.$on("login", this.getInfoUser);
   },
-
+  computed: {},
   mounted() {
     this.getInfoUser();
   },
@@ -461,8 +738,7 @@ export default {
 .logo {
   cursor: pointer;
 }
-.ant-menu-item {
-}
+
 .ant-menu-item.ant-menu-item-selected {
   font-weight: 700;
 }
@@ -483,5 +759,54 @@ export default {
 .person-info > span:nth-child(1) {
   color: rgba(0, 0, 0, 0.85);
   margin-right: 8px;
+}
+.group-button {
+  position: sticky;
+  bottom: 24px;
+  background: #fff;
+}
+.ant-list-item-meta-description {
+  font-size: 12px;
+}
+.history-order {
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.history-order-content {
+  border-bottom: 1px solid #eee;
+}
+.history-order-top,
+.delivery-info,
+.detail-history-order,
+.detail-pay,
+.history-order-footer {
+  border-bottom: 1px solid #eee;
+  padding: 10px 12px;
+}
+.history-order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.history-order > .history-order-content {
+  border: none;
+}
+.title {
+  margin-bottom: 8px;
+  color: rgb(158 158 158);
+  font-weight: 700;
+}
+.restaurant-address {
+  margin-bottom: 4px;
+}
+.restaurant-address,
+.customer-address > span {
+  font-size: 13px;
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

@@ -90,4 +90,5 @@ router.post('/order-item/save', orderItems.save);
 
 //danh sách tài xế
 router.get('/driver/list',vehicle.list);
+router.post('/driver/update',vehicle.update);
 module.exports = router;

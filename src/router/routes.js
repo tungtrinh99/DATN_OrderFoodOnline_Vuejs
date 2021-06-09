@@ -17,6 +17,8 @@ import FoodRestaurant from "@/pages/Merchant/Goods/List.vue";
 import LoginMerchant from "@/pages/Merchant/Login/Form.vue";
 import MerchantDashboardLayout from "@/layout/Merchant/DashboardLayout.vue";
 import DashboardMerchant from "@/pages/merchant/Dashboard/Dashboard.vue";
+import NotFound from "@/pages/System/NotFoundPage.vue";
+
 
 const appName = " | Nghiện ăn";
 
@@ -28,24 +30,24 @@ const routes = [{
         path: "home",
         name: "Trang chủ",
         component: Home,
-        meta : {
-          title : 'Trang chủ' + appName
+        meta: {
+          title: 'Trang chủ' + appName
         }
       },
       {
         path: "detail-restaurant",
         name: "Chi tiết món",
         component: RestaurantDetail,
-        meta : {
-          title : 'Quán ăn' + appName
+        meta: {
+          title: 'Quán ăn' + appName
         }
       },
       {
         path: "register",
         name: "Đăng kí",
         component: RegisterPage,
-        meta : {
-          title : 'Đăng kí' + appName
+        meta: {
+          title: 'Đăng kí' + appName
         }
 
       },
@@ -53,8 +55,8 @@ const routes = [{
         path: "/login",
         name: "Đăng nhập",
         component: LoginPage,
-        meta : {
-          title : 'Đăng nhập' + appName
+        meta: {
+          title: 'Đăng nhập' + appName
         }
 
       }
@@ -73,7 +75,7 @@ const routes = [{
         component: Dashboard,
         meta: {
           auth: true,
-          title : 'Tổng quan' +appName
+          title: 'Tổng quan' + appName
         }
       },
       {
@@ -82,7 +84,7 @@ const routes = [{
         component: Goods,
         meta: {
           auth: true,
-          title : 'Món ăn' +appName
+          title: 'Món ăn' + appName
         },
       },
       {
@@ -91,7 +93,7 @@ const routes = [{
         component: Customer,
         meta: {
           auth: true,
-          title : 'Khách hàng' +appName
+          title: 'Khách hàng' + appName
         },
       },
       {
@@ -100,7 +102,7 @@ const routes = [{
         component: Merchant,
         meta: {
           auth: true,
-          title : 'Đối tác' +appName
+          title: 'Đối tác' + appName
         },
       },
       {
@@ -109,7 +111,7 @@ const routes = [{
         component: Restaurant,
         meta: {
           auth: true,
-          title : 'Quán ăn' +appName
+          title: 'Quán ăn' + appName
         },
       }, {
         path: "location",
@@ -117,7 +119,7 @@ const routes = [{
         component: Location,
         meta: {
           auth: true,
-          title : 'Địa điểm' +appName
+          title: 'Địa điểm' + appName
         },
       },
       {
@@ -126,7 +128,7 @@ const routes = [{
         component: Order,
         meta: {
           auth: true,
-          title : 'Đơn hàng' +appName
+          title: 'Đơn hàng' + appName
         },
       },
 
@@ -168,7 +170,7 @@ const routes = [{
           title: "Đơn hàng" + appName,
 
         }
-      },{
+      }, {
         path: "food",
         title: "Món ăn",
         component: FoodRestaurant,
@@ -189,6 +191,11 @@ const routes = [{
         }
       }
     ]
-    }
+  },
+  {
+    path: "*",
+    component: NotFound
+  },
+
 ]
 export default routes;
