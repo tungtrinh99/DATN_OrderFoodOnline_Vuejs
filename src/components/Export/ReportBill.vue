@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     convertDate() {
-      return moment(this.data.create_at).format("HH:mm - DD/MM/YYYY");
+      return moment(this.data.create_at).lang('vi').format("dddd, Do MMMM YYYY, HH:mm");
     },
   },
   created() {

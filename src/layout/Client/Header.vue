@@ -269,7 +269,7 @@
                   />
                 </div>
                 <div class="history-order-time">
-                  {{ moment(detailOrder.create_at).format("DD/MM/YYYY HH:mm") }}
+                  {{ moment(detailOrder.create_at).lang('vi').format("dddd,Do MMMM  YYYY, HH:mm") }}
                 </div>
               </div>
               <div
