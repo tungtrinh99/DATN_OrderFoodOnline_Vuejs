@@ -49,12 +49,11 @@
       <a-input v-model="user.email" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Ngày sinh" ref="birthDate" prop="birth_date">
-      <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY"  />
+      <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY" :locale="locale" />
     </a-form-model-item>
      <a-form-model-item label="Giới tính" ref="gender" prop="gender">
       <a-select
         :value="user.gender"
-        style="width: 120px"
         @change="handleChangeGender"
       >
         <a-select-option :key="1"> Nam </a-select-option>
@@ -101,6 +100,7 @@
   </a-form-model>
 </template>
 <script>
+import locale from "ant-design-vue/es/date-picker/locale/vi_VN";
 import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
@@ -144,7 +144,8 @@ export default {
       wrapperCol: { span: 16 },
       loading: false,
       imageUrl: "",
-      listLocation:[]
+      listLocation:[],
+      locale
 
     };
   },

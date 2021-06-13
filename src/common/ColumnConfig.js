@@ -405,6 +405,32 @@ const food_restaurant = [{
   width: 500
 }
 ];
+const report = [
+{
+  title: "Nhà hàng",
+  dataIndex: "title",
+  key: "title",
+  ellipsis: true,
+  
+
+},{
+  title: "Doanh thu",
+  dataIndex: "revenue",
+  key: "revenue",
+  scopedSlots: { customRender: 'money' },
+
+},{
+  title: "Số đơn",
+  dataIndex: "order_quantity",
+  key: "order_quantity",
+}
+,{
+  title: "Chi phí vận chuyển",
+  dataIndex: "ship_fee",
+  key: "ship_fee",
+  scopedSlots: { customRender: 'money' },
+}
+];
 export default {
   food,
   customer,
@@ -412,5 +438,6 @@ export default {
   restaurant,
   location,
   orders,
-  food_restaurant
-};
+  food_restaurant,
+  report
+}

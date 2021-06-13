@@ -10,17 +10,17 @@ class OrderController {
     let customer_id = req.body.customer_id;
     let not_status = req.body.not_status;
     var query = `SELECT a.*,b.title as name_of_restaurant_id,b.avatar_id as avatar_of_restaurant,c.fullname as name_of_customer_id FROM orders a JOIN restaurant b ON a.restaurant_id = b.id JOIN user c ON a.customer_id = c.id WHERE a.order_code LIKE "%${textSearch}%"`;
-    if(status){
-      query = query +' '+`AND a.status = ${status}`
+    if (status) {
+      query = query + ' ' + `AND a.status = ${status}`
     }
-    if(restaurant_id){
-      query = query +" "+`AND a.restaurant_id = ${restaurant_id}`
+    if (restaurant_id) {
+      query = query + " " + `AND a.restaurant_id = ${restaurant_id}`
     }
-    if(customer_id){
-      query = query +" "+`AND a.customer_id = ${customer_id}`
+    if (customer_id) {
+      query = query + " " + `AND a.customer_id = ${customer_id}`
     }
-    if(not_status){
-      query = query +" "+`AND a.status not in (4,5)`
+    if (not_status) {
+      query = query + " " + `AND a.status not in (4,5)`
     }
     db.query(query, (err, result, field) => {
       if (!err) {
@@ -31,7 +31,7 @@ class OrderController {
             'items': result
           },
 
-         
+
         });
 
       } else {
@@ -102,6 +102,28 @@ class OrderController {
         }
       }
     );
+  }
+  report(req, res, next) {
+    let restaurant_id = req.body.restaurantId;
+    let start = req.body.startDate;
+    let end = req.body.endDate;
+    var query = ``;
+    if(restaurant_id){
+      query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where  create_at BETWEEN '${start}' and '${end}' and a.restaurant_id = ${restaurant_id} GROUP BY restaurant_id`
+    }else {
+      query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where  create_at BETWEEN '${start}' and '${end}' GROUP BY restaurant_id`;
+    }
+    db.query(query,(err,result,field)=>{
+      if(!err){
+        res.send({
+          data : {
+            items : result
+          }
+        })
+      }else {
+        res.send(err)
+      }
+    })
   }
 }
 

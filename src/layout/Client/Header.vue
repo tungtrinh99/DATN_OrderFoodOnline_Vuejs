@@ -103,7 +103,10 @@
         </a-col>
       </a-row>
       <p :style="pStyle">Đơn hàng</p>
-      <a-tabs default-active-key="1" style="height: 480px;position : relative;overflow : auto">
+      <a-tabs
+        default-active-key="1"
+        style="height: 480px;position : relative;overflow : auto"
+      >
         <a-tab-pane key="0" tab="Lịch sử">
           <a-list item-layout="horizontal" :data-source="cart">
             <a-list-item slot="renderItem" slot-scope="item, index">
@@ -121,7 +124,7 @@
             </a-list-item>
           </a-list>
         </a-tab-pane>
-        <a-tab-pane key="2" tab="Đơn hàng hiện tại" force-render >
+        <a-tab-pane key="2" tab="Đơn hàng hiện tại" force-render>
           <a-list item-layout="horizontal" :data-source="currentCart">
             <a-list-item slot="renderItem" slot-scope="item, index">
               <a-list-item-meta
@@ -269,7 +272,11 @@
                   />
                 </div>
                 <div class="history-order-time">
-                  {{ moment(detailOrder.create_at).lang('vi').format("dddd,Do MMMM  YYYY, HH:mm") }}
+                  {{
+                    moment(detailOrder.create_at)
+                      .lang("vi")
+                      .format("dddd,Do MMMM  YYYY, HH:mm")
+                  }}
                 </div>
               </div>
               <div
@@ -280,7 +287,12 @@
                 "
               >
                 <div class="history-order-status">
-                  <b>{{listStatus.find(item =>item.id === detailOrder.status) ? listStatus.find(item =>item.id === detailOrder.status).text : ''}}</b>
+                  <b>{{
+                    listStatus.find(item => item.id === detailOrder.status)
+                      ? listStatus.find(item => item.id === detailOrder.status)
+                          .text
+                      : ""
+                  }}</b>
                 </div>
                 <div class="history-order-code">
                   Mã đơn hàng {{ detailOrder.order_code }}
@@ -366,8 +378,8 @@
               class="history-order-footer"
               v-if="
                 detailOrder.status == 1 ||
-                detailOrder.status == 2 ||
-                detailOrder.status == 3
+                  detailOrder.status == 2 ||
+                  detailOrder.status == 3
               "
             >
               <a-button
@@ -415,10 +427,10 @@ export default {
         color: "rgba(0,0,0,0.85)",
         lineHeight: "24px",
         display: "block",
-        marginBottom: "0",
+        marginBottom: "0"
       },
       pStyle2: {
-        marginBottom: "24px",
+        marginBottom: "24px"
       },
       key: 0,
       avatarDefault: "avatar_default.jpg",
@@ -435,7 +447,7 @@ export default {
         active: 1,
         avatarId: "",
         role: 2,
-        fullAddress: "",
+        fullAddress: ""
       },
       formData: {},
       labelCol: { span: 6 },
@@ -444,18 +456,18 @@ export default {
       currentCart: [],
       isShowHistoryOrder: false,
       detailOrder: {},
-      listOrderItem: [],
+      listOrderItem: []
     };
   },
   methods: {
     completeOrder(data) {
       http
         .post("/orders/update", { status: 4 }, { params: { id: data.id } })
-        .then((res) => {
+        .then(res => {
           this.$message.success("Xác nhận đơn thành công");
           this.isShowHistoryOrder = false;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -470,19 +482,18 @@ export default {
         onOk() {
           http
             .post("/orders/update", { status: 5 }, { params: { id: data.id } })
-            .then((res) => {
+            .then(res => {
               component.$message.success("Hủy đơn hàng thành công");
               component.isShowHistoryOrder = false;
             })
-            .catch((err) => {
+            .catch(err => {
               component.$message.error(err);
             });
-        },
+        }
       });
-      
     },
     getStatus() {
-      this.listStatus.find((item) => item.id === this.detailOrder.status);
+      this.listStatus.find(item => item.id === this.detailOrder.status);
     },
     showOrder(data) {
       this.isShowHistoryOrder = true;
@@ -490,13 +501,13 @@ export default {
       http
         .get("/order-item/list", {
           params: {
-            id: data.id,
-          },
+            id: data.id
+          }
         })
-        .then((res) => {
+        .then(res => {
           this.listOrderItem = res.data.data.items;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -509,10 +520,10 @@ export default {
     getTypeRestaurant() {
       http
         .get("/restaurant-type/list")
-        .then((response) => {
+        .then(response => {
           this.listTypeRestaurant = response.data.data.items;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
     },
@@ -525,10 +536,10 @@ export default {
         http
           .get("/customer/detail", {
             params: {
-              id: userID,
-            },
+              id: userID
+            }
           })
-          .then((response) => {
+          .then(response => {
             this.formData = response.data.data.items[0];
             this.user.username = this.formData.username;
             this.user.userCode = this.formData.user_code;
@@ -544,7 +555,7 @@ export default {
             this.user.avatarId = this.formData.avatar_id;
             this.user.fullAddress = this.formData.full_address;
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       }
@@ -552,12 +563,12 @@ export default {
     getHistoryCart() {
       http
         .post("/orders/list", {
-          customer_id: localStorage.getItem("user_customer_id"),
+          customer_id: localStorage.getItem("user_customer_id")
         })
-        .then((res) => {
+        .then(res => {
           this.cart = res.data.data.items;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -565,12 +576,12 @@ export default {
       http
         .post("/orders/list", {
           customer_id: localStorage.getItem("user_customer_id"),
-          not_status: [4, 5],
+          not_status: [4, 5]
         })
-        .then((res) => {
+        .then(res => {
           this.currentCart = res.data.data.items;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -594,7 +605,7 @@ export default {
       EventBus.$emit("emptyCart");
       this.$notification["success"]({
         message: "Thông báo",
-        description: "Bạn đã đăng xuất thành công!",
+        description: "Bạn đã đăng xuất thành công!"
       });
     },
     onClose() {
@@ -619,21 +630,21 @@ export default {
         birth_date: this.user.birthDate,
         phone_number: this.user.phoneNumber,
         address: this.user.address,
-        active: this.user.active,
+        active: this.user.active
       };
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           http
             .post("/user/update", data, {
               params: {
-                id: this.formData.id,
-              },
+                id: this.formData.id
+              }
             })
-            .then((response) => {
+            .then(response => {
               this.isShowFormEdit = false;
               this.$message.success("Lưu thành công");
             })
-            .catch((error) => {
+            .catch(error => {
               this.$message.error(error.message);
             });
           this.$emit("hideModal");
@@ -659,7 +670,7 @@ export default {
       }
       if (info.file.status === "done") {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, (imageUrl) => {
+        getBase64(info.file.originFileObj, imageUrl => {
           this.user.avatarId = imageUrl;
           this.loading = false;
         });
@@ -683,15 +694,15 @@ export default {
       fmData.append("file", file);
       http
         .post("/food/uploadFiles", fmData, {
-          headers: { "content-type": "multipart/form-data" },
+          headers: { "content-type": "multipart/form-data" }
         })
-        .then((response) => {
+        .then(response => {
           this.user.avatarId = response.data.data;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
-    },
+    }
   },
   mounted() {
     this.getInfoUser();
@@ -703,7 +714,7 @@ export default {
   computed: {},
   mounted() {
     this.getInfoUser();
-  },
+  }
 };
 </script>
 <style scoped>
@@ -713,7 +724,7 @@ export default {
   right: 0;
   left: 0;
   z-index: 999;
-  width: "100%";
+  width: 100%;
 }
 
 .container {
@@ -761,9 +772,10 @@ export default {
   margin-right: 8px;
 }
 .group-button {
-  position: sticky;
+  position: absolute;
   bottom: 24px;
   background: #fff;
+  width: 86%;
 }
 .ant-list-item-meta-description {
   font-size: 12px;

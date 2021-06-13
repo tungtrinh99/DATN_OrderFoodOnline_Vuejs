@@ -18,6 +18,7 @@ import LoginMerchant from "@/pages/Merchant/Login/Form.vue";
 import MerchantDashboardLayout from "@/layout/Merchant/DashboardLayout.vue";
 import DashboardMerchant from "@/pages/merchant/Dashboard/Dashboard.vue";
 import NotFound from "@/pages/System/NotFoundPage.vue";
+import ReportRevenue from "@/pages/admin/Report/List.vue";
 
 
 const appName = " | Nghiện ăn";
@@ -131,7 +132,15 @@ const routes = [{
           title: 'Đơn hàng' + appName
         },
       },
-
+      {
+        path: "report-revenue",
+        title: "Báo cáo doanh thu",
+        component: ReportRevenue,
+        meta: {
+          auth: true,
+          title: 'Báo cáo doanh thu' + appName
+        },
+      },
     ]
   },
 

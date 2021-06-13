@@ -42,7 +42,12 @@
       <a-input v-model="user.email" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Ngày sinh" ref="birthDate" prop="birth_date">
-      <a-date-picker v-model="user.birthDate" type="date" format="DD-MM-YYYY" />
+      <a-date-picker
+        v-model="user.birthDate"
+        :locale="locale"
+        type="date"
+        format="DD-MM-YYYY"
+      />
     </a-form-model-item>
     <a-form-model-item label="Giới tính" ref="gender" prop="gender">
       <a-select
@@ -91,10 +96,10 @@
         </a-button>
       </div>
     </a-form-model-item>
-    
   </a-form-model>
 </template>
 <script>
+import locale from "ant-design-vue/es/date-picker/locale/vi_VN";
 import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
@@ -140,11 +145,12 @@ export default {
       imageUrl: "",
       dateFormatList: ["DD/MM/YYYY", "DD/MM/YY"],
       listLocation: [],
+      locale,
     };
   },
   methods: {
     moment,
-    showUser(){},
+    showUser() {},
     getListLocation() {
       http
         .post("/location/list")
@@ -155,22 +161,23 @@ export default {
           this.$message.error(error.message);
         });
     },
+    onChangeDate(date,dateString){
+      this.user.birthDate = date;
+    },
     handleChange(value) {
       this.user.address = value;
     },
     handleChangeGender(value) {
       this.user.gender = value;
     },
-    onChangeDate(date, dateString) {
-      this.user.birthDate = dateString;
-    },
+    
     fetchDataEdit(data) {
       this.user.userCode = data.user_code;
       this.user.fullname = data.fullname;
       this.user.role = data.role;
       this.user.email = data.email;
       this.user.gender = data.gender;
-      this.user.birthDate = data.birth_date;
+      this.user.birthDate = moment(data.birth_date);
       this.user.phoneNumber = data.phone_number;
       this.user.address = data.address;
       this.user.active = data.active;

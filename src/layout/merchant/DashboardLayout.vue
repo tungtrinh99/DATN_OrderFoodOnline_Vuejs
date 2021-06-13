@@ -1,14 +1,14 @@
 <template>
   <a-layout id="components-layout-demo-side" style="min-height: 100vh">
-    <a-layout-header class="header" >
+    <a-layout-header class="header">
       <div class="logo" />
       <top-navbar />
     </a-layout-header>
-    
-    <a-layout  >
-      <a-layout-sider v-model="collapsed" collapsible >
+
+    <a-layout>
+      <a-layout-sider v-model="collapsed" collapsible>
         <a-menu theme="dark" :default-selected-keys="['1']" mode="inline">
-          <template >
+          <template>
             <a-sub-menu v-for="menu in adminMenu" :key="menu.key">
               <span slot="title"
                 ><a-icon :type="menu.icon" /><span>{{ menu.title }}</span></span
@@ -20,7 +20,6 @@
               </a-menu-item>
             </a-sub-menu>
           </template>
-          
         </a-menu>
       </a-layout-sider>
       <a-layout style="">
@@ -31,7 +30,6 @@
         </a-layout-content>
       </a-layout>
     </a-layout>
-   
   </a-layout>
 </template>
 <script>
@@ -46,8 +44,8 @@ export default {
   data() {
     return {
       collapsed: false,
-    
-      adminMenu : [
+
+      adminMenu: [
         {
           key: "overview",
           icon: "pie-chart",
@@ -69,6 +67,11 @@ export default {
               key: "food",
               title: "Món ăn",
               path: "food"
+            },
+            {
+              key: "code",
+              title: "Mã giảm giá",
+              path: "discount-code"
             }
           ]
         },
@@ -82,12 +85,21 @@ export default {
               title: "Đơn hàng",
               path: "order"
             }
-            
           ]
-        },
-        
-       
-        
+        }
+        ,
+        {
+          key: "report",
+          icon: "file-text",
+          title: "Báo cáo",
+          children: [
+            {
+              key: "report",
+              title: "Báo cáo doanh thu",
+              path: "report-revenue"
+            }
+          ]
+        }
       ]
     };
   }
