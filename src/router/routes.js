@@ -19,7 +19,8 @@ import MerchantDashboardLayout from "@/layout/Merchant/DashboardLayout.vue";
 import DashboardMerchant from "@/pages/merchant/Dashboard/Dashboard.vue";
 import NotFound from "@/pages/System/NotFoundPage.vue";
 import ReportRevenue from "@/pages/admin/Report/List.vue";
-
+import DiscountCode from "@/pages/admin/Discount/List.vue";
+import ReportOfMerchant from "@/pages/Merchant/Report/List.vue";
 
 const appName = " | Nghiện ăn";
 
@@ -141,6 +142,16 @@ const routes = [{
           title: 'Báo cáo doanh thu' + appName
         },
       },
+      ,
+      {
+        path: "discount-code",
+        title: "Mã giảm giá",
+        component: DiscountCode,
+        meta: {
+          auth: true,
+          title: 'Mã giảm giá' + appName
+        },
+      }
     ]
   },
 
@@ -196,6 +207,17 @@ const routes = [{
         meta: {
           authMerchant: true,
           title: "Tổng quan" + appName,
+
+        }
+      }
+      ,
+      {
+        path: "report-revenue",
+        title: "Báo cáo doanh thu",
+        component: ReportOfMerchant,
+        meta: {
+          authMerchant: true,
+          title: "Báo cáo doanh thu" + appName,
 
         }
       }

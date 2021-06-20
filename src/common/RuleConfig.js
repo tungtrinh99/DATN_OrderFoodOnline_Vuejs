@@ -118,9 +118,32 @@ const location = {
   //   trigger: "blur"
   // }],
 }
+const restaurant_discount = {
+  code: [{
+    required: true,
+    message: "Bạn chưa nhập mã giảm giá",
+    trigger: "blur"
+  }],
+  discount: [{
+    required: true,
+    message: "Bạn chưa nhập tiền giảm giá ",
+    trigger: "blur"
+  }],
+  min_total_order: [{
+    required: true,
+    message: "Bạn chưa nhập tổng đơn hàng",
+    trigger: "blur"
+  }],
+  max_distance: [{
+    required: true,
+    message: "Bạn chưa nhập quãng đường tối đa",
+    trigger: "blur"
+  }],
+}
 export default {
   food,
   user,
   restaurant,
-  location
+  location,
+  restaurant_discount
 }

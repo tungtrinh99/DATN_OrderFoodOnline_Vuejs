@@ -59,7 +59,7 @@
             </a-select-option>
           </a-select>
           <a-button
-            @click="showUser"
+            @click="showLocation"
             :style="`
                 border-left:none;
                 margin-left:-5px;
@@ -175,7 +175,7 @@ export default {
     closeForm() {
       this.visibleLocation = false;
     },
-    showUser() {
+    showLocation() {
       this.visibleLocation = true;
     },
     fetchDataEdit(data) {
@@ -190,6 +190,7 @@ export default {
       this.restaurant.slug = data.slug;
     },
     save() {
+      console.log(2);
       var data = {
         title: this.restaurant.title,
         opentime: this.restaurant.opentime,

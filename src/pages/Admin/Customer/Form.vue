@@ -1,5 +1,6 @@
 <template>
-  <a-form-model
+  <div>
+ <a-form-model
     :label-col="labelCol"
     :wrapper-col="wrapperCol"
     :model="user"
@@ -72,7 +73,7 @@
         <a-select
           show-search
           :value="user.address"
-          placeholder="Vui lòng chọn địa chỉ quán"
+          placeholder="Vui lòng chọn địa chỉ"
           style="width: 100%; border-left: none"
           :default-active-first-option="false"
           :show-arrow="true"
@@ -80,13 +81,15 @@
           :not-found-content="null"
           :allowClear="true"
           @change="handleChange"
+          @focus="getListLocation"
+
         >
           <a-select-option v-for="d in listLocation" :key="d.id">
             {{ d.full_address }}
           </a-select-option>
         </a-select>
         <a-button
-          @click="showUser"
+          @click="showLocation"
           :style="`
                 border-left:none;
                 margin-left:-5px;
@@ -98,6 +101,25 @@
       </div>
     </a-form-model-item>
   </a-form-model>
+   <a-modal
+      v-model="visibleLocation"
+      :title="'Địa chỉ'"
+      okText="Lưu"
+      cancelText="Hủy"
+      @ok="saveLocation"
+      :bodyStyle="{
+        padding: '16px',
+        height: '70vh',
+        overflow: 'auto'
+      }"
+    >
+      <location-form
+        :entity="'location'"
+        @hideModal="hideModal"
+      ></location-form>
+    </a-modal>
+  </div>
+ 
 </template>
 <script>
 import locale from "ant-design-vue/es/date-picker/locale/vi_VN";
@@ -105,6 +127,7 @@ import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
 import moment from "moment";
+import LocationForm from "../../../pages/Admin/Location/Form.vue";
 const bcrypt = require('bcryptjs');
  
 export default {
@@ -118,6 +141,9 @@ export default {
   props: {
     entity: String,
     roleNumber: Number,
+  },
+  components:{
+    LocationForm
   },
   data() {
     var rules = RuleConfig[this.entity];
@@ -145,12 +171,21 @@ export default {
       loading: false,
       imageUrl: "",
       listLocation:[],
-      locale
+      locale,
+      visibleLocation : false
 
     };
   },
   methods: {
-     showUser() {},
+    showLocation(){
+      this.visibleLocation= true;
+    },
+    hideModal() {
+      this.visibleLocation = false;
+    },
+    saveLocation() {
+      EventBus.$emit("saveLocationFromRestaurantForm");
+    },
     getListLocation(){
       http
         .post("/location/list")

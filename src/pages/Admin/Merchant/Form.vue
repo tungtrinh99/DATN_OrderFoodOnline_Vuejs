@@ -1,12 +1,13 @@
 <template>
-  <a-form-model
+<div>
+<a-form-model
     :label-col="labelCol"
     :wrapper-col="wrapperCol"
     :model="user"
     :rules="rules"
     ref="ruleForm"
   >
-    <a-form-model-item label="Ảnh khách hàng" prop="avatar_id">
+    <a-form-model-item label="Ảnh đối tác" prop="avatar_id">
       <a-upload
         name="file"
         list-type="picture-card"
@@ -24,11 +25,11 @@
         />
         <div v-else>
           <a-icon :type="loading ? 'loading' : 'plus'" />
-          <div class="ant-upload-text">Tải ảnh sản phẩm</div>
+          <div class="ant-upload-text">Tải ảnh đối tác</div>
         </div>
       </a-upload>
     </a-form-model-item>
-    <a-form-model-item label="Mã khách hàng" ref="userCode" prop="usercode">
+    <a-form-model-item label="Mã đối tác" ref="userCode" prop="usercode">
       <a-input
         v-model="user.userCode"
         type="text"
@@ -36,7 +37,7 @@
         :disabled="true"
       />
     </a-form-model-item>
-    <a-form-model-item label="Tên khách hàng" ref="fullname" prop="fullname">
+    <a-form-model-item label="Tên đối tác" ref="fullname" prop="fullname">
       <a-input v-model="user.fullname" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Tên đăng nhập" ref="username" prop="username">
@@ -73,7 +74,7 @@
         <a-select
           show-search
           :value="user.address"
-          placeholder="Vui lòng chọn địa chỉ quán"
+          placeholder="Vui lòng chọn địa chỉ"
           style="width: 100%; border-left: none"
           :default-active-first-option="false"
           :show-arrow="true"
@@ -81,13 +82,15 @@
           :not-found-content="null"
           :allowClear="true"
           @change="handleChange"
+          @focus="getListLocation"
+
         >
           <a-select-option v-for="d in listLocation" :key="d.id">
             {{ d.full_address }}
           </a-select-option>
         </a-select>
         <a-button
-          @click="showUser"
+          @click="showLocation"
           :style="`
                 border-left:none;
                 margin-left:-5px;
@@ -100,11 +103,31 @@
     </a-form-model-item>
     
   </a-form-model>
+   <a-modal
+      v-model="visibleLocation"
+      :title="'Địa chỉ'"
+      okText="Lưu"
+      cancelText="Hủy"
+      @ok="saveLocation"
+      :bodyStyle="{
+        padding: '16px',
+        height: '70vh',
+        overflow: 'auto'
+      }"
+    >
+      <location-form
+        :entity="'location'"
+        @hideModal="hideModal"
+      ></location-form>
+    </a-modal>
+</div>
+  
 </template>
 <script>
 import http from "../../../http-common";
 import EventBus from "../../../event-bus";
 import RuleConfig from "../../../common/RuleConfig";
+import LocationForm from "../../../pages/Admin/Location/Form.vue";
 import moment from "moment";
 const bcrypt = require('bcryptjs');
 
@@ -112,13 +135,20 @@ export default {
   created() {
     this.getListLocation();
     EventBus.$on("save", this.save);
+    EventBus.$on("saveUserFromRestaurantForm", this.save);
+
   },
   destroyed() {
     EventBus.$off("save", this.save);
+    EventBus.$off("saveUserFromRestaurantForm", this.save);
+
   },
   props: {
     entity: String,
     roleNumber: Number,
+  },
+  components:{
+    LocationForm
   },
   data() {
     var rules = RuleConfig[this.entity];
@@ -133,7 +163,7 @@ export default {
       birthDate:moment(new Date(), "DD-MM-YYYY"),
       phoneNumber: "",
       address: "",
-      active: 1,
+      active: 0,
       avatarId: "",
       role: 4,
     };
@@ -145,11 +175,22 @@ export default {
       wrapperCol: { span: 16 },
       loading: false,
       imageUrl: "",
-      listLocation:[]
+      listLocation:[],
+      visibleLocation : false
+
     };
   },
   methods: {
-    showUser() {},
+    showLocation(){
+      this.visibleLocation= true;
+    },
+    hideModal() {
+      this.visibleLocation = false;
+    },
+    saveLocation() {
+      EventBus.$emit("saveLocationFromRestaurantForm");
+
+    },
     getListLocation(){
       http
         .post("/location/list")

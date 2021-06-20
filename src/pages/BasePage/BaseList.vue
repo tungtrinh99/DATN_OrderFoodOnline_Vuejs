@@ -11,7 +11,6 @@
         <a-button key="1" type="primary" @click="show" v-if="isAdd">
           Thêm mới
         </a-button>
-
       </template>
     </a-page-header>
     <a-tabs
@@ -44,8 +43,7 @@
       @ok="save"
       :bodyStyle="{
         padding: '16px',
-        height: '70vh',
-        overflow: 'auto',
+        overflow: 'auto'
       }"
     >
       <form-goods
@@ -78,6 +76,11 @@
         v-if="entity == 'restaurant-food'"
         @hideModal="hideModal"
       ></form-add-restaurant-food>
+      <form-discount
+        :entity="entity"
+        v-if="entity == 'restaurant-discount'"
+        @hideModal="hideModal"
+      ></form-discount>
     </a-modal>
   </div>
 </template>
@@ -91,6 +94,7 @@ import Merchant from "../../pages/Admin/Merchant/Form";
 import Restaurant from "../../pages/Admin/Restaurant/Form";
 import Location from "../../pages/Admin/Location/Form";
 import FoodMerchant from "../../pages/Merchant/Goods/Form";
+import Discount from "../../pages/Admin/Discount/Form";
 
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
@@ -106,20 +110,19 @@ export default {
     "form-restaurant": Restaurant,
     "form-location": Location,
     "form-add-restaurant-food": FoodMerchant,
+    "form-discount": Discount
   },
   data() {
-    const column =
-      ColumnConfig[
-        this.entity === "restaurant-food" ? "food_restaurant" : this.entity
-      ];
-    const title = Lang[this.entity] || "";
+    
+    let column = ColumnConfig[this.entity.replace('-','_')];
+    let title = Lang[this.entity] || "";
 
     return {
       visible: false,
       column,
       title,
       key: 0,
-      data: [],
+      data: []
     };
   },
   props: {
@@ -129,7 +132,7 @@ export default {
     isAdd: Boolean,
     isTabs: Boolean,
     isMerchant: Boolean,
-    isExport: Boolean,
+    isExport: Boolean
   },
   methods: {
     show() {
@@ -152,8 +155,7 @@ export default {
       let Obj = {};
       Obj.status = item;
       EventBus.$emit("filterDataByStatus", Obj);
-    },
-
+    }
   },
   created() {
     EventBus.$on("reload", this.reload);
@@ -162,12 +164,13 @@ export default {
     EventBus.$off("reload", this.reload);
   },
   computed: {
-    listStatusSorted: function () {
+    listStatusSorted: function() {
       const compareStatus = (status1, status2) => {
         return status1.sortOrder - status2.sortOrder;
       };
       return this.listStatus.concat().sort(compareStatus);
     },
+    
   },
 };
 </script>

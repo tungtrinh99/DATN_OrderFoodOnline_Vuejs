@@ -175,7 +175,7 @@ const restaurant = [{
     dataIndex: "id",
     key: "id",
     fixed: "left",
-    dataType:"link",
+    dataType: "link",
     width: 100,
   },
   {
@@ -183,7 +183,7 @@ const restaurant = [{
     dataIndex: "title",
     key: "name",
     width: 250,
-    fixed:"left",
+    fixed: "left",
     ellipsis: true,
 
   },
@@ -271,9 +271,9 @@ const orders = [{
     key: "id",
     width: 80,
     fixed: "left",
-    isCodeIndex :true
+    isCodeIndex: true
 
-},
+  },
   {
     title: "Mã đơn hàng",
     dataIndex: "order_code",
@@ -374,62 +374,88 @@ const orders = [{
 
   }
 ];
-const food_restaurant = [{
-  title: "Ảnh",
-  dataIndex: "avatar_id",
-  key: "avatar",
-  fixed: "left",
-  width: 80,
-  dataType: "file"
-},
-{
-  title: "Loại đồ ăn",
-  dataIndex: "name_of_food_type",
-  key: "type",
-  width: 100
-},
-{
-  title: "Tên",
-  dataIndex: "title",
-  key: "title",
-  width: 500
-},{
-  title: "Giá",
-  dataIndex: "cost",
-  key: "cost",
-  width: 500
-},{
-  title: "Giảm giá",
-  dataIndex: "discount",
-  key: "discount",
-  width: 500
-}
+const restaurant_food = [{
+    title: "Ảnh",
+    dataIndex: "avatar_id",
+    key: "avatar",
+    fixed: "left",
+    width: 80,
+    dataType: "file"
+  },
+  {
+    title: "Loại đồ ăn",
+    dataIndex: "name_of_food_type",
+    key: "type",
+    width: 100
+  },
+  {
+    title: "Tên",
+    dataIndex: "title",
+    key: "title",
+    width: 500
+  }, {
+    title: "Giá",
+    dataIndex: "cost",
+    key: "cost",
+    width: 500
+  }, {
+    title: "Giảm giá",
+    dataIndex: "discount",
+    key: "discount",
+    width: 500
+  }
 ];
-const report = [
-{
+const report = [{
   title: "Nhà hàng",
   dataIndex: "title",
   key: "title",
   ellipsis: true,
-  
 
-},{
+
+}, {
   title: "Doanh thu",
   dataIndex: "revenue",
   key: "revenue",
-  scopedSlots: { customRender: 'money' },
+  scopedSlots: {
+    customRender: 'money'
+  },
 
-},{
+}, {
   title: "Số đơn",
   dataIndex: "order_quantity",
   key: "order_quantity",
-}
-,{
+}, {
   title: "Chi phí vận chuyển",
   dataIndex: "ship_fee",
   key: "ship_fee",
-  scopedSlots: { customRender: 'money' },
-}
+  scopedSlots: {
+    customRender: 'money'
+  },
+}];
+const restaurant_discount = [{
+    title: "Mã giảm giá",
+    dataIndex: "code",
+    key: "code",
+    ellipsis: true,
+  }, {
+    title: "Giảm giá",
+    dataIndex: "discount",
+    key: "discount",
+
+  }, {
+    title: "Đơn hàng tối thiểu",
+    dataIndex: "min_total_order",
+    key: "min_total_order",
+  }, {
+    title: "Quãng đường tối đa",
+    dataIndex: "max_distance",
+    key: "max_distance",
+  },
+  {
+    title: "Thông tin ưu đãi",
+    dataIndex: "content",
+    key: "content",
+  }
 ];
 export default {
   food,
@@ -438,6 +464,7 @@ export default {
   restaurant,
   location,
   orders,
-  food_restaurant,
-  report
+  restaurant_food,
+  report,
+  restaurant_discount
 }

@@ -42,7 +42,12 @@ router.post('/restaurant-food/delete', restaurant.deleteItem);
 router.post('/restaurant-food/save', restaurant.saveItem);
 
 router.get('/restaurant-location/list', restaurant.address);
-router.get('/restaurant-discount/list', restaurant.discount)
+router.post('/restaurant-discount/list', restaurant.discount);
+router.post('/restaurant-discount/save', restaurant.saveDiscount);
+router.get('/restaurant-discount/delete', restaurant.deleteDiscount);
+router.post('/restaurant-discount/update', restaurant.updateDiscount);
+router.get('/restaurant-discount/detail', restaurant.detailDiscount);
+
 //user
 router.get('/user/list', user.list);
 router.get('/user/detail', user.detail);

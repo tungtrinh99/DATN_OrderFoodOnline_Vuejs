@@ -41,7 +41,6 @@
                   <a-rate v-model="rate" :tooltips="descRate" />
                   <span class="ant-rate-text">{{ descRate[rate - 1] }}</span>
                 </span>
-               
               </div>
               <div class="status-restaurant">
                 <div class="opentime-status">
@@ -145,25 +144,25 @@ export default {
       discountCodeList: [],
       foodData: [],
       rate: 3,
-      descRate: ["Rất không tốt", "Không tốt", "Bình thường", "Tốt", "Rất tốt"],
+      descRate: ["Rất không tốt", "Không tốt", "Bình thường", "Tốt", "Rất tốt"]
     };
   },
   components: {
     "list-food": ListFood,
-    Cart,
+    Cart
   },
   computed: {
     getMinCost() {
-      let listCost = this.foodData.map((item) => item.cost);
+      let listCost = this.foodData.map(item => item.cost);
       let min = Math.min(...listCost);
       return min;
     },
 
     getMaxCost() {
-      let listCost = this.foodData.map((item) => item.cost);
+      let listCost = this.foodData.map(item => item.cost);
       let max = Math.max(...listCost);
       return max;
-    },
+    }
   },
   methods: {
     backHome() {
@@ -173,27 +172,25 @@ export default {
       http
         .get("/restaurant/detail", {
           params: {
-            id: this.id,
-          },
+            id: this.id
+          }
         })
-        .then((response) => {
+        .then(response => {
           this.formData = response.data.data.items[0];
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
     },
     getDiscountCode() {
       http
-        .get("/restaurant-discount/list", {
-          params: {
-            id: this.id,
-          },
+        .post("/restaurant-discount/list", {
+          id: this.id
         })
-        .then((response) => {
+        .then(response => {
           this.discountCodeList = response.data.data.items;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
     },
@@ -201,22 +198,22 @@ export default {
       http
         .post("/restaurant-food/list", {
           id: this.id,
-          textSearch: this.keyword,
+          textSearch: this.keyword
         })
-        .then((response) => {
+        .then(response => {
           this.foodData = response.data.data.items;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
-    },
+    }
   },
   created() {
     this.id = JSON.parse(localStorage.getItem("client_restaurant_info")).id;
     this.fetchData();
     this.getDiscountCode();
     this.getFood();
-  },
+  }
 };
 </script>
 <style scoped>
@@ -300,7 +297,6 @@ export default {
 }
 .rating {
   margin-bottom: 4px;
-  
 }
 
 .link-merchant {

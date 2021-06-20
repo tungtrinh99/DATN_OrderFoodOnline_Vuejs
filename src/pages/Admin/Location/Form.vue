@@ -84,9 +84,13 @@ export default {
   },
   created() {
     EventBus.$on("save", this.save);
+    EventBus.$on("saveLocationFromRestaurantForm", this.save);
+
   },
   destroyed() {
     EventBus.$off("save", this.save);
+    EventBus.$on("saveLocationFromRestaurantForm", this.save);
+
   },
 
   props: {

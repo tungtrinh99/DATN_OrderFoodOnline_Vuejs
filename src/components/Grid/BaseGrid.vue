@@ -57,7 +57,6 @@
         @ok="save"
         :bodyStyle="{
           padding: '16px',
-          height: '70vh',
           overflow: 'auto',
         }"
       >
@@ -97,6 +96,12 @@
           :id="id"
           @hideModal="hideModal"
         ></form-edit-food-in-merchant-website>
+         <form-edit-discount
+          v-if="entity == 'restaurant-discount'"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+        ></form-edit-discount>
       </a-modal>
     </div>
   </div>
@@ -116,6 +121,7 @@ import Merchant from "../../pages/Admin/Merchant/FormEdit";
 import Restaurant from "../../pages/Admin/Restaurant/FormEdit";
 import Location from "../../pages/Admin/Location/FormEdit";
 import FoodMerchant from "../../pages/Merchant/Goods/FormEdit";
+import Discount from "../../pages/Admin/Discount/FormEdit";
 export default {
   components: {
     "form-edit-food": Food,
@@ -124,6 +130,8 @@ export default {
     "form-edit-restaurant": Restaurant,
     "form-edit-location": Location,
     "form-edit-food-in-merchant-website": FoodMerchant,
+    "form-edit-discount": Discount,
+
   },
   props: {
     column: {

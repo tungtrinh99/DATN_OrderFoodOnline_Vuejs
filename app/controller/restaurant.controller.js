@@ -123,24 +123,28 @@ class RestaurantController {
         else console.log(err);
       });
   }
-    //Cập nhật món ăn nhà hàng
-    updateItem(req, res, next) {
-      var id = req.query.id;
-      var data = req.body;
-      db.query(
-        `UPDATE restaurant_food SET ? WHERE food_id = ${id}`,
-        data,
-        (err, result, field) => {
-          if (!err) {
-            res.send({ data: { items: result } });
-          } else {
-            console.log(err);
-          }
+  //Cập nhật món ăn nhà hàng
+  updateItem(req, res, next) {
+    var id = req.query.id;
+    var data = req.body;
+    db.query(
+      `UPDATE restaurant_food SET ? WHERE food_id = ${id}`,
+      data,
+      (err, result, field) => {
+        if (!err) {
+          res.send({
+            data: {
+              items: result
+            }
+          });
+        } else {
+          console.log(err);
         }
+      }
     );
-    }
+  }
   //Lấy chi tiết 1 nhà hàng
-   detail(req, res, next) {
+  detail(req, res, next) {
     const id = req.query.id;
     const userId = req.query.userId;
     if (userId) {
@@ -162,12 +166,12 @@ class RestaurantController {
         }
       })
   }
-  //Lấy chi tiết 1 nhà hàng
+  //xoa 
   detailItem(req, res, next) {
     const id = req.query.id;
-    const restaurant_id=req.query.restaurant_id;
+    const restaurant_id = req.query.restaurant_id;
     const query = `SELECT * FROM restaurant_food WHERE food_id = ${id} AND restaurant_id=${restaurant_id}`;
-    
+
     db.query(query,
       (err, result, field) => {
         if (!err) {
@@ -222,14 +226,85 @@ class RestaurantController {
       'data': file.filename
     })
   }
-  // lay danh sach ma giam gia
+  // lay danh sach ma giam gia nha hang
   discount(req, res, next) {
-    const id = req.query.id;
+    const id = req.body.id;
+    var query = ``;
+    if (id) {
+      query = `SELECT c.*,b.title FROM restaurant_discount_code a
+      JOIN restaurant b ON a.restaurant_id = b.id 
+      JOIN discount_code c ON a.discount_code_id = c.id 
+      WHERE a.restaurant_id = ${id}`;
+    } else {
+      query = `SELECT * from discount_code`
+    }
+    db.query(query,
+      (err, result, field) => {
+        if (!err) {
+          res.send({
+            data: {
+              items: result
+            }
+          });
+        } else {
+          console.log(err);
+        }
+      })
+  }
+  // them ma giam gia
+  saveDiscount(req, res, next) {
+    const data = req.body;
     db.query(`
-              SELECT c.*,b.title FROM restaurant_discount_code a
-              JOIN restaurant b ON a.restaurant_id = b.id 
-              JOIN discount_code c ON a.discount_code_id = c.id 
-              WHERE a.restaurant_id = ${id}`,
+            INSERT INTO discount_code SET ?  `, data,
+      (err, result, fields) => {
+        if (!err) res.send({
+          data: {
+            items: result
+          }
+        });
+        else console.log(err);
+      });
+  }
+  // xoa ma giam gia
+  deleteDiscount(req, res, next) {
+    const discount_id = req.query.id;
+    db.query(`
+            DELETE FROM discount_code WHERE id = ${discount_id}`,
+      (err, result, fields) => {
+        if (!err) res.send({
+          data: {
+            items: result
+          }
+        });
+        else console.log(err);
+      });
+  }
+  // cap nhat ma giam gia
+  updateDiscount(req, res, next) {
+    var discount_id = req.query.id;
+    let data = req.body;
+    db.query(
+      `UPDATE discount_code SET ? WHERE id = ${discount_id}`,
+      data,
+      (err, result, field) => {
+        if (!err) {
+          res.send({
+            data: {
+              items: result
+            }
+          });
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  }
+  // chi tiet ma giam gia
+  detailDiscount(req, res, next) {
+    const discount_id = req.query.id;
+    const query = `SELECT * FROM discount_code WHERE id = ${discount_id}`;
+
+    db.query(query,
       (err, result, field) => {
         if (!err) {
           res.send({
