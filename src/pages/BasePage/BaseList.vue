@@ -78,9 +78,14 @@
       ></form-add-restaurant-food>
       <form-discount
         :entity="entity"
-        v-if="entity == 'restaurant-discount'"
+        v-if="entity == 'discount'"
         @hideModal="hideModal"
       ></form-discount>
+      <form-restaurant-discount
+        :entity="entity"
+        v-if="entity == 'restaurant-discount'"
+        @hideModal="hideModal"
+      ></form-restaurant-discount>
     </a-modal>
   </div>
 </template>
@@ -95,6 +100,7 @@ import Restaurant from "../../pages/Admin/Restaurant/Form";
 import Location from "../../pages/Admin/Location/Form";
 import FoodMerchant from "../../pages/Merchant/Goods/Form";
 import Discount from "../../pages/Admin/Discount/Form";
+import RestaurantDiscount from "../../pages/Merchant/Discount/Form";
 
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
@@ -110,7 +116,8 @@ export default {
     "form-restaurant": Restaurant,
     "form-location": Location,
     "form-add-restaurant-food": FoodMerchant,
-    "form-discount": Discount
+    "form-discount": Discount,
+    "form-restaurant-discount": RestaurantDiscount,
   },
   data() {
     

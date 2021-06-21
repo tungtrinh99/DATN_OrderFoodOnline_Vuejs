@@ -17,6 +17,8 @@ const auth = require("../controller/auth.controller");
 const order = require("../controller/order.controller");
 const orderItems = require("../controller/orderItems.controller");
 const vehicle = require("../controller/vehicle.controller");
+const discount = require("../controller/discount.controller");
+
 
 //goods
 router.post('/food/list', food.list);
@@ -45,9 +47,13 @@ router.get('/restaurant-location/list', restaurant.address);
 router.post('/restaurant-discount/list', restaurant.discount);
 router.post('/restaurant-discount/save', restaurant.saveDiscount);
 router.get('/restaurant-discount/delete', restaurant.deleteDiscount);
-router.post('/restaurant-discount/update', restaurant.updateDiscount);
-router.get('/restaurant-discount/detail', restaurant.detailDiscount);
 
+// discount
+router.post('/discount/list', discount.list);
+router.post('/discount/save', discount.save);
+router.get('/discount/delete', discount.delete);
+router.post('/discount/update', discount.update);
+router.get('/discount/detail', discount.detail);
 //user
 router.get('/user/list', user.list);
 router.get('/user/detail', user.detail);

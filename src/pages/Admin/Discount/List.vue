@@ -9,7 +9,7 @@
 
 <script>
 import BaseList from '../../BasePage/BaseList'
-const entity = "restaurant-discount";
+const entity = "discount";
 export default {
 
   data(){

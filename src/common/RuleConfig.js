@@ -118,7 +118,7 @@ const location = {
   //   trigger: "blur"
   // }],
 }
-const restaurant_discount = {
+const discount = {
   code: [{
     required: true,
     message: "Bạn chưa nhập mã giảm giá",
@@ -140,10 +140,19 @@ const restaurant_discount = {
     trigger: "blur"
   }],
 }
+const restaurant_discount = {
+  code: [{
+    required: true,
+    message: "Bạn chưa nhập chọn giảm giá",
+    trigger: "blur"
+  }],
+  
+}
 export default {
   food,
   user,
   restaurant,
   location,
-  restaurant_discount
+  restaurant_discount,
+  discount
 }

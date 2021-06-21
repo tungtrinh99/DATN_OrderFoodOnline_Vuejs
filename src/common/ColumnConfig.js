@@ -457,6 +457,31 @@ const restaurant_discount = [{
     key: "content",
   }
 ];
+const discount = [{
+  title: "Mã giảm giá",
+  dataIndex: "code",
+  key: "code",
+  ellipsis: true,
+}, {
+  title: "Giảm giá",
+  dataIndex: "discount",
+  key: "discount",
+
+}, {
+  title: "Đơn hàng tối thiểu",
+  dataIndex: "min_total_order",
+  key: "min_total_order",
+}, {
+  title: "Quãng đường tối đa",
+  dataIndex: "max_distance",
+  key: "max_distance",
+},
+{
+  title: "Thông tin ưu đãi",
+  dataIndex: "content",
+  key: "content",
+}
+];
 export default {
   food,
   customer,
@@ -466,5 +491,6 @@ export default {
   orders,
   restaurant_food,
   report,
-  restaurant_discount
+  restaurant_discount,
+  discount
 }

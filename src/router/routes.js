@@ -21,6 +21,7 @@ import NotFound from "@/pages/System/NotFoundPage.vue";
 import ReportRevenue from "@/pages/admin/Report/List.vue";
 import DiscountCode from "@/pages/admin/Discount/List.vue";
 import ReportOfMerchant from "@/pages/Merchant/Report/List.vue";
+import DiscountCodeOfRestaurant from "@/pages/Merchant/Discount/List.vue";
 
 const appName = " | Nghiện ăn";
 
@@ -218,6 +219,17 @@ const routes = [{
         meta: {
           authMerchant: true,
           title: "Báo cáo doanh thu" + appName,
+
+        }
+      }
+      ,
+      {
+        path: "discount-code",
+        title: "Ưu đãi",
+        component: DiscountCodeOfRestaurant,
+        meta: {
+          authMerchant: true,
+          title: "Ưu đãi" + appName,
 
         }
       }

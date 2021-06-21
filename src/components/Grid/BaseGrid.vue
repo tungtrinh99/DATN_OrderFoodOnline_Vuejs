@@ -97,11 +97,12 @@
           @hideModal="hideModal"
         ></form-edit-food-in-merchant-website>
          <form-edit-discount
-          v-if="entity == 'restaurant-discount'"
+          v-if="entity == 'discount'"
           :entity="entity"
           :id="id"
           @hideModal="hideModal"
         ></form-edit-discount>
+        
       </a-modal>
     </div>
   </div>

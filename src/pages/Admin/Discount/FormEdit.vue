@@ -80,7 +80,7 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           http
-            .post(`/restaurant-discount/update`,data, { params: {
+            .post(`/discount/update`,data, { params: {
                 id : this.id
             } })
             .then(response => {

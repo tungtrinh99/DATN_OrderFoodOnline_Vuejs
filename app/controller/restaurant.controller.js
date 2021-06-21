@@ -228,16 +228,8 @@ class RestaurantController {
   }
   // lay danh sach ma giam gia nha hang
   discount(req, res, next) {
-    const id = req.body.id;
-    var query = ``;
-    if (id) {
-      query = `SELECT c.*,b.title FROM restaurant_discount_code a
-      JOIN restaurant b ON a.restaurant_id = b.id 
-      JOIN discount_code c ON a.discount_code_id = c.id 
-      WHERE a.restaurant_id = ${id}`;
-    } else {
-      query = `SELECT * from discount_code`
-    }
+    const restaurantId = req.body.id;
+    var query = `select b.* from restaurant_discount_code a join discount_code as b on a.discount_code_id = b.id where a.restaurant_id = ${restaurantId}`;
     db.query(query,
       (err, result, field) => {
         if (!err) {
@@ -251,11 +243,11 @@ class RestaurantController {
         }
       })
   }
-  // them ma giam gia
+  // them ma giam gia nhà hàng
   saveDiscount(req, res, next) {
     const data = req.body;
     db.query(`
-            INSERT INTO discount_code SET ?  `, data,
+            INSERT INTO restaurant_discount_code SET ?  `, data,
       (err, result, fields) => {
         if (!err) res.send({
           data: {
@@ -269,7 +261,7 @@ class RestaurantController {
   deleteDiscount(req, res, next) {
     const discount_id = req.query.id;
     db.query(`
-            DELETE FROM discount_code WHERE id = ${discount_id}`,
+            DELETE FROM restaurant_discount_code WHERE id = ${discount_id}`,
       (err, result, fields) => {
         if (!err) res.send({
           data: {
@@ -279,44 +271,7 @@ class RestaurantController {
         else console.log(err);
       });
   }
-  // cap nhat ma giam gia
-  updateDiscount(req, res, next) {
-    var discount_id = req.query.id;
-    let data = req.body;
-    db.query(
-      `UPDATE discount_code SET ? WHERE id = ${discount_id}`,
-      data,
-      (err, result, field) => {
-        if (!err) {
-          res.send({
-            data: {
-              items: result
-            }
-          });
-        } else {
-          console.log(err);
-        }
-      }
-    );
-  }
-  // chi tiet ma giam gia
-  detailDiscount(req, res, next) {
-    const discount_id = req.query.id;
-    const query = `SELECT * FROM discount_code WHERE id = ${discount_id}`;
-
-    db.query(query,
-      (err, result, field) => {
-        if (!err) {
-          res.send({
-            data: {
-              items: result
-            }
-          });
-        } else {
-          console.log(err);
-        }
-      })
-  }
+ 
 }
 
 module.exports = new RestaurantController;
