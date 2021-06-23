@@ -5,10 +5,15 @@ class RestaurantController {
   // Lấy danh sách nhà hàng
   list(req, res, next) {
     const textSearch = req.body.textSearch || "";
-    db.query(`
-              select a.*,b.full_address,b.longitude,b.latitude , c.fullname as name_of_user_id , d.title as name_of_restaurant_type_id from 
-              restaurant a join location b on a.location_id = b.id join user c on a.user_id = c.id join restaurant_type d on a.type_id = d.id
-              where a.title like "%${textSearch}%" or b.full_address like "%${textSearch}%"`,
+    const typeRestaurant = req.body.type;
+    let query = `
+    select a.*,b.full_address,b.longitude,b.latitude , c.fullname as name_of_user_id , d.title as name_of_restaurant_type_id from 
+    restaurant a join location b on a.location_id = b.id join user c on a.user_id = c.id join restaurant_type d on a.type_id = d.id
+    where (a.title like "%${textSearch}%" or b.full_address like "%${textSearch}%")`;
+    if(typeRestaurant){
+      query = query+ " " + `and a.type_id = ${typeRestaurant}`
+    }
+    db.query(query,
       (err, result, field) => {
         if (!err) {
           res.send({
@@ -95,7 +100,7 @@ class RestaurantController {
   }
   // xóa món ăn nhà hảng
   deleteItem(req, res, next) {
-    const restaurantId = req.body.restaurant_id;
+    const restaurantId = req.query.restaurant_id;
     const foodId = req.query.id;
     db.query(`
             DELETE FROM restaurant_food WHERE food_id = ${foodId} AND restaurant_id = ${restaurantId}`,
@@ -271,7 +276,7 @@ class RestaurantController {
         else console.log(err);
       });
   }
- 
+
 }
 
 module.exports = new RestaurantController;

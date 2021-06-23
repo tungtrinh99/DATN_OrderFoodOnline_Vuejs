@@ -40,7 +40,7 @@ router.get('/restaurant-type/list', restaurant.type);
 router.post('/restaurant-food/list', restaurant.item);
 router.get('/restaurant-food/detail', restaurant.detailItem);
 router.post('/restaurant-food/update', restaurant.updateItem);
-router.post('/restaurant-food/delete', restaurant.deleteItem);
+router.get('/restaurant-food/delete', restaurant.deleteItem);
 router.post('/restaurant-food/save', restaurant.saveItem);
 
 router.get('/restaurant-location/list', restaurant.address);

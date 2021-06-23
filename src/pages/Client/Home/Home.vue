@@ -3,19 +3,18 @@
     class="content home-banner"
     :style="{
       'background-image':
-        'url(' + require('@/assets/images/Background/back-ground.jpg') + ')',
+        'url(' + require('@/assets/images/Background/back-ground.jpg') + ')'
     }"
   >
     <div class="container">
       <a-row>
-        <a-col  :sm="24" :md="24" :lg="9">
+        <a-col :sm="24" :md="24" :lg="9">
           <div class="home-form">
             <form-search :formData="listRestaurant"></form-search>
-
           </div>
         </a-col>
-        <a-col  :sm="0" :md="0" :lg="2"></a-col>
-        <a-col  :sm="24" :md="24" :lg="13">
+        <a-col :sm="0" :md="0" :lg="2"></a-col>
+        <a-col :sm="24" :md="24" :lg="13">
           <div class="home-list-restaurant">
             <div class="list-restaurant">
               <a-list
@@ -34,7 +33,6 @@
       </a-row>
     </div>
   </div>
-
 </template>
 <script>
 import FormSearch from "./Form.vue";
@@ -44,7 +42,7 @@ import EventBus from "../../../event-bus";
 export default {
   components: {
     "form-search": FormSearch,
-    item: Item,
+    item: Item
   },
   data() {
     const listFoods = [];
@@ -52,33 +50,34 @@ export default {
     return {
       listFoods,
       listRestaurant,
-      keyword : ""
+      keyword: ""
     };
   },
   methods: {
-    fetchData() {
+    fetchData(value) {
+      let body = value
+        ? { textSearch: this.keyword, type: value }
+        : { textSearch: this.keyword };
       http
-        .post("/restaurant/list",{
-          textSearch : this.keyword
-        })
-        .then((response) => {
+        .post("/restaurant/list", body)
+        .then(response => {
           this.listRestaurant = response.data.data.items;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
-    },
-    
-    
+    }
   },
   created() {
-    this.fetchData()
+    this.fetchData();
+    EventBus.$on("restaurantTypeId", this.fetchData);
   },
-  
+  destroyed() {
+    EventBus.$off("restaurantTypeId", this.fetchData);
+  }
 };
 </script>
 <style scoped>
-
 .content {
   padding-top: 64px;
 }
@@ -97,13 +96,12 @@ export default {
   padding: 12px 16px;
   border: 1px solid #d7d7d7;
   background-color: #fff;
-  margin-top : 80px
+  margin-top: 80px;
 }
-.home-form{
-  margin-top :800px;
+.home-form {
+  margin-top: 800px;
 }
-.ant-card.ant-card-bordered{
-  border : none;
-  
+.ant-card.ant-card-bordered {
+  border: none;
 }
 </style>

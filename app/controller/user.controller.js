@@ -29,7 +29,7 @@ class UserController {
     var id = req.query.id;
     var data = req.body;
     db.query(
-      `UPDATE user SET ? WHERE id = ${id}`,
+      ` UPDATE user SET ? WHERE id = ${id}`,
       data,
       (err, result, field) => {
         if (!err) {

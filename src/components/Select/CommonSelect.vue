@@ -45,6 +45,7 @@ export default {
   methods: {
     nextPage(data) {
       localStorage.setItem("client_restaurant_info", JSON.stringify(data));
+      this.$emit('closeFormSearch')
     },
     fetchData() {
       http

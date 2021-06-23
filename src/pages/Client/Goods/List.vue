@@ -6,14 +6,11 @@
       :data-source="discountCodeList"
       style="background-color : #fbf9d8;border: 1px dashed #575757"
     >
-      
       <a-list-item slot="renderItem" slot-scope="item">
-        
         <a-list-item-meta :description="item.content">
           <a slot="title">{{ item.code }}</a>
           <a-avatar style="height:32px;width:32px" slot="avatar" icon="gift" />
         </a-list-item-meta>
-       
       </a-list-item>
     </a-list>
     <a-input-search
@@ -29,12 +26,16 @@
     >
       <a-list-item slot="renderItem" slot-scope="item, index">
         <a slot="actions">
-          <a-button type="danger" @click="addToCart(index)">
+          <a-button
+            type="danger"
+            style="background : #cf2127;color :white"
+            @click="addToCart(index)"
+          >
             <a-icon type="plus" />
           </a-button>
         </a>
         <a-list-item-meta :description="item.content">
-          <a slot="title">{{ item.title }}</a>
+          <a slot="title" @click="handlePreview(item)">{{ item.title }}</a>
           <a-avatar
             slot="avatar"
             :src="require('../../../../public/images/' + item.avatar_id)"
@@ -60,6 +61,17 @@
         </div>
       </a-list-item>
     </a-list>
+    <a-modal
+      :bodyStyle="{ padding: '0px' }"
+      v-model="previewVisible"
+      :footer="null"
+      :closable="false"
+    >
+      <img
+        style="width : 520px"
+        :src="require(`../../../../public/images/${previewImage ? previewImage : 'no-photo.jpg'}`)"
+      />
+    </a-modal>
   </div>
 </template>
 <script>
@@ -68,7 +80,7 @@ import EventBus from "../../../event-bus";
 export default {
   props: {
     id: Number,
-    discountCodeList: Array,
+    discountCodeList: Array
   },
   data() {
     return {
@@ -80,49 +92,72 @@ export default {
     };
   },
   methods: {
+    
     fetchData() {
       http
         .post("/restaurant-food/list", {
           id: this.id,
-          textSearch: this.keyword,
+          textSearch: this.keyword
         })
-        .then((response) => {
+        .then(response => {
           this.foodData = response.data.data.items;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
     },
     handleCancel() {
       this.previewVisible = false;
     },
-    handlePreview(index, item) {
-      this.previewImage = this.foodData[index].avatar_id;
+    handlePreview(item) {
+      this.previewImage = item.avatar_id;
       this.previewVisible = true;
     },
     addToCart(index) {
+      let restaurantId = JSON.parse(
+        localStorage.getItem("client_restaurant_info")
+      ).id;
       let defaultToken = JSON.parse(localStorage.getItem("default_auth_token"));
       if (defaultToken) {
         if (!localStorage.getItem("cart")) {
           localStorage.setItem("cart", JSON.stringify([]));
         }
         this.cartData = JSON.parse(localStorage.getItem("cart"));
-        let data = Object.assign({ quantity: 1 }, this.foodData[index]);
-        let ind = this.cartData.findIndex((d) => d.id === data.id);
-        if (ind >= 0) {
-          this.cartData[ind].quantity += data.quantity;
-        } else if (ind === -1) {
-          this.cartData.push(data);
+        if (
+          this.cartData.length == 0 ||
+          this.cartData.filter(item => item.restaurant_id == restaurantId)
+            .length > 0
+        ) {
+          let data = Object.assign({ quantity: 1 }, this.foodData[index]);
+          let ind = this.cartData.findIndex(d => d.id === data.id);
+          if (ind >= 0) {
+            this.cartData[ind].quantity += data.quantity;
+          } else if (ind === -1) {
+            this.cartData.push(data);
+          } else {
+            this.cartData.push(data);
+          }
+          localStorage.setItem("cart", JSON.stringify(this.cartData));
+          EventBus.$emit("reload");
         } else {
-          this.cartData.push(data);
+          const component = this;
+          this.$confirm({
+            title: `Bạn có muốn tạo giỏ hàng mới ? `,
+            okText: "Xác nhận",
+            okType: "danger",
+            cancelText: "Hủy",
+            onOk() {
+              localStorage.removeItem("cart");
+              EventBus.$emit("reload");
+              component.$message.success("Xin mời bạn tiến hành đặt món");
+            }
+          });
         }
-        localStorage.setItem("cart", JSON.stringify(this.cartData));
-        EventBus.$emit("reload");
       } else {
         this.$notification["warning"]({
           message: "Cảnh báo đăng nhập",
           description:
-            "Bạn phải thực hiện đăng nhập trước khi tiến hành đặt hàng.",
+            "Bạn phải thực hiện đăng nhập trước khi tiến hành đặt hàng."
         });
         this.$router.push("/login");
       }
@@ -130,12 +165,11 @@ export default {
     onSearch(value) {
       this.keyword = value;
       this.fetchData();
-    },
-    
+    }
   },
-  created: function () {
+  created: function() {
     this.fetchData();
-  },
+  }
 };
 </script>
 <style scoped>
@@ -184,6 +218,6 @@ export default {
   text-align: left;
 }
 .ant-list-item {
-  padding : 12px 8px
+  padding: 12px 8px;
 }
 </style>

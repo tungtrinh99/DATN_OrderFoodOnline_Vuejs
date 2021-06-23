@@ -14,7 +14,7 @@
             <a-menu
               theme="light"
               mode="horizontal"
-              :default-selected-keys="['quan-an']"
+              :default-selected-keys="['']"
               :style="{ lineHeight: '64px', marginLeft: '24px' }"
             >
               <a-menu-item
@@ -28,7 +28,7 @@
           </div>
           <div class="header-right">
             <div class="header-icon-search">
-              <a-icon type="search" class="btn-search" />
+              <a-icon type="search" class="btn-search" @click="showModalSearchForm" />
             </div>
             <div class="user-account">
               <a-avatar
@@ -399,6 +399,16 @@
         </a-col>
       </a-row>
     </a-modal>
+    <a-modal
+    :bodyStyle="{ padding: '0px' }"
+    width="40%"
+    v-model="visibleModalSearchForm"
+    :footer="null"
+    :closable="false"
+    >
+      <img :src="require('@/assets/bg-search.png')" style="width: 100%;background : #000">
+      <common-select @closeFormSearch="closeFormSearch"></common-select>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -407,10 +417,12 @@ import http from "../../http-common";
 import RuleConfig from "../../common/RuleConfig";
 import moment from "moment";
 import mixin from "@/mixin";
-
+import CommonSelect from "../../components/Select/CommonSelect.vue"
 export default {
   mixins: [mixin],
-
+  components:{
+    CommonSelect
+  },
   data() {
     var rules = RuleConfig["customer"];
 
@@ -456,10 +468,17 @@ export default {
       currentCart: [],
       isShowHistoryOrder: false,
       detailOrder: {},
-      listOrderItem: []
+      listOrderItem: [],
+      visibleModalSearchForm : false
     };
   },
   methods: {
+    closeFormSearch(){
+      this.visibleModalSearchForm = false;
+    },
+    showModalSearchForm(){
+      this.visibleModalSearchForm = true;
+    },
     completeOrder(data) {
       http
         .post("/orders/update", { status: 4 }, { params: { id: data.id } })
@@ -586,7 +605,7 @@ export default {
         });
     },
     router(path) {
-      this.$router.push({ path: path.code });
+      EventBus.$emit('restaurantTypeId',path.id)
     },
     showUserInfo() {
       this.getInfoUser();

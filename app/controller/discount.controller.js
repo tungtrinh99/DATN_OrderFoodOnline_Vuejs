@@ -5,7 +5,7 @@ class DiscountController {
   
   // danh sach ma giam gia
   list(req, res, next) {
-    query = `SELECT * from discount_code`
+    let query = `SELECT * from discount_code`
     db.query(query,
       (err, result, field) => {
         if (!err) {

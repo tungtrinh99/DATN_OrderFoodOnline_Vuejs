@@ -263,6 +263,18 @@ const location = [{
     dataIndex: "ward_title",
     key: "ward_title",
     width: 200
+  },
+  {
+    title: "Kinh độ",
+    dataIndex: "longitude",
+    key: "longitude",
+    width: 200
+  },
+  {
+    title: "Vĩ độ",
+    dataIndex: "latitude",
+    key: "latitude",
+    width: 200
   }
 ];
 const orders = [{
