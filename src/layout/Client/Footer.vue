@@ -64,7 +64,7 @@
               <a class="link" href="/ha-noi/table"
                 ><img
                   id="delivery-footer-logo"
-                  :src="require('../../../public/images/logo_footer.png')"
+                  :src="require('@/assets/mini_logo.png')"
                   alt="Đặt món trực tuyến giao hàng tận nơi"
                   title="Đặt món trực tuyến giao hàng tận nơi"
                   width="80"

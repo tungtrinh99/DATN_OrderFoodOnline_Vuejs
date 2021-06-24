@@ -73,7 +73,7 @@
                   }}</span
                 >
               </div>
-              <div class="link-merchant">
+              <!-- <div class="link-merchant">
                 <a-button
                   type="primary"
                   style="
@@ -85,12 +85,12 @@
                   <a-icon type="home" style="font-size: 18px" /> Dành cho chủ
                   quán
                 </a-button>
-              </div>
+              </div> -->
               <div class="utility-restaurant clearfix">
                 <div class="utility-item">
                   <div class="utility-title">Phí dịch vụ</div>
                   <div class="utility-content">
-                    <span class="txt-bold txt-red"> 0.0% Phí phục vụ </span>
+                    <span class="txt-bold txt-red"> 0% Phí phục vụ </span>
                   </div>
                   <span
                     class="icon icon-partner-vi"
@@ -101,7 +101,7 @@
                 <div class="utility-item">
                   <div class="utility-title">Dịch vụ bởi</div>
                   <div class="utility-content">
-                    <span class="txt-bold txt-red">Now</span>
+                    <span class="txt-bold txt-red">Nghiện Ăn</span>
                   </div>
                 </div>
                 <div class="utility-item">

@@ -153,6 +153,9 @@ export default {
       this.provinceTitle = data.province_title;
       this.districtTitle = data.district_title;
       this.wardTitle = data.ward_title;
+      this.formData.province_id = data.province_id;
+      this.formData.district_id = data.district_id;
+      this.formData.ward_id = data.ward_id;
     },
     save() {
       var data = {
@@ -253,7 +256,7 @@ export default {
       this.isWardDisabled = false;
     },
     getListWard() {
-      this.listWard= [];
+      this.listWard = [];
       http
         .get(`vie-ward/list`, {
           params: {

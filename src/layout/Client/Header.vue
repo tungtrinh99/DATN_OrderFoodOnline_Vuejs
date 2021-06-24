@@ -6,7 +6,7 @@
           <div class="header-left">
             <div class="logo" @click="goHome">
               <img
-                :src="require('@/assets/logo.png')"
+                :src="require('@/assets/logo1.png')"
                 alt=""
                 :style="{ height: '48px' }"
               />
@@ -28,7 +28,11 @@
           </div>
           <div class="header-right">
             <div class="header-icon-search">
-              <a-icon type="search" class="btn-search" @click="showModalSearchForm" />
+              <a-icon
+                type="search"
+                class="btn-search"
+                @click="showModalSearchForm"
+              />
             </div>
             <div class="user-account">
               <a-avatar
@@ -237,6 +241,7 @@
       :dialog-style="{ top: '20px' }"
       :closable="false"
       :footer="false"
+      :bodyStyle = "{padding : '12px'}"
     >
       <a-row>
         <a-col :span="9">
@@ -251,6 +256,7 @@
             style="width: 100%; border: 1px solid #eee; border-radius: 4px"
             alt=""
           />
+          <strong style="margin-top : 12px;display:block">{{ detailOrder.name_of_restaurant_id }}</strong>
         </a-col>
         <a-col :span="1"> </a-col>
         <a-col :span="14">
@@ -306,15 +312,15 @@
                 </div>
                 <div class="delivery-info-content">
                   <div class="restaurant-address">
-                    <span>Vị trí nhà hàng</span>
+                    
                     <div class="restaurant-address-text">
-                      <b>{{ detailOrder.location_destination }}</b>
+                      <span>Vị trí nhà hàng</span> : <span style="color : #000">{{ detailOrder.location_destination }}</span>
                     </div>
                   </div>
                   <div class="customer-address">
-                    <span>Địa điểm giao hàng</span>
+                    
                     <div class="customer-address-text">
-                      <b>{{ detailOrder.location_arrival }}</b>
+                      <span>Địa điểm giao hàng</span> : <span style="color : #000">{{ detailOrder.location_arrival }}</span>
                     </div>
                   </div>
                 </div>
@@ -346,7 +352,7 @@
                         Intl.NumberFormat("vi-VN").format(
                           Number.parseFloat(detailOrder.shipping).toFixed(0)
                         )
-                      }}
+                      }}₫
                     </div>
                   </div>
                   <div class="item">
@@ -358,17 +364,17 @@
                               Number.parseFloat(detailOrder.promo).toFixed(0)
                             )
                           : 0
-                      }}
+                      }}₫
                     </div>
                   </div>
                   <div class="item">
-                    <div class="item-text"><b>Tổng thanh toán</b></div>
-                    <div class="item-quantity">
-                      <b>{{
+                    <div class="item-text" style="font-size : 16px;color : #000"><span>Tổng thanh toán</span></div>
+                    <div class="item-quantity" style="font-size : 16px;color : #000">
+                      <span>{{
                         Intl.NumberFormat("vi-VN").format(
                           Number.parseFloat(detailOrder.grand_total).toFixed(0)
                         )
-                      }}</b>
+                      }}₫</span>
                     </div>
                   </div>
                 </div>
@@ -400,13 +406,16 @@
       </a-row>
     </a-modal>
     <a-modal
-    :bodyStyle="{ padding: '0px' }"
-    width="40%"
-    v-model="visibleModalSearchForm"
-    :footer="null"
-    :closable="false"
+      :bodyStyle="{ padding: '0px' }"
+      width="40%"
+      v-model="visibleModalSearchForm"
+      :footer="null"
+      :closable="false"
     >
-      <img :src="require('@/assets/bg-search.png')" style="width: 100%;background : #000">
+      <img
+        :src="require('@/assets/bg-search.png')"
+        style="width: 100%;background : #000"
+      />
       <common-select @closeFormSearch="closeFormSearch"></common-select>
     </a-modal>
   </div>
@@ -417,10 +426,10 @@ import http from "../../http-common";
 import RuleConfig from "../../common/RuleConfig";
 import moment from "moment";
 import mixin from "@/mixin";
-import CommonSelect from "../../components/Select/CommonSelect.vue"
+import CommonSelect from "../../components/Select/CommonSelect.vue";
 export default {
   mixins: [mixin],
-  components:{
+  components: {
     CommonSelect
   },
   data() {
@@ -469,14 +478,14 @@ export default {
       isShowHistoryOrder: false,
       detailOrder: {},
       listOrderItem: [],
-      visibleModalSearchForm : false
+      visibleModalSearchForm: false
     };
   },
   methods: {
-    closeFormSearch(){
+    closeFormSearch() {
       this.visibleModalSearchForm = false;
     },
-    showModalSearchForm(){
+    showModalSearchForm() {
       this.visibleModalSearchForm = true;
     },
     completeOrder(data) {
@@ -605,7 +614,7 @@ export default {
         });
     },
     router(path) {
-      EventBus.$emit('restaurantTypeId',path.id)
+      EventBus.$emit("restaurantTypeId", path.id);
     },
     showUserInfo() {
       this.getInfoUser();
@@ -825,8 +834,8 @@ export default {
 }
 .title {
   margin-bottom: 8px;
-  color: rgb(158 158 158);
   font-weight: 700;
+  font-size: 15px;
 }
 .restaurant-address {
   margin-bottom: 4px;
@@ -839,5 +848,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color : #717171
 }
+
 </style>

@@ -18,7 +18,7 @@
             </div>
           </div>
           <p class="content-promotion">
-            <a-icon type="tag" style="color: red; margin-right: 8px" />Giảm món
+            <a-icon type="tag" style="color: red; margin-right: 8px" />{{data.name_of_restaurant_type_id}}
           </p>
           <div class="opentime-status">
             <span

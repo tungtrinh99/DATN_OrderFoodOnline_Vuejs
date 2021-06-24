@@ -13,7 +13,9 @@
     <a-form-model-item label="Giảm giá" ref="title" prop="title">
       <a-input v-model="goods.discount" type="text" :allowClear="true" />
     </a-form-model-item>
-    
+    <a-form-model-item label="Ghi chú" ref="content" prop="content">
+      <a-textarea v-model="goods.content" :rows="4"/>
+    </a-form-model-item>
   </a-form-model>
 </template>
 <script>
@@ -39,6 +41,7 @@ export default {
       goods: {
         cost: "",
         discount: null,
+        content : ""
       },
       rules,
       labelCol: { span: 6 },
@@ -52,13 +55,13 @@ export default {
     fetchDataEdit(data) {
       this.goods.cost = data.cost;
       this.goods.discount = data.discount;
-      
+      this.goods.content = data.content;
     },
     save() {
       var data = {
         cost: this.goods.cost,
         discount: this.goods.discount,
-        
+        content : this.goods.content
       };
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {

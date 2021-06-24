@@ -1,6 +1,7 @@
 <template>
   <div class="menu-restaurant">
     <a-list
+      v-if="discountCodeList.length !== 0"
       class="discount-code-list"
       item-layout="horizontal"
       :data-source="discountCodeList"
@@ -18,11 +19,18 @@
       style="width: 100%"
       @search="onSearch"
     />
-    <a-spin v-if="foodData.length == 0" tip="Đang tải..."></a-spin>
+    <!-- <a-spin v-if="foodData.length == 0" tip="Đang tải..."></a-spin> -->
+    <a-empty
+      v-if="foodData.length == 0"
+      style="margin-top : 20px;margin-bottom : 20px"
+      ><span slot="description">Hiện tại nhà hàng chưa có món ăn</span></a-empty
+    >
+
     <a-list
       class="menu-restaurant-list"
       item-layout="horizontal"
       :data-source="foodData"
+      v-if="foodData.length > 0"
     >
       <a-list-item slot="renderItem" slot-scope="item, index">
         <a slot="actions">
@@ -35,21 +43,23 @@
           </a-button>
         </a>
         <a-list-item-meta :description="item.content">
-          <a slot="title" @click="handlePreview(item)">{{ item.title }}</a>
+          <a slot="title" @click="addToCart(index)">{{ item.title }}</a>
           <a-avatar
+            style="cursor : pointer;border-radius : 0;width : 60px;height :60px"
+            @click="handlePreview(item)"
             slot="avatar"
             :src="require('../../../../public/images/' + item.avatar_id)"
           />
         </a-list-item-meta>
         <div class="cost">
-          <span
+          <span class="original-cost" v-if="item.discount !== 0"
             >{{
               Intl.NumberFormat("vi-VN").format(
                 Number.parseFloat(item.cost).toFixed(0)
               )
             }}đ</span
           >
-          <span
+          <span class="after-discount-cost"
             >{{
               Intl.NumberFormat("vi-VN").format(
                 Number.parseFloat(
@@ -69,7 +79,11 @@
     >
       <img
         style="width : 520px"
-        :src="require(`../../../../public/images/${previewImage ? previewImage : 'no-photo.jpg'}`)"
+        :src="
+          require(`../../../../public/images/${
+            previewImage ? previewImage : 'no-photo.jpg'
+          }`)
+        "
       />
     </a-modal>
   </div>
@@ -88,11 +102,10 @@ export default {
       cartData: [],
       previewVisible: false,
       previewImage: "",
-      keyword: "",
+      keyword: ""
     };
   },
   methods: {
-    
     fetchData() {
       http
         .post("/restaurant-food/list", {
@@ -177,10 +190,10 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.cost > span:nth-child(1) {
+.cost > .original-cost {
   text-decoration: line-through;
 }
-.cost > span:nth-child(2) {
+.cost > .after-discount-cost {
   font-size: 16px;
   font-weight: 700;
   color: #0288d1;

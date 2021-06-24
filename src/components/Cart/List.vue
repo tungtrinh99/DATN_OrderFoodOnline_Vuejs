@@ -21,6 +21,12 @@
             <span>{{ cartData.length }} món</span>
           </div>
         </div>
+        <a-empty
+          :image="simpleImage"
+          v-if="cartData.length == 0"
+          style="margin-top : 20px;margin-bottom : 0px"
+          ><span slot="description">Giỏ hàng trống</span></a-empty
+        >
         <a-list-item slot="renderItem" slot-scope="item, index">
           <a-list-item-meta description="">
             <a slot="title">
@@ -81,7 +87,7 @@
         <a-row>
           <a-col :span="10">
             <div style="height : 300px;border : 1px solid #eee">
-              <open-street-map :waypoints = "waypoints"></open-street-map>
+              <open-street-map :waypoints="waypoints"></open-street-map>
             </div>
             <div class="direction-content">
               <div class="direction-info">
@@ -109,7 +115,12 @@
                 <div class="direction-time">
                   <a-icon type="clock-circle" /><span class="txt-bold">
                     Dự kiến:
-                    {{ moment().add(15, "minute").format("HH:mm - DD/MM") }} -
+                    {{
+                      moment()
+                        .add(15, "minute")
+                        .format("HH:mm - DD/MM")
+                    }}
+                    -
                   </span>
                   <span style="color: red">
                     {{ Number.parseFloat(calcDistance).toFixed(2) }} km</span
@@ -370,25 +381,28 @@ import moment from "moment";
 import GoogleMap from "../GoogleMap";
 import Osm from "../../components/Maps/OpenStreetMap";
 import mixin from "./../../mixin";
+import { Empty } from "ant-design-vue";
 export default {
   mixins: [mixin],
   props: {
     id: Number,
     restaurantData: Object,
-    discountCodeData: Array,
+    discountCodeData: Array
   },
   components: {
     GoogleMap,
-    "open-street-map": Osm,
+    "open-street-map": Osm
   },
   data() {
     let customerAddress = JSON.parse(localStorage.getItem("user_address"));
     let listAddress = [customerAddress];
     let customerId = JSON.parse(localStorage.getItem("user_customer_id"));
-    let restaurantInfo = JSON.parse(localStorage.getItem("client_restaurant_info"));
+    let restaurantInfo = JSON.parse(
+      localStorage.getItem("client_restaurant_info")
+    );
     let waypoints = [
-      { lat : restaurantInfo.latitude , lng : restaurantInfo.longitude },
-      { lat: customerAddress.marker.lat , lng: customerAddress.marker.lng },
+      { lat: restaurantInfo.latitude, lng: restaurantInfo.longitude },
+      { lat: customerAddress.marker.lat, lng: customerAddress.marker.lng }
     ];
     return {
       moment,
@@ -409,13 +423,13 @@ export default {
       markers: {
         position: {
           lat: this.restaurantData.latitude,
-          lng: this.restaurantData.longitude,
-        },
+          lng: this.restaurantData.longitude
+        }
       },
       locationVisible: false,
       mapVisible: false,
       customerId,
-      waypoints,
+      waypoints
     };
   },
   computed: {
@@ -426,8 +440,7 @@ export default {
         this.restaurantData.latitude,
         this.restaurantData.longitude
       );
-    },
-   
+    }
   },
   methods: {
     setAddress(data) {
@@ -474,7 +487,7 @@ export default {
     order() {
       let data = {
         // order_code: "T-" + Math.random().toString(18).substring(4),
-        order_code : Math.floor(Math.random() * (100000 - 1)) + 1,
+        order_code: Math.floor(Math.random() * (100000 - 1)) + 1,
         customer_id: this.formData.id,
         restaurant_id: this.restaurantData.id,
         drive_id: null,
@@ -489,34 +502,34 @@ export default {
         distant: this.calcDistance,
         create_at: moment(),
         update_at: moment(),
-        content: null,
+        content: null
       };
 
       http
         .post("/orders/save", data)
-        .then((res) => {
+        .then(res => {
           if (res.data.errorCode == 1) {
             var orderId = res.data.data.insertId;
             if (orderId) {
-              let itemData = this.cartData.map((d) => {
+              let itemData = this.cartData.map(d => {
                 return {
                   order_id: orderId,
                   food_id: d.id,
                   price: d.cost,
                   discount: d.discount,
-                  quantity: d.quantity,
+                  quantity: d.quantity
                 };
               });
-              itemData.forEach((item) => {
+              itemData.forEach(item => {
                 http
                   .post("/order-item/save", item)
-                  .then((response) => {
+                  .then(response => {
                     if (res.data.errorCode == 1) {
                     } else {
                       console.log();
                     }
                   })
-                  .catch((err) => {
+                  .catch(err => {
                     console.log(err);
                   });
               });
@@ -529,15 +542,26 @@ export default {
             this.$message.error(res.data.message);
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
     applyDiscountCode(value) {
-      this.discount = value.discount;
-      this.discountCode = value.code;
-      this.showOrderDetail();
-      this.discountCodeVisible = false;
+      if (
+        this.calcDistance <= value.max_distance ||
+        this.cost >= value.min_total_order
+      ) {
+        this.discount = value.discount;
+        this.discountCode = value.code;
+        this.showOrderDetail();
+        this.discountCodeVisible = false;
+      }else {
+        this.$notification['warning']({
+        message: 'Thông báo',
+        description:
+          'Đơn hàng chưa đủ điều kiện sử dụng ưu đãi',
+      });
+      }
     },
     showDiscountCode() {
       this.discountCodeVisible = true;
@@ -546,23 +570,35 @@ export default {
       let defaultToken = JSON.parse(localStorage.getItem("default_auth_token"));
       if (defaultToken) {
         if (this.cartData.length) {
-          this.orderDetailVisible = true;
-          if (this.discount) {
-            this.grandTotal = this.cost + this.ship - this.discount;
+          if (
+            this.cartData.filter(
+              item => item.restaurant_id == this.restaurantData.id
+            ).length == 0
+          ) {
+            this.$notification["warning"]({
+              message: "Thông báo",
+              description:
+                "Bạn không thể đặt hàng do giỏ hàng hiện tại đang của một nhà hàng khác . Vui lòng thử lại sau !"
+            });
           } else {
-            this.grandTotal = this.cost + this.ship;
+            this.orderDetailVisible = true;
+            if (this.discount) {
+              this.grandTotal = this.cost + this.ship - this.discount;
+            } else {
+              this.grandTotal = this.cost + this.ship;
+            }
           }
         } else {
           this.$notification["warning"]({
             message: "Thông báo",
-            description: "Vui lòng chọn món",
+            description: "Vui lòng chọn món"
           });
         }
       } else {
         this.$notification["warning"]({
           message: "Cảnh báo đăng nhập",
           description:
-            "Bạn phải thực hiện đăng nhập trước khi tiến hành đặt hàng.",
+            "Bạn phải thực hiện đăng nhập trước khi tiến hành đặt hàng."
         });
         this.$router.push("/login");
       }
@@ -580,7 +616,7 @@ export default {
       }
 
       this.cartData = JSON.parse(localStorage.getItem("cart"));
-      this.cartData.forEach((d) => {
+      this.cartData.forEach(d => {
         return (this.cost +=
           d.quantity * (d.cost - (d.cost * d.discount) / 100));
       });
@@ -606,18 +642,18 @@ export default {
       http
         .get("/customer/detail", {
           params: {
-            id: value,
-          },
+            id: value
+          }
         })
-        .then((resp) => {
+        .then(resp => {
           this.formData = resp.data.data.items[0];
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
-    },
+    }
   },
-  created: function () {
+  created: function() {
     this.fetchData();
     EventBus.$on("reload", this.reload);
     EventBus.$on("emptyCart", this.fetchData);
@@ -629,6 +665,9 @@ export default {
   mounted() {
     this.getUserInfo(this.userID);
   },
+  beforeCreate() {
+    this.simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;
+  }
 };
 </script>
 <style scoped>

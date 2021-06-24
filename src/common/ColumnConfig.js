@@ -8,25 +8,25 @@ const food = [{
     dataType: "file"
   },
   {
-    title: "Mã sản phẩm",
+    title: "Mã",
     dataIndex: "id",
     fixed: "left",
-
     key: "id",
-    width: 120,
-  },
-
-  {
-    title: "Loại đồ ăn",
-    dataIndex: "name_of_type_id",
-    key: "type",
-    width: 100
+    width: 80,
   },
   {
     title: "Tên",
     dataIndex: "title",
     key: "title",
-    width: 500
+    width: 300,
+    ellipsis : true
+  },
+
+  {
+    title: "Kiểu",
+    dataIndex: "name_of_type_id",
+    key: "type",
+    width: 100
   }
 ];
 const customer = [{
@@ -395,7 +395,7 @@ const restaurant_food = [{
     dataType: "file"
   },
   {
-    title: "Loại đồ ăn",
+    title: "Kiểu",
     dataIndex: "name_of_food_type",
     key: "type",
     width: 100
@@ -404,16 +404,22 @@ const restaurant_food = [{
     title: "Tên",
     dataIndex: "title",
     key: "title",
-    width: 500
+    width: 300,
+    ellipsis: true
   }, {
     title: "Giá",
     dataIndex: "cost",
     key: "cost",
-    width: 500
+    width: 200
   }, {
     title: "Giảm giá",
     dataIndex: "discount",
     key: "discount",
+    width: 200
+  }, {
+    title: "Ghi chú",
+    dataIndex: "content",
+    key: "content",
     width: 500
   }
 ];
@@ -470,29 +476,29 @@ const restaurant_discount = [{
   }
 ];
 const discount = [{
-  title: "Mã giảm giá",
-  dataIndex: "code",
-  key: "code",
-  ellipsis: true,
-}, {
-  title: "Giảm giá",
-  dataIndex: "discount",
-  key: "discount",
+    title: "Mã giảm giá",
+    dataIndex: "code",
+    key: "code",
+    ellipsis: true,
+  }, {
+    title: "Giảm giá",
+    dataIndex: "discount",
+    key: "discount",
 
-}, {
-  title: "Đơn hàng tối thiểu",
-  dataIndex: "min_total_order",
-  key: "min_total_order",
-}, {
-  title: "Quãng đường tối đa",
-  dataIndex: "max_distance",
-  key: "max_distance",
-},
-{
-  title: "Thông tin ưu đãi",
-  dataIndex: "content",
-  key: "content",
-}
+  }, {
+    title: "Đơn hàng tối thiểu",
+    dataIndex: "min_total_order",
+    key: "min_total_order",
+  }, {
+    title: "Quãng đường tối đa",
+    dataIndex: "max_distance",
+    key: "max_distance",
+  },
+  {
+    title: "Thông tin ưu đãi",
+    dataIndex: "content",
+    key: "content",
+  }
 ];
 export default {
   food,

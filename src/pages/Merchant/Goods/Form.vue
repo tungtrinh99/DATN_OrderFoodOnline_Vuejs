@@ -32,6 +32,9 @@
     <a-form-model-item label="Giảm giá" ref="price" prop="price">
       <a-input-number v-model="goods.discount" :style="{ width: '50%' }" />
     </a-form-model-item>
+    <a-form-model-item label="Ghi chú" ref="content" prop="content">
+      <a-textarea v-model="goods.content" :rows="4"/>
+    </a-form-model-item>
   </a-form-model>
 </template>
 <script>
@@ -54,7 +57,8 @@ export default {
       goods: {
        food_id : null,
        cost : null ,
-       discount : null
+       discount : null,
+       content : ""
       },
       rules,
       labelCol: { span: 6 },
@@ -81,7 +85,8 @@ export default {
         food_id:this.goods.food_id,
         cost: this.goods.cost,
         discount : this.goods.discount,
-        restaurant_id : JSON.parse(localStorage.getItem('merchant_restaurant_id'))
+        restaurant_id : JSON.parse(localStorage.getItem('merchant_restaurant_id')),
+        content : this.goods.content
       };
       this.$refs.ruleForm.validate(valid => {
         if (valid) {

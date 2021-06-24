@@ -16,7 +16,7 @@
     </div>
     <div>
       <div class="form-bottom">
-        Sử dụng Website Xuân Tùng để có nhiều giảm giá <br />và trải nghiệm tốt
+        Sử dụng App Nghiện Ăn để có nhiều giảm giá <br />và trải nghiệm tốt
         hơn
       </div>
     </div>
