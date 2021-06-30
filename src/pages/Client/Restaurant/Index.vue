@@ -117,7 +117,7 @@
     <div class="menu-restaurant container">
       <a-row>
         <a-col :span="15">
-          <list-food :id="id" :discountCodeList="discountCodeList"></list-food>
+          <list-food :id="id" :discountCodeList="discountCodeList" :combo="combo"></list-food>
         </a-col>
         <a-col :span="1"></a-col>
         <a-col :span="8" :style="{ position: 'sticky', top: '64px' }">
@@ -144,7 +144,8 @@ export default {
       discountCodeList: [],
       foodData: [],
       rate: 3,
-      descRate: ["Rất không tốt", "Không tốt", "Bình thường", "Tốt", "Rất tốt"]
+      descRate: ["Rất không tốt", "Không tốt", "Bình thường", "Tốt", "Rất tốt"],
+      combo : []
     };
   },
   components: {
@@ -206,6 +207,18 @@ export default {
         .catch(error => {
           this.$message.error(error.message);
         });
+    },
+    getCombo(){
+      http
+        .post("/restaurant-combo/list", {
+          id: this.id,
+        })
+        .then(response => {
+          this.combo = response.data.data.items;
+        })
+        .catch(error => {
+          this.$message.error(error.message);
+        });
     }
   },
   created() {
@@ -213,6 +226,7 @@ export default {
     this.fetchData();
     this.getDiscountCode();
     this.getFood();
+    this.getCombo();
   }
 };
 </script>

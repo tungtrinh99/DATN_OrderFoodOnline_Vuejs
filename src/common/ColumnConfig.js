@@ -19,7 +19,7 @@ const food = [{
     dataIndex: "title",
     key: "title",
     width: 300,
-    ellipsis : true
+    ellipsis: true
   },
 
   {
@@ -407,12 +407,12 @@ const restaurant_food = [{
     width: 300,
     ellipsis: true
   }, {
-    title: "Giá",
+    title: "Giá (VND)",
     dataIndex: "cost",
     key: "cost",
     width: 200
   }, {
-    title: "Giảm giá",
+    title: "Giảm giá (%)",
     dataIndex: "discount",
     key: "discount",
     width: 200
@@ -500,6 +500,34 @@ const discount = [{
     key: "content",
   }
 ];
+const restaurant_combo = [{
+  title: "Ảnh",
+  dataIndex: "avatar_id",
+  key: "avatar",
+  fixed: "left",
+  width: 80,
+  dataType: "file"
+}, {
+  title: "Nhà hàng",
+  dataIndex: "name_of_restaurant_id",
+  key: "restaurant",
+}, {
+  title: "Tên combo",
+  dataIndex: "title",
+  key: "title",
+  ellipsis: true,
+}, {
+  title: "Giảm giá (%)",
+  dataIndex: "discount",
+  key: "discount",
+
+}, {
+  title: "Ghi chú",
+  dataIndex: "content",
+  key: "content",
+  ellipsis: true,
+
+}, ];
 export default {
   food,
   customer,
@@ -510,5 +538,6 @@ export default {
   restaurant_food,
   report,
   restaurant_discount,
-  discount
+  discount,
+  restaurant_combo
 }

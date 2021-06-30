@@ -147,6 +147,24 @@ const restaurant_discount = {
     trigger: "blur"
   }],
   
+};
+const restaurant_combo = {
+  restaurant_id: [{
+    required: true,
+    message: "Bạn chưa nhập chọn nhà hàng",
+    trigger: "blur"
+  }],
+  title : [{
+    required : true , 
+    message : "Bạn chưa nhập tên combo",
+    trigger: "blur"
+  }],
+  discount : [{
+    required : true , 
+    message : "Bạn chưa nhập giảm giá",
+    trigger: "blur"
+  }]
+  
 }
 export default {
   food,
@@ -154,5 +172,6 @@ export default {
   restaurant,
   location,
   restaurant_discount,
-  discount
+  discount,
+  restaurant_combo
 }

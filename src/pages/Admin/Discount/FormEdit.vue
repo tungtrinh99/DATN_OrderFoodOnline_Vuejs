@@ -18,7 +18,7 @@
       <a-input v-model="discount.min_total_order" suffix="VND"/>
     </a-form-model-item>
     <a-form-model-item label="Quảng đường tối đa" prop="max_distance">
-      <a-input v-model="discount.max_distance" suffix="VND"/>
+      <a-input v-model="discount.max_distance" suffix="Km/h"/>
     </a-form-model-item>
     <a-form-model-item label="Thông tin giảm giá" prop="content">
       <a-textarea v-model="discount.content" :rows="4"/>

@@ -4,7 +4,7 @@
       <a-table
         :columns="cols"
         :data-source="data"
-        :row-key="(record) => record.id"
+        :row-key="record => record.id"
         :scroll="{ x: 1300 }"
       >
         <div slot="action" slot-scope="record">
@@ -57,7 +57,7 @@
         @ok="save"
         :bodyStyle="{
           padding: '16px',
-          overflow: 'auto',
+          overflow: 'auto'
         }"
       >
         <form-edit-food
@@ -96,13 +96,18 @@
           :id="id"
           @hideModal="hideModal"
         ></form-edit-food-in-merchant-website>
-         <form-edit-discount
+        <form-edit-discount
           v-if="entity == 'discount'"
           :entity="entity"
           :id="id"
           @hideModal="hideModal"
         ></form-edit-discount>
-        
+        <form-edit-combo
+          v-if="entity == 'restaurant-combo'"
+          :entity="entity"
+          :id="id"
+          @hideModal="hideModal"
+        ></form-edit-combo>
       </a-modal>
     </div>
   </div>
@@ -123,6 +128,7 @@ import Restaurant from "../../pages/Admin/Restaurant/FormEdit";
 import Location from "../../pages/Admin/Location/FormEdit";
 import FoodMerchant from "../../pages/Merchant/Goods/FormEdit";
 import Discount from "../../pages/Admin/Discount/FormEdit";
+import Combo from "../../pages/Admin/ComboFood/FormEdit";
 export default {
   components: {
     "form-edit-food": Food,
@@ -132,15 +138,15 @@ export default {
     "form-edit-location": Location,
     "form-edit-food-in-merchant-website": FoodMerchant,
     "form-edit-discount": Discount,
-
+    "form-edit-combo": Combo
   },
   props: {
     column: {
-      type: Array,
+      type: Array
     },
     entity: String,
     isAction: Boolean,
-    isMerchant: Boolean,
+    isMerchant: Boolean
   },
   data() {
     var cols = [];
@@ -151,12 +157,12 @@ export default {
         dataIndex: "id",
         fixed: "left",
         width: 110,
-        scopedSlots: { customRender: "action" },
+        scopedSlots: { customRender: "action" }
       });
     }
 
     const title = Lang[this.entity] || "";
-    var tmp = this.column.map((p) => {
+    var tmp = this.column.map(p => {
       switch (p.dataType) {
         case "number":
           p.className = "column-number";
@@ -173,7 +179,7 @@ export default {
       if (!p.scopedSlots) {
         p.scopedSlots = {
           filterIcon: "filterIcon",
-          customRender: "customRender",
+          customRender: "customRender"
         };
       }
       if (p.dataSource) {
@@ -213,46 +219,46 @@ export default {
       filters: [],
       searchText: "",
       filter: this.role,
-      gender,
+      gender
     };
   },
   methods: {
     renderList(text, column) {
-      let item = column.status.find((p) => p.value == text);
+      let item = column.status.find(p => p.value == text);
       return item ? item.text : "";
     },
     renderColorForList(text, column) {
-      let item = column.status.find((p) => p.value == text);
+      let item = column.status.find(p => p.value == text);
       return item && item.color ? item.color : "blue";
     },
     fetchData(data) {
       if (data) {
         http
           .post(`/${this.entity}/list`, data)
-          .then((response) => {
+          .then(response => {
             this.data = response.data.data.items;
           })
-          .catch((error) => {
+          .catch(error => {
             this.$message.error(error.message);
           });
       } else if (this.isMerchant) {
         http
           .post(`/${this.entity}/list`, {
-            id: JSON.parse(localStorage.getItem("merchant_restaurant_id")),
+            id: JSON.parse(localStorage.getItem("merchant_restaurant_id"))
           })
-          .then((response) => {
+          .then(response => {
             this.data = response.data.data.items;
           })
-          .catch((error) => {
+          .catch(error => {
             this.$message.error(error.message);
           });
       } else if (!data) {
         http
           .post(`/${this.entity}/list`)
-          .then((response) => {
+          .then(response => {
             this.data = response.data.data.items;
           })
-          .catch((error) => {
+          .catch(error => {
             this.$message.error(error.message);
           });
       }
@@ -260,6 +266,14 @@ export default {
     showDeleteConfirm(record) {
       const entity = this.entity;
       const component = this;
+      let param = {
+        id: record
+      };
+      if (entity == "restaurant-food") {
+        param.restaurant_id = JSON.parse(
+          localStorage.getItem("merchant_restaurant_id")
+        );
+      }
       this.$confirm({
         title: `Bạn có muốn xóa ${component.title} ${record} không?`,
         okText: "Xác nhận",
@@ -269,43 +283,41 @@ export default {
         onOk() {
           http
             .get(`/${entity}/delete`, {
-              params: {
-                id: record,
-                restaurant_id: JSON.parse(
-                  localStorage.getItem("merchant_restaurant_id")
-                ),
-              },
+              params: param
             })
-            .then((response) => {
+            .then(response => {
               component.$message.success(
                 `Xóa ${component.title} ${record} thành công`
               );
               EventBus.$emit("reload");
             })
-            .catch((error) => {
+            .catch(error => {
               component.$message.error(error.message);
             });
-        },
+        }
       });
     },
     showEditModal(record) {
       this.visible = true;
       this.id = record;
       var data = [];
+      let param = {
+        id: record
+      };
+      if (this.entity == "restaurant-food") {
+        param.restaurant_id = JSON.parse(
+          localStorage.getItem("merchant_restaurant_id")
+        );
+      }
       http
         .get(`${this.entity}/detail`, {
-          params: {
-            id: record,
-            restaurant_id: JSON.parse(
-              localStorage.getItem("merchant_restaurant_id")
-            ),
-          },
+          params: param
         })
-        .then((response) => {
+        .then(response => {
           data = response.data.data.items;
           EventBus.$emit("data", data[0]);
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
     },
@@ -314,26 +326,26 @@ export default {
 
       http
         .get(`/goods/details/${record}`)
-        .then((response) => {
+        .then(response => {
           this.cartData = response.data;
-          this.cartData.forEach((item) => {
+          this.cartData.forEach(item => {
             item.qty = 1;
           });
           this.addToCartSession(this.cartData[0], record);
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(message.error);
         });
     },
     addToCartSession(data, record) {
       http
         .post("/cart/add", data)
-        .then((response) => {
+        .then(response => {
           this.$message.success(
             `Thêm thành công sản phẩm ${record} vào giỏ hàng `
           );
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
@@ -349,11 +361,11 @@ export default {
       this.$emit("reload");
     },
     renderStatus(text) {
-      return this.status.find((p) => p.value == text).title;
+      return this.status.find(p => p.value == text).title;
     },
     getTextGender(index) {
-      return this.gender.find((p) => p.value == index).text;
-    },
+      return this.gender.find(p => p.value == index).text;
+    }
   },
   mounted() {
     this.fetchData();
@@ -363,7 +375,7 @@ export default {
   },
   destroyed() {
     EventBus.$off("filterDataByStatus", this.fetchData);
-  },
+  }
 };
 </script>
 

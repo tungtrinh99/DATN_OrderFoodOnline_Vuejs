@@ -142,15 +142,15 @@
                   :data-source="listItemOfOrder"
                 >
                   <a-list-item slot="renderItem" slot-scope="item">
-                    <a-list-item-meta :description="'Món #' + item.food_id">
-                      <a slot="title">{{ item.name_of_food }}</a>
-                      <a-avatar
+                    <a-list-item-meta :description="item.food_id ? 'Món #' + item.food_id :'Combo #' + item.combo_id">
+                      <a slot="title">{{ item.name_of_food ? item.name_of_food : item.name_of_combo }}</a>
+                      <!-- <a-avatar
                         style="margin-top: 8px; border: 1px solid #e0e0e0"
                         slot="avatar"
                         :src="
                           require('../../../../public/images/' + item.avatar_id)
                         "
-                      />
+                      /> -->
                     </a-list-item-meta>
                     <div class="quantity">
                       <span>Số lượng</span>

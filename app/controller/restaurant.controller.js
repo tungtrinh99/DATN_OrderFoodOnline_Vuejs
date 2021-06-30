@@ -1,5 +1,11 @@
 const db = require('../config/db.config');
 const fs = require("fs");
+const {
+  log
+} = require('console');
+const {
+  forbidden
+} = require('joi');
 
 class RestaurantController {
   // Lấy danh sách nhà hàng
@@ -10,8 +16,8 @@ class RestaurantController {
     select a.*,b.full_address,b.longitude,b.latitude , c.fullname as name_of_user_id , d.title as name_of_restaurant_type_id from 
     restaurant a join location b on a.location_id = b.id join user c on a.user_id = c.id join restaurant_type d on a.type_id = d.id
     where (a.title like "%${textSearch}%" or b.full_address like "%${textSearch}%")`;
-    if(typeRestaurant){
-      query = query+ " " + `and a.type_id = ${typeRestaurant}`
+    if (typeRestaurant) {
+      query = query + " " + `and a.type_id = ${typeRestaurant}`
     }
     db.query(query,
       (err, result, field) => {
@@ -31,7 +37,7 @@ class RestaurantController {
     const id = req.body.id;
     const textSearch = req.body.textSearch || "";
     db.query(`
-              select b.* , a.restaurant_id , a.combo_id , a.cost , a.discount , a.content , c.title AS name_of_food_type from restaurant_food as a join food as b on a.food_id = b.id JOIN food_type AS c ON b.type = c.id 
+              select b.* , a.restaurant_id , a.cost , a.discount , a.content ,a.id as restaurant_food_id, c.title AS name_of_food_type from restaurant_food as a join food as b on a.food_id = b.id JOIN food_type AS c ON b.type = c.id 
               where a.restaurant_id = ${id} and b.title like "%${textSearch}%"`,
       (err, result, field) => {
         if (!err) {
@@ -275,6 +281,107 @@ class RestaurantController {
         });
         else console.log(err);
       });
+  }
+  // lấy danh sách combo của nhà hàng
+  comboList(req, res, next) {
+    let restaurantId = req.body.id;
+    let query = `select a.* , c.title as name_of_restaurant_id from combo a join restaurant c on a.restaurant_id = c.id`;
+    if (restaurantId) {
+      query = query + ' ' + `where a.restaurant_id = ${restaurantId}`;
+    }
+    db.query(query, (err, result, fields) => {
+      if (!err) {
+        res.send({
+          data: {
+            items: result
+          }
+        })
+      } else {
+        console.log(err)
+      }
+    })
+  }
+  // thêm mới combo nhà hàng
+  saveCombo(req, res, next) {
+    let data = req.body;
+    let query = `insert into combo set ?`;
+    db.query(query, data, (err, result, fields) => {
+      if (!err) {
+        res.send({
+          data: {
+            items: result
+          }
+        })
+      } else console.log(err)
+    })
+  }
+  //xóa combo nhà hàng
+  deleteCombo(req, res, next) {
+    let comboId = req.query.id;
+    let query = `delete from combo where id = ${comboId}`;
+    db.query(query, (err, result, fields) => {
+      if (!err) {
+        res.send(result)
+      } else console.log(err)
+    })
+  }
+  // chi tiết combo nhà hàng
+  detailCombo(req, res, next) {
+    let comboId = req.query.id;
+    let query = `select a.* , c.title as name_of_restaurant_id from combo a join restaurant c on a.restaurant_id = c.id where a.id = ${comboId}`;
+    db.query(query, (err, result, fields) => {
+      if (!err) {
+        res.send({
+          data: {
+            items: result
+          }
+        });
+      } else console.log(err)
+    })
+  }
+  // cập nhật combo nhà hàng
+  updateCombo(req, res, next) {
+    let comboId = req.query.id;
+    let combo = req.body;
+    let query = `update combo set ? where id = ${comboId}`;
+    db.query(query, combo, (err, result, fields) => {
+      if (!err) {
+        res.send({
+          data: {
+            items: result
+          }
+        });
+      } else console.log(err)
+    })
+  }
+  // thêm món ăn vào combo 
+  saveFoodCombo(req, res, next) {
+    let comboId = req.body.id;
+    let foods = req.body.foods;
+    let query = `insert into combo_food (combo_id,food_id) value ?`;
+    foods = foods.map((food) => {
+        let arr = [];
+        arr.push(comboId,food.id);
+        return arr;
+      }
+    )
+    db.query(query, [foods], (err, result, fields) => {
+      if (!err) res.send(result)
+      else res.send(err);
+    })
+  }
+  // danh sách món ăn combo
+  listFoodCombo(req, res, next) {
+    let comboId = req.query.id;
+    let query = `select * from combo_food where combo_id = ${comboId}`;
+    db.query(query, (err, result, fields) => {
+      if (!err) res.send({
+        data: {
+          items: result
+        }
+      });
+      else console.log(err)
+    })
   }
 
 }

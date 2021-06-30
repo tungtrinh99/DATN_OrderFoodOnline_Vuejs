@@ -120,6 +120,12 @@ export default {
               title: "Ưu đãi",
               path: "discount-code"
             }
+            ,
+            {
+              key: "combo",
+              title: "Combo đồ ăn",
+              path: "restaurant-combo"
+            }
           ]
         },
         {

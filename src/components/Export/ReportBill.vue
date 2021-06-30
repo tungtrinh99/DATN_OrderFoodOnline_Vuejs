@@ -28,7 +28,7 @@
         </tr>
         <tr v-for="(goods, index) in item">
           <td>{{ index }}</td>
-          <td>{{ goods.name_of_food }}</td>
+          <td>{{ goods.name_of_food ? goods.name_of_food : goods.name_of_combo }}</td>
           <td>{{ goods.price }}</td>
           <td>{{ goods.discount }}%</td>
           <td>{{ goods.quantity }}</td>

@@ -71,7 +71,7 @@
         <a-select
           show-search
           :value="user.address"
-          placeholder="Vui lòng chọn địa chỉ quán"
+          placeholder="Vui lòng chọn địa chỉ "
           style="width: 100%; border-left: none"
           :default-active-first-option="false"
           :show-arrow="true"

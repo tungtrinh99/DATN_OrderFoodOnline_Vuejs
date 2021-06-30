@@ -335,7 +335,7 @@
                     v-for="(item, index) in listOrderItem"
                     :key="index"
                   >
-                    <div class="item-text">{{ item.name_of_food }}</div>
+                    <div class="item-text">{{ item.name_of_food ? item.name_of_food : item.name_of_combo }}</div>
                     <div class="item-quantity">x {{ item.quantity }}</div>
                   </div>
                 </div>

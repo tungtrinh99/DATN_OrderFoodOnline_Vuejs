@@ -93,9 +93,9 @@
               <div class="direction-info">
                 <div class="direction-from">
                   <div class="direction-name">{{ restaurantData.title }}</div>
-                  <div class="direction-name">
+                  <span>
                     {{ restaurantData.full_address }}
-                  </div>
+                  </span>
                 </div>
                 <div class="direction-to">
                   <div class="">
@@ -514,10 +514,11 @@ export default {
               let itemData = this.cartData.map(d => {
                 return {
                   order_id: orderId,
-                  food_id: d.id,
+                  food_id: d.restaurant_food_id ? d.id : null,
                   price: d.cost,
                   discount: d.discount,
-                  quantity: d.quantity
+                  quantity: d.quantity,
+                  combo_id : !d.restaurant_food_id ? d.id : null
                 };
               });
               itemData.forEach(item => {

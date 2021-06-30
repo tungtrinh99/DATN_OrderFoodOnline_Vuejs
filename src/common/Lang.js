@@ -6,6 +6,7 @@ export default {
   location: 'Địa điểm',
   order: 'Đơn hàng',
   'restaurant-food': 'Đồ ăn',
-  'restaurant-discount': 'Ưu đãi'
+  'restaurant-discount': 'Ưu đãi',
+  'restaurant-combo':'Combo đồ ăn'
 
 }

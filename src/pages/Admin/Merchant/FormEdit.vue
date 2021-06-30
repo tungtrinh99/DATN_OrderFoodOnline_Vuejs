@@ -28,7 +28,7 @@
         </div>
       </a-upload>
     </a-form-model-item>
-    <a-form-model-item label="Mã khách hàng" ref="userCode" prop="user_code">
+    <a-form-model-item label="Mã khách hàng" ref="userCode">
       <a-input v-model="user.userCode" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Tên khách hàng" ref="fullname" prop="fullname">

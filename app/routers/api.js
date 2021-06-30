@@ -36,6 +36,7 @@ router.get('/restaurant/detail', restaurant.detail);
 router.post('/restaurant/save', restaurant.save);
 router.post('/restaurant/update', restaurant.update);
 router.get('/restaurant/delete', restaurant.delete);
+
 router.get('/restaurant-type/list', restaurant.type);
 router.post('/restaurant-food/list', restaurant.item);
 router.get('/restaurant-food/detail', restaurant.detailItem);
@@ -43,11 +44,20 @@ router.post('/restaurant-food/update', restaurant.updateItem);
 router.get('/restaurant-food/delete', restaurant.deleteItem);
 router.post('/restaurant-food/save', restaurant.saveItem);
 
+router.post('/restaurant-combo/list',restaurant.comboList);
+router.post('/restaurant-combo/save',restaurant.saveCombo);
+router.get('/restaurant-combo/delete',restaurant.deleteCombo);
+router.get('/restaurant-combo/detail',restaurant.detailCombo);
+router.post('/restaurant-combo/update',restaurant.updateCombo);
+
 router.get('/restaurant-location/list', restaurant.address);
+
 router.post('/restaurant-discount/list', restaurant.discount);
 router.post('/restaurant-discount/save', restaurant.saveDiscount);
 router.get('/restaurant-discount/delete', restaurant.deleteDiscount);
 
+router.post('/combo-food/save',restaurant.saveFoodCombo);
+router.get('/combo-food/list',restaurant.listFoodCombo);
 // discount
 router.post('/discount/list', discount.list);
 router.post('/discount/save', discount.save);
@@ -79,6 +89,7 @@ router.post('/location/save', location.save);
 router.post('/location/update', location.update);
 router.get('/location/detail', location.detail);
 router.get('/location/delete', location.delete);
+
 router.get('/vie-province/list', location.province);
 router.get('/vie-district/list', location.district);
 router.get('/vie-ward/list', location.ward);

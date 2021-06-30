@@ -8,7 +8,7 @@
         padding: '16px',
         height: '60vh',
         overflowY: 'auto',
-        overflowX: 'auto',
+        overflowX: 'auto'
       }"
       :dialog-style="{ top: '100px' }"
     >
@@ -36,7 +36,7 @@
                   class="doh-stt-icon"
                   :style="{
                     background: orderStatusColor,
-                    boxShadow: `0px 0px 10px ${orderStatusColor}`,
+                    boxShadow: `0px 0px 10px ${orderStatusColor}`
                   }"
                 ></div>
                 <span>{{ orderStatusText }}</span>
@@ -119,7 +119,6 @@
                     <a-step title="Đang vận chuyển" />
                     <a-step title="Hoàn thành" />
                     <a-step title="Hủy" />
-
                   </a-steps>
                 </div>
               </div>
@@ -137,15 +136,27 @@
                   :data-source="listItemOfOrder"
                 >
                   <a-list-item slot="renderItem" slot-scope="item">
-                    <a-list-item-meta :description="'Món #' + item.food_id">
-                      <a slot="title">{{ item.name_of_food }}</a>
-                      <a-avatar
+                    <a-list-item-meta
+                      :description="
+                        item.food_id
+                          ? 'Món #' + item.food_id
+                          : 'Combo #' + item.combo_id
+                      "
+                    >
+                      <a slot="title">{{
+                        item.name_of_food
+                          ? item.name_of_food
+                          : item.name_of_combo
+                      }}</a>
+                      <!-- <a-avatar
                         style="margin-top: 8px; border: 1px solid #e0e0e0"
                         slot="avatar"
                         :src="
-                          require('../../../../public/images/' + item.avatar_id)
+                          require('../../../../public/images/' +
+                            item.food_avatar)
                         "
                       />
+                       -->
                     </a-list-item-meta>
                     <div class="quantity">
                       <span>Số lượng</span>
@@ -229,7 +240,7 @@
         padding: '16px',
         height: 'auto',
         overflowY: 'auto',
-        overflowX: 'auto',
+        overflowX: 'auto'
       }"
     >
       <div slot="footer">
@@ -242,20 +253,31 @@
       >
         <a-list-item slot="renderItem" slot-scope="item">
           <a slot="actions">
-            
-<span
-              ></span
-            >
+            <span></span>
             <a-button type="primary" @click="setDriver(item)">Gán đơn</a-button>
           </a>
-          <a-list-item-meta :description="`Khoảng cách đến nhà hàng : ${distanceInKmBetweenEarthCoordinates(
-                  item.latitude,
-                  item.longitude,
-                  formData.latitude,
-                  formData.longitude
-                ).toFixed(2)}
-                km`">
-            <a  style="display:flex;align-items:center;justify-content:space-between" slot="title">{{ item.name_of_driver }} ( {{item.plates}} )<span class="doh-stt-icon" :style="{background :item.status == 1 ? 'red' : 'green',display:'block'}"></span></a>
+          <a-list-item-meta
+            :description="
+              `Khoảng cách đến nhà hàng : ${distanceInKmBetweenEarthCoordinates(
+                item.latitude,
+                item.longitude,
+                formData.latitude,
+                formData.longitude
+              ).toFixed(2)}
+                km`
+            "
+          >
+            <a
+              style="display:flex;align-items:center;justify-content:space-between"
+              slot="title"
+              >{{ item.name_of_driver }} ( {{ item.plates }} )<span
+                class="doh-stt-icon"
+                :style="{
+                  background: item.status == 1 ? 'red' : 'green',
+                  display: 'block'
+                }"
+              ></span
+            ></a>
             <a-avatar slot="avatar" icon="user" />
           </a-list-item-meta>
         </a-list-item>
@@ -274,7 +296,7 @@ export default {
     show: Boolean,
     title: String,
     formData: Object,
-    listItemOfOrder: Array,
+    listItemOfOrder: Array
   },
   components: {},
   data() {
@@ -282,7 +304,7 @@ export default {
     return {
       orderStatus,
       showDriver: false,
-      listDriver: [],
+      listDriver: []
     };
   },
   methods: {
@@ -298,10 +320,10 @@ export default {
     getListDriver() {
       http
         .get("/driver/list")
-        .then((res) => {
+        .then(res => {
           this.listDriver = res.data.data.items;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -312,18 +334,18 @@ export default {
             "/orders/update",
             {
               drive_id: value.driver_id,
-              status: 2,
+              status: 2
             },
             {
               params: {
-                id: this.formData.id,
-              },
+                id: this.formData.id
+              }
             }
           )
-          .then((res) => {
+          .then(res => {
             this.$notification["success"]({
               message: "Thông báo",
-              description: `Gán đơn thành công cho tài xế ${value.name_of_driver}`,
+              description: `Gán đơn thành công cho tài xế ${value.name_of_driver}`
             });
 
             http
@@ -332,14 +354,14 @@ export default {
                 { status: 1 },
                 {
                   params: {
-                    id: value.driver_id,
-                  },
+                    id: value.driver_id
+                  }
                 }
               )
-              .then((res) => {
+              .then(res => {
                 console.log(res);
               })
-              .catch((err) => {
+              .catch(err => {
                 console.log(err);
               });
 
@@ -347,16 +369,14 @@ export default {
             this.close();
             EventBus.$emit("reload");
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
-      }
-      else{
+      } else {
         this.$notification["error"]({
-              message: "Thông báo",
-              description: `Tài xế ${value.name_of_driver} đang được gán một đơn khác`,
-            });
-
+          message: "Thông báo",
+          description: `Tài xế ${value.name_of_driver} đang được gán một đơn khác`
+        });
       }
     },
     degreesToRadians(degrees) {
@@ -380,26 +400,26 @@ export default {
           Math.cos(lat2);
       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return earthRadiusKm * c;
-    },
+    }
   },
   computed: {
     orderStatusText() {
-      return this.orderStatus.find((p) => p.value == this.formData.status)
-        ? this.orderStatus.find((p) => p.value == this.formData.status).text
+      return this.orderStatus.find(p => p.value == this.formData.status)
+        ? this.orderStatus.find(p => p.value == this.formData.status).text
         : "";
     },
     convertTime() {
       return moment(this.formData.create_at).format("HH:mm DD/MM/YYYY");
     },
     orderStatusColor() {
-      return this.orderStatus.find((p) => p.value == this.formData.status)
-        ? this.orderStatus.find((p) => p.value == this.formData.status).color
+      return this.orderStatus.find(p => p.value == this.formData.status)
+        ? this.orderStatus.find(p => p.value == this.formData.status).color
         : "#000";
-    },
+    }
   },
   created() {
     this.getListDriver();
-  },
+  }
 };
 </script>
 <style scoped>
@@ -472,5 +492,4 @@ tr:last-child td {
   font-size: 14px;
   color: #888888;
 }
-
 </style>
