@@ -24,7 +24,7 @@ const orderStatus = {
 }
 const userStatus = {
     SAN_SANG : 1,
-    KHONG_SAN_SANG : 2
+    KHONG_SAN_SANG : 0
 }
 export default  {
     title,

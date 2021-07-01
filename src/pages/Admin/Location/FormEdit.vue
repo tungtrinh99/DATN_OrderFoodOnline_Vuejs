@@ -156,6 +156,8 @@ export default {
       this.formData.province_id = data.province_id;
       this.formData.district_id = data.district_id;
       this.formData.ward_id = data.ward_id;
+      this.formData.lat = data.latitude;
+      this.formData.lng = data.longitude;
     },
     save() {
       var data = {
@@ -266,7 +268,8 @@ export default {
         .then(response => {
           let data = response.data.data.items.map(d => ({
             value: d.ward_id,
-            text: d.title
+            text: d.title,
+            location : d.location
           }));
           this.listWard = this.listWard.concat(data);
         })
@@ -277,10 +280,26 @@ export default {
     handleChangeWard(data) {
       this.formData.ward = data;
       this.formData.ward_id = data.key;
-
-      this.wardTitle = this.listWard.find(item => item.value === data.key).text;
+      let ward = this.listWard.find(item => item.value === data.key);
+      this.wardTitle = ward.text;
+      let coordinates = ward.location ;
+      this.ParseDMS(coordinates);
       if (!this.wardTitle) return;
-    }
+    },
+     ConvertDMSToDD(degrees, minutes, seconds, direction) {
+      var dd = parseFloat(degrees) + minutes / 60 + seconds / (60 * 60);
+      if (direction == "S" || direction == "W") {
+        dd = dd * -1;
+      } 
+      return dd;
+    },
+    ParseDMS(input) {
+      let parts = input.split(' ');
+      let lat = this.ConvertDMSToDD(parts[0], parts[1], parts[2].replace('N,',''), 'N');
+      let lng = this.ConvertDMSToDD(parts[3], parts[4], parts[5].replace('E',''), 'E');
+      this.formData.lat = lat;
+      this.formData.lng = lng;
+    },
   }
 };
 </script>

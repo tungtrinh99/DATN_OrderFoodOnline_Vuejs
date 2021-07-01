@@ -273,7 +273,7 @@
               >{{ item.name_of_driver }} ( {{ item.plates }} )<span
                 class="doh-stt-icon"
                 :style="{
-                  background: item.status == 1 ? 'red' : 'green',
+                  background: item.status == 1 ? 'green' : 'red',
                   display: 'block'
                 }"
               ></span
@@ -313,6 +313,7 @@ export default {
     },
     findDriver() {
       this.showDriver = true;
+      this.getListDriver();
     },
     closeDriver() {
       this.showDriver = false;
@@ -327,55 +328,40 @@ export default {
           console.log(err);
         });
     },
+    updateOrder(value) {
+      return http.post(
+        "/orders/update",
+        {
+          drive_id: value.driver_id,
+          status: 3
+        },
+        { params: { id: this.formData.id } }
+      );
+    },
+    updateDriver(value) {
+      return http.post(
+        "/driver/update",
+        { status: 2 },
+        { params: { id: value.driver_id } }
+      );
+    },
     setDriver(value) {
-      if (value.status == 0) {
-        http
-          .post(
-            "/orders/update",
-            {
-              drive_id: value.driver_id,
-              status: 2
-            },
-            {
-              params: {
-                id: this.formData.id
-              }
-            }
-          )
-          .then(res => {
+      if (value.status == 1) {
+        Promise.all([this.updateOrder(value), this.updateDriver(value)])
+          .then(([order, driver]) => {
             this.$notification["success"]({
               message: "Thông báo",
               description: `Gán đơn thành công cho tài xế ${value.name_of_driver}`
             });
-
-            http
-              .post(
-                "/driver/update",
-                { status: 1 },
-                {
-                  params: {
-                    id: value.driver_id
-                  }
-                }
-              )
-              .then(res => {
-                console.log(res);
-              })
-              .catch(err => {
-                console.log(err);
-              });
-
             this.closeDriver();
             this.close();
             EventBus.$emit("reload");
           })
-          .catch(err => {
-            console.log(err);
-          });
-      } else {
+          .catch(err => {});
+      } else if (value.status === 2) {
         this.$notification["error"]({
           message: "Thông báo",
-          description: `Tài xế ${value.name_of_driver} đang được gán một đơn khác`
+          description: `Tài xế ${value.name_of_driver} đang bận`
         });
       }
     },
@@ -415,11 +401,14 @@ export default {
       return this.orderStatus.find(p => p.value == this.formData.status)
         ? this.orderStatus.find(p => p.value == this.formData.status).color
         : "#000";
+    },
+    ladingBillCode() {
+      return Math.floor(
+        Math.random() * (9999999999 - 1000000000 + 1) + 1000000000
+      );
     }
   },
-  created() {
-    this.getListDriver();
-  }
+  created() {}
 };
 </script>
 <style scoped>

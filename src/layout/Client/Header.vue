@@ -241,7 +241,7 @@
       :dialog-style="{ top: '20px' }"
       :closable="false"
       :footer="false"
-      :bodyStyle = "{padding : '12px'}"
+      :bodyStyle="{ padding: '12px' }"
     >
       <a-row>
         <a-col :span="9">
@@ -256,7 +256,9 @@
             style="width: 100%; border: 1px solid #eee; border-radius: 4px"
             alt=""
           />
-          <strong style="margin-top : 12px;display:block">{{ detailOrder.name_of_restaurant_id }}</strong>
+          <strong style="margin-top : 12px;display:block">{{
+            detailOrder.name_of_restaurant_id
+          }}</strong>
         </a-col>
         <a-col :span="1"> </a-col>
         <a-col :span="14">
@@ -312,15 +314,19 @@
                 </div>
                 <div class="delivery-info-content">
                   <div class="restaurant-address">
-                    
                     <div class="restaurant-address-text">
-                      <span>Vị trí nhà hàng</span> : <span style="color : #000">{{ detailOrder.location_destination }}</span>
+                      <span>Vị trí nhà hàng</span> :
+                      <span style="color : #000">{{
+                        detailOrder.location_destination
+                      }}</span>
                     </div>
                   </div>
                   <div class="customer-address">
-                    
                     <div class="customer-address-text">
-                      <span>Địa điểm giao hàng</span> : <span style="color : #000">{{ detailOrder.location_arrival }}</span>
+                      <span>Địa điểm giao hàng</span> :
+                      <span style="color : #000">{{
+                        detailOrder.location_arrival
+                      }}</span>
                     </div>
                   </div>
                 </div>
@@ -335,7 +341,13 @@
                     v-for="(item, index) in listOrderItem"
                     :key="index"
                   >
-                    <div class="item-text">{{ item.name_of_food ? item.name_of_food : item.name_of_combo }}</div>
+                    <div class="item-text">
+                      {{
+                        item.name_of_food
+                          ? item.name_of_food
+                          : item.name_of_combo
+                      }}
+                    </div>
                     <div class="item-quantity">x {{ item.quantity }}</div>
                   </div>
                 </div>
@@ -368,13 +380,25 @@
                     </div>
                   </div>
                   <div class="item">
-                    <div class="item-text" style="font-size : 16px;color : #000"><span>Tổng thanh toán</span></div>
-                    <div class="item-quantity" style="font-size : 16px;color : #000">
-                      <span>{{
-                        Intl.NumberFormat("vi-VN").format(
-                          Number.parseFloat(detailOrder.grand_total).toFixed(0)
-                        )
-                      }}₫</span>
+                    <div
+                      class="item-text"
+                      style="font-size : 16px;color : #000"
+                    >
+                      <span>Tổng thanh toán</span>
+                    </div>
+                    <div
+                      class="item-quantity"
+                      style="font-size : 16px;color : #000"
+                    >
+                      <span
+                        >{{
+                          Intl.NumberFormat("vi-VN").format(
+                            Number.parseFloat(detailOrder.grand_total).toFixed(
+                              0
+                            )
+                          )
+                        }}₫</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -488,16 +512,23 @@ export default {
     showModalSearchForm() {
       this.visibleModalSearchForm = true;
     },
+    updateOrder(value) {
+      return http.post("/orders/update", { status: 4 }, { params: { id: value.id } });
+    },
+    updateDriver(value) {
+      return http.post(
+        "/driver/update",
+        { status: 1 },
+        { params: { id: value.drive_id } }
+      );
+    },
     completeOrder(data) {
-      http
-        .post("/orders/update", { status: 4 }, { params: { id: data.id } })
-        .then(res => {
+      Promise.all([this.updateOrder(data), this.updateDriver(data)])
+        .then(([order, driver]) => {
           this.$message.success("Xác nhận đơn thành công");
           this.isShowHistoryOrder = false;
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(error => {});
     },
     cancelOrder(data) {
       const component = this;
@@ -848,7 +879,6 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color : #717171
+  color: #717171;
 }
-
 </style>

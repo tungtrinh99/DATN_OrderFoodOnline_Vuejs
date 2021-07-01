@@ -190,11 +190,26 @@ export default {
         });
     },
     handleChangeWard(data) {
+      let ward = this.listWard.find(item=>item.ward_id == data );
       this.formData.ward_id = data;
-      this.wardTitle = this.listWard.find(
-        (item) => item.ward_id === data
-      ).title;
+      this.wardTitle = ward.title;
+      let coordinates = ward.location ;
+      this.ParseDMS(coordinates);
       if (!this.wardTitle) return;
+    },
+    ConvertDMSToDD(degrees, minutes, seconds, direction) {
+      var dd = parseFloat(degrees) + minutes / 60 + seconds / (60 * 60);
+      if (direction == "S" || direction == "W") {
+        dd = dd * -1;
+      } 
+      return dd;
+    },
+    ParseDMS(input) {
+      let parts = input.split(' ');
+      let lat = this.ConvertDMSToDD(parts[0], parts[1], parts[2].replace('N,',''), 'N');
+      let lng = this.ConvertDMSToDD(parts[3], parts[4], parts[5].replace('E',''), 'E');
+      this.formData.lat = lat;
+      this.formData.lng = lng;
     },
     save() {
       const data = {
