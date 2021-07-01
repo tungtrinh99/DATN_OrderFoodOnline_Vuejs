@@ -41,8 +41,9 @@
     <a-form-model-item label="Nhà hàng" >
       <div class="select">
         <a-select
+          label-in-value
           show-search
-          :value="combo.restaurantId"
+          :value="combo.restaurant"
           placeholder="Vui lòng chọn nhà hàng"
           style="width: 100%; border-left: none"
           :default-active-first-option="false"
@@ -68,13 +69,14 @@
         :allowClear="true"
       />
     </a-form-model-item>
-    <!-- <a-form-model-item label="Món ăn">
+    <a-form-model-item label="Món ăn">
       <div v-for="(item,index) in food">
         <a-select
+            label-in-value
             show-search
             :allowClear="true"
             :autoClearSearchValue="true"
-            :value="item.food_id"
+            :value="item"
             placeholder="Chọn món ăn"
             style="width: 93% ; border-left: none"
             :filter-option="false"
@@ -92,7 +94,7 @@
         <a-icon type="plus"/>
         Thêm món ăn
       </a-button>
-    </a-form-model-item> -->
+    </a-form-model-item>
     <a-form-model-item label="Ghi chú" prop="content">
       <a-textarea v-model="combo.content" :rows="4"/>
     </a-form-model-item>
@@ -130,7 +132,8 @@ export default {
      restaurantId : null , 
      avatarId : '',
      discount : null,
-     content : ''
+     content : '',
+     restaurant : void 0
     };
     return { 
       combo,
@@ -149,6 +152,7 @@ export default {
   },
   methods: {
     fetchDataEdit(data){
+        this.combo.restaurant ={ key : data.restaurant_id , label : data.name_of_restaurant_id };
         this.combo.title = data.title;
         this.combo.restaurantId = data.restaurant_id;
         this.combo.avatarId = data.avatar_id;
@@ -163,7 +167,12 @@ export default {
           id : this.id
         }
       }).then((res)=>{
-        this.food = res.data.data.items;
+        this.food = res.data.data.items.map((item)=>{
+          let obj ={};
+          obj.key = item.food_id;
+          obj.label = item.title;
+          return obj;
+        });
       })
       .catch(err=>console.log(err))
     },
@@ -174,7 +183,9 @@ export default {
       this.food.push({id : void 0})
     },
     onChangeFood(value){
-      this.food[this.foodIndex].food_id = value;
+      console.log(value);
+      this.food[this.foodIndex] = value;
+      this.food[this.foodIndex].food_id = value.key;
     },
     getFood(value){
       this.foodIndex = value;
@@ -197,18 +208,15 @@ export default {
           this.$message.error(error.message);
         });
     },
-     saveComboRestaurant(){
+    deleteComboFood(){
+      return http.get('/combo-food/delete',{params : { id : this.id}})
+    },
+    saveComboRestaurant(){
       let data = {
-        foods : this.food.map(item => {return {id : item.food_id}})
+        foods : this.food.map(item => {return {id : item.key}}),
+        id : this.id
       }
-      http
-      .post('/combo-food/save',data,{
-        params : {
-          id : this.id
-        }
-      })
-      .then((res)=>{})
-      .catch(err=>console.log(err))
+      return http.post('/combo-food/save',data)
     },
     save() {
       var data = {
@@ -229,6 +237,9 @@ export default {
             })
             .then((response) => {
               this.$message.success("Cập nhật thành công");
+              Promise.all([this.deleteComboFood(),this.saveComboRestaurant()])
+              .then(([save,del])=>{})
+              .catch((error)=>{})
             })
             .catch((error) => {
               this.$message.error(error.message);
@@ -242,7 +253,8 @@ export default {
       });
     },
    handleChange(value){
-       this.combo.restaurantId = value;
+       this.combo.restaurantId = value.key;
+       this.combo.restaurant = value;
    },
     filterOption(input, option) {
       return (

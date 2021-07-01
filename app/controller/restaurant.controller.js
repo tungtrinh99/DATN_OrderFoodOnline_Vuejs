@@ -373,7 +373,7 @@ class RestaurantController {
   // danh sách món ăn combo
   listFoodCombo(req, res, next) {
     let comboId = req.query.id;
-    let query = `select * from combo_food where combo_id = ${comboId}`;
+    let query = `select a.*, c.title  from combo_food a join restaurant_food b on a.food_id = b.id join food c on b.food_id = c.id where combo_id = ${comboId}`;
     db.query(query, (err, result, fields) => {
       if (!err) res.send({
         data: {
@@ -383,7 +383,15 @@ class RestaurantController {
       else console.log(err)
     })
   }
-
+  // xoa danh sach mon an combo
+  deleteComboFood(req,res,next){
+    let comboId = req.query.id;
+    let query = `delete from combo_food where combo_id = ${comboId}`;
+    db.query(query,(err,result,fields)=>{
+      if(!err) res.send(result);
+      else res.send(err); 
+    })
+  }
 }
 
 module.exports = new RestaurantController;

@@ -58,6 +58,7 @@ router.get('/restaurant-discount/delete', restaurant.deleteDiscount);
 
 router.post('/combo-food/save',restaurant.saveFoodCombo);
 router.get('/combo-food/list',restaurant.listFoodCombo);
+router.get('/combo-food/delete',restaurant.deleteComboFood);
 // discount
 router.post('/discount/list', discount.list);
 router.post('/discount/save', discount.save);
