@@ -9,6 +9,8 @@ class OrderController {
     let restaurant_id = req.body.id;
     let customer_id = req.body.customer_id;
     let not_status = req.body.not_status;
+    let from_date = req.body.from_date;
+    let to_date = req.body.to_date;
     var query = `SELECT a.*,b.title as name_of_restaurant_id,b.avatar_id as avatar_of_restaurant,c.fullname as name_of_customer_id FROM orders a JOIN restaurant b ON a.restaurant_id = b.id JOIN user c ON a.customer_id = c.id WHERE a.order_code LIKE "%${textSearch}%"`;
     if (status) {
       query = query + ' ' + `AND a.status = ${status}`
@@ -21,6 +23,9 @@ class OrderController {
     }
     if (not_status) {
       query = query + " " + `AND a.status not in (4,5)`
+    }
+    if(from_date && to_date){
+      query = query + " "+ `AND a.create_at BETWEEN '${from_date}' and '${to_date}'`
     }
     db.query(query, (err, result, field) => {
       if (!err) {
@@ -109,9 +114,9 @@ class OrderController {
     let end = req.body.endDate;
     var query = ``;
     if(restaurant_id){
-      query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where  create_at BETWEEN '${start}' and '${end}' and a.restaurant_id = ${restaurant_id} GROUP BY restaurant_id`
+      query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where create_at BETWEEN '${start}' and '${end}' and a.restaurant_id = ${restaurant_id} and a.status not in(1,5) GROUP BY restaurant_id`
     }else {
-      query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where  create_at BETWEEN '${start}' and '${end}' GROUP BY restaurant_id`;
+      query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where create_at BETWEEN '${start}' and '${end}' and a.status not in(1,5) GROUP BY restaurant_id`;
     }
     db.query(query,(err,result,field)=>{
       if(!err){

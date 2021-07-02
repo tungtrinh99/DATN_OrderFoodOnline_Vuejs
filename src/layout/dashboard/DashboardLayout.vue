@@ -128,18 +128,18 @@ export default {
             }
           ]
         },
-        {
-          key: "report",
-          icon: "file-text",
-          title: "Báo cáo",
-          children: [
-            {
-              key: "report",
-              title: "Báo cáo doanh thu",
-              path: "report-revenue"
-            }
-          ]
-        }
+        // {
+        //   key: "report",
+        //   icon: "file-text",
+        //   title: "Báo cáo",
+        //   children: [
+        //     {
+        //       key: "report",
+        //       title: "Báo cáo doanh thu",
+        //       path: "report-revenue"
+        //     }
+        //   ]
+        // }
       ]
     };
   }

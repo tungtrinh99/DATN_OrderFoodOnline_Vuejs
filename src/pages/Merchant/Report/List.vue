@@ -73,7 +73,12 @@
       <div slot="footer">
         <a-button type="primary" @click="exportOrder">Xuất báo cáo</a-button>
       </div>
-      <report></report>
+      <report
+        :data="data"
+        :startDate="startValue"
+        :endDate="endValue"
+        :orders="orders"
+      ></report>
     </a-modal>
   </div>
 </template>
@@ -98,7 +103,8 @@ export default {
       data: [],
       listRestaurant: [],
       show: false,
-      restaurant_id
+      restaurant_id,
+      orders: []
     };
   },
   components: {
@@ -115,20 +121,28 @@ export default {
       this.endValue = moment(date).format("YYYY-MM-DD");
     },
     apply() {
-      http
-        .post("/report-revenue/report", {
-          restaurantId: this.restaurant_id,
-          startDate: this.startValue,
-          endDate: this.endValue
-        })
-        .then(res => {
-          this.data = res.data.data.items;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      Promise.all([this.getReport(),this.getOrders()])
+      .then(([report,order])=>{
+        this.data = report.data.data.items;
+        this.orders= order.data.data.items;
+      })
+      .catch((error)=>{})
     },
-
+    getReport() {
+      return http.post("/report-revenue/report", {
+        restaurantId: this.restaurant_id,
+        startDate: this.startValue,
+        endDate: this.endValue
+      });
+    },
+    getOrders() {
+      let data = {
+        id: this.restaurant_id,
+        from_date: this.startValue,
+        to_date: this.endValue
+      };
+      return http.post("/orders/list", data);
+    },
     handleChange(value) {
       this.restaurantId = value;
     },
@@ -136,9 +150,7 @@ export default {
       EventBus.$emit("export");
     }
   },
-  created() {
-    this.getListRestaurant();
-  }
+  created() {}
 };
 </script>
 <style scoped>
