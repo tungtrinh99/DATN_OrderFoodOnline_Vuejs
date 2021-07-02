@@ -66,6 +66,7 @@
         v-model="combo.discount"
         type="number"
         :allowClear="true"
+        suffix="%"
       />
     </a-form-model-item>
     <a-form-model-item label="Món ăn">

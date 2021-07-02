@@ -31,8 +31,27 @@
     <a-form-model-item label="Tên đồ ăn" ref="title" prop="title">
       <a-input v-model="goods.title" type="text" :allowClear="true" />
     </a-form-model-item>
-    <a-form-model-item label="Kiểu đồ ăn" ref="price" prop="price">
-      <a-input-number v-model="goods.type" :style="{ width: '50%' }" />
+    <a-form-model-item label="Kiểu món ăn">
+      <div class="select">
+        <a-select
+          label-in-value
+          show-search
+          :value="goods.type"
+          placeholder="Vui lòng chọn kiểu đồ ăn"
+          style="width: 100%; border-left: none"
+          :default-active-first-option="false"
+          :show-arrow="true"
+          :filter-option="false"
+          :not-found-content="null"
+          :allowClear="true"
+          @change="changeFoodType"
+          @focus="getFoodType"
+        >
+          <a-select-option v-for="d in foodType" :key="d.id">
+            {{ d.title }}
+          </a-select-option>
+        </a-select>
+      </div>
     </a-form-model-item>
   </a-form-model>
 </template>
@@ -51,15 +70,16 @@ export default {
   },
   props: {
     entity: String,
-    id:Number
+    id: Number
   },
   data() {
     var rules = RuleConfig[this.entity];
     return {
       goods: {
         title: "",
-        type: null,
-        avatar_id: "",
+        type_id: null,
+        avatar_id: "".created,
+        type : void 0
       },
       rules,
       labelCol: { span: 6 },
@@ -67,32 +87,47 @@ export default {
       data: [],
       loading: false,
       imageUrl: "",
+      foodType : []
     };
   },
   methods: {
     fetchDataEdit(data) {
       this.goods.title = data.title;
-      this.goods.type = data.type;
+      this.goods.type_id = data.type;
       this.goods.avatar_id = data.avatar_id;
+      this.goods.type = { key : data.type , label : data.name_of_type_id}
+    },
+    getFoodType() {
+      http
+        .get("/food-type/list")
+        .then(response => {
+          this.foodType = response.data.data.items;
+        })
+        .catch(err => {});
+    },
+    changeFoodType(value) {
+      this.goods.type = value;
+      this.goods.type_id = value.key;
     },
     save() {
       var data = {
         avatar_id: this.goods.avatar_id,
         title: this.goods.title,
-        type: this.goods.type,
+        type: this.goods.type_id
       };
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           http
-            .post("/food/update",data, { params: {
-                id : this.id
-            } })
-            .then((response) => {
+            .post("/food/update", data, {
+              params: {
+                id: this.id
+              }
+            })
+            .then(response => {
               this.$emit("hideModal");
               this.$message.success("Lưu thành công");
-
             })
-            .catch((error) => {
+            .catch(error => {
               this.$message.error(error.message);
             });
           this.$emit("hideModal");
@@ -118,7 +153,7 @@ export default {
       }
       if (info.file.status === "done") {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, (imageUrl) => {
+        getBase64(info.file.originFileObj, imageUrl => {
           this.goods.avatar_id = imageUrl;
           this.loading = false;
         });
@@ -142,16 +177,16 @@ export default {
       fmData.append("file", file);
       http
         .post("/food/uploadFiles", fmData, {
-          headers: { "content-type": "multipart/form-data" },
+          headers: { "content-type": "multipart/form-data" }
         })
-        .then((response) => {
+        .then(response => {
           this.goods.avatar_id = response.data.data;
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message.error(error.message);
         });
-    },
+    }
   },
-  mounted() {},
+  mounted() {}
 };
 </script>

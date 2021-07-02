@@ -66,7 +66,10 @@
       <a-input
         v-model="combo.discount"
         type="number"
-        :allowClear="true"
+        :allowClear="false"
+        style="width : 30%"
+        suffix="%"
+
       />
     </a-form-model-item>
     <a-form-model-item label="Món ăn">
@@ -183,7 +186,6 @@ export default {
       this.food.push({id : void 0})
     },
     onChangeFood(value){
-      console.log(value);
       this.food[this.foodIndex] = value;
       this.food[this.foodIndex].food_id = value.key;
     },

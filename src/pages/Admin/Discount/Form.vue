@@ -12,7 +12,7 @@
       <a-input v-model="discount.code" type="text" :allowClear="true"/>
     </a-form-model-item> 
     <a-form-model-item label="Giảm giá" prop="discount">
-      <a-input v-model="discount.discount" suffix="VND"/>
+      <a-input v-model="discount.discount"  suffix="VND"/>
     </a-form-model-item>
     <a-form-model-item label="Đơn hàng tối thiểu" prop="min_total_order">
       <a-input v-model="discount.min_total_order" suffix="VND"/>

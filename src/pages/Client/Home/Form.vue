@@ -44,7 +44,7 @@ export default {
     },
     getListTypeRestaurant() {
       http
-        .get("/food/type")
+        .get("/food-type/list")
         .then((response) => {
           this.listTypeFood = response.data.data.items;
         })

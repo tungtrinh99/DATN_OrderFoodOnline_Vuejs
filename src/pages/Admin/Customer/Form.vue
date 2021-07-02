@@ -56,6 +56,7 @@
       <a-select
         :value="user.gender"
         @change="handleChangeGender"
+        
       >
         <a-select-option :key="1"> Nam </a-select-option>
         <a-select-option :key="2"> Nữ </a-select-option>

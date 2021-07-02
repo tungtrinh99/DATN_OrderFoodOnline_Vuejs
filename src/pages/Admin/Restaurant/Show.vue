@@ -3,19 +3,19 @@
     <a-modal
       :title="title"
       v-model="show"
-      width="80%"
+      width="60%"
       :bodyStyle="{
         padding: '16px',
-        height: '80vh',
         overflowY: 'auto',
-        overflowX: 'auto',
+        overflowX: 'auto'
       }"
-      :dialog-style="{ top: '20px' }"
+      :dialog-style="{ top: '100px' }"
     >
       <div slot="footer">
         <a-button @click="close">Thoát</a-button>
       </div>
-      <a-descriptions title="Thông tin quán ăn">
+      <div class="title">Thông tin</div>
+      <a-descriptions>
         <a-descriptions-item label="Tên quán ăn">
           {{ formData.title }}
         </a-descriptions-item>
@@ -33,19 +33,21 @@
           {{ formData.full_address }}
         </a-descriptions-item>
       </a-descriptions>
-      <div class="title">
+      <!-- <div class="title">
         <span>Danh sách món ăn</span>
         <a-button type="primary" @click="addFood">Thêm món</a-button>
-      </div>
+      </div> -->
+      <div class="title">Danh sách món ăn</div>
       <a-list
+        style="height : 400px;over-flow : auto"
         class="demo-loadmore-list"
         item-layout="horizontal"
         :data-source="listFoodRestaurant"
       >
         <a-list-item slot="renderItem" slot-scope="item, index">
-          <a-button slot="actions" type="danger" @click="removeItem(item)"
+          <!-- <a-button slot="actions" type="danger" @click="removeItem(item)"
             >Xóa</a-button
-          >
+          > -->
           <a-list-item-meta description="">
             <a slot="title" href="">{{ item.title }}</a>
             <a-avatar
@@ -72,14 +74,14 @@
         padding: '16px',
         height: '80vh',
         overflowY: 'auto',
-        overflowX: 'auto',
+        overflowX: 'auto'
       }"
       :dialog-style="{ top: '20px' }"
     >
       <a-table
         :row-selection="{
           selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange,
+          onChange: onSelectChange
         }"
         :columns="columns"
         :data-source="listFood"
@@ -109,7 +111,7 @@ export default {
     formData: Object,
     title: String,
     listFood: Array,
-    listFoodRestaurant: Array,
+    listFoodRestaurant: Array
   },
   data() {
     const columns = ColumnConfig["food"];
@@ -119,7 +121,7 @@ export default {
       key: 0,
       selectedRowKeys: [],
       visible: false,
-      listAddFood: [],
+      listAddFood: []
     };
   },
   methods: {
@@ -142,20 +144,22 @@ export default {
             .post(
               "/restaurant-food/delete",
               {
-                restaurant_id: value.restaurant_id,
+                restaurant_id: value.restaurant_id
               },
-              {params: {
-                id: value.id,
-              }}
+              {
+                params: {
+                  id: value.id
+                }
+              }
             )
-            .then((res) => {
+            .then(res => {
               component.$message.success(`Xoá món ${name} thành công`);
             })
-            .catch((err) => {
+            .catch(err => {
               console.log(err);
             });
         },
-        onCancel() {},
+        onCancel() {}
       });
     },
     onSelectChange(selectedRowKeys) {
@@ -170,13 +174,13 @@ export default {
           )[0]
         );
       }
-      this.listAddFood.forEach((d) => {
+      this.listAddFood.forEach(d => {
         http
           .post("/restaurant-food/save", {
             food_id: d.id,
-            restaurant_id: this.formData.id,
+            restaurant_id: this.formData.id
           })
-          .then((res) => {
+          .then(res => {
             this.$message.success(
               "Thêm món ăn " +
                 d.title +
@@ -184,16 +188,16 @@ export default {
                 this.formData.title
             );
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
-.title {
+/* .title {
   margin-bottom: 20px;
   color: rgba(0, 0, 0, 0.85);
   font-weight: bold;
@@ -201,6 +205,14 @@ export default {
   line-height: 1.5;
   display: flex;
   justify-content: space-between;
+} */
+.title {
+  text-transform: uppercase;
+  color: #6d6f71;
+  padding: 5px 0 0;
+  margin: 10px 0 20px 0px;
+  text-align: left;
+  font-weight: 700;
 }
 .demo-loadmore-list {
   /* height: 350px; */

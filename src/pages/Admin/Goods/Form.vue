@@ -18,7 +18,7 @@
       >
         <img
           v-if="goods.avatar_id"
-          :src="require('../../../../public/images/'+goods.avatar_id)"
+          :src="require('../../../../public/images/' + goods.avatar_id)"
           alt="file"
           :style="{ width: '120px', height: '120px' }"
         />
@@ -27,13 +27,32 @@
           <div class="ant-upload-text">Tải ảnh sản phẩm</div>
         </div>
       </a-upload>
-      
-    </a-form-model-item>    
+    </a-form-model-item>
     <a-form-model-item label="Tên đồ ăn" ref="title" prop="title">
-      <a-input v-model="goods.title" type="text" :allowClear="true"/>
-    </a-form-model-item> 
-    <a-form-model-item label="Kiểu đồ ăn" ref="price" prop="price">
-      <a-input-number v-model="goods.type" :style="{ width: '50%' }" />
+      <a-input v-model="goods.title" type="text" :allowClear="true" />
+    </a-form-model-item>
+    <a-form-model-item label="Kiểu món ăn" >
+      <div class="select">
+        <a-select
+          show-search
+          :value="goods.type"
+          placeholder="Vui lòng chọn kiểu đồ ăn"
+          style="width: 100%; border-left: none"
+          :default-active-first-option="false"
+          :show-arrow="true"
+          :filter-option="false"
+          :not-found-content="null"
+          :allowClear="true"
+          @change="changeFoodType"
+          @focus="getFoodType"
+
+        >
+          <a-select-option v-for="d in foodType" :key="d.id">
+            {{ d.title }}
+          </a-select-option>
+        </a-select>
+       
+      </div>
     </a-form-model-item>
   </a-form-model>
 </template>
@@ -55,25 +74,36 @@ export default {
     var rules = RuleConfig[this.entity];
     return {
       goods: {
-       title : "",
-       type : null ,
-       avatar_id : ""
+        title: "",
+        type: null,
+        avatar_id: ""
       },
       rules,
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
       data: [],
       loading: false,
-      imageUrl: ""
+      imageUrl: "",
+      foodType: []
     };
   },
   methods: {
-    
+    getFoodType() {
+      http
+        .get("/food-type/list")
+        .then(response => {
+          this.foodType = response.data.data.items;
+        })
+        .catch(err => {});
+    },
+    changeFoodType(value){
+      this.goods.type = value;
+    },
     save() {
       var data = {
-        avatar_id:this.goods.avatar_id,
+        avatar_id: this.goods.avatar_id,
         title: this.goods.title,
-        type : this.goods.type
+        type: this.goods.type
       };
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
@@ -103,11 +133,11 @@ export default {
       );
     },
     handleChangeFile(info) {
-      if (info.file.status === 'uploading') {
+      if (info.file.status === "uploading") {
         this.loading = true;
         return;
       }
-      if (info.file.status === 'done') {
+      if (info.file.status === "done") {
         // Get this url from response in real world.
         getBase64(info.file.originFileObj, imageUrl => {
           this.goods.avatar_id = imageUrl;
@@ -130,9 +160,9 @@ export default {
     customRequest(options) {
       const fmData = new FormData();
       const { onSuccess, onError, file, onProgress } = options;
-      fmData.append("file",file);
+      fmData.append("file", file);
       http
-        .post("/food/uploadFiles",fmData,{
+        .post("/food/uploadFiles", fmData, {
           headers: { "content-type": "multipart/form-data" }
         })
         .then(response => {
@@ -143,8 +173,6 @@ export default {
         });
     }
   },
-  mounted() {
-    
-  }
+  mounted() {}
 };
 </script>

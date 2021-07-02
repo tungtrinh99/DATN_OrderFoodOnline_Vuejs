@@ -50,7 +50,7 @@ class FoodController {
   detail(req, res, next) {
     var id = req.query.id;
 
-    db.query(`SELECT * FROM food WHERE id = ${id}`, (err, result, field) => {
+    db.query(`SELECT a.*,b.title as name_of_type_id FROM food a join food_type b on a.type = b.id WHERE a.id = ${id}`, (err, result, field) => {
       if (!err) {
         res.send({ data: { items: result } });
       } else {

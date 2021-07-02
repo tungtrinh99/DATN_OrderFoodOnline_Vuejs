@@ -10,7 +10,7 @@
       <a-select
         show-search
         :value="discount.code"
-        placeholder="Vui lòng chọn tinh/thành phố"
+        placeholder="Vui lòng chọn mã giảm giá"
         style="width: 100%"
         :default-active-first-option="false"
         :show-arrow="true"
