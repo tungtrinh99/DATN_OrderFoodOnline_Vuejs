@@ -52,7 +52,7 @@ class UserController {
   detail(req, res, next) {
     var id = req.query.id;
 
-    db.query(`SELECT a.* , b.full_address, b.longitude,b.latitude FROM user a JOIN location b ON a.address = b.id WHERE a.id = ${id} `, (err, result, field) => {
+    db.query(`SELECT a.* , b.full_address, b.longitude,b.latitude FROM user a left JOIN location b ON a.address = b.id WHERE a.id = ${id} `, (err, result, field) => {
       if (!err) {
         res.send({ data: { items: result } });
       } else {

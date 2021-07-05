@@ -5,7 +5,7 @@ class MerchantController {
   // Lấy danh sách đối tác
   list(req, res, next) {
     let active = req.body.active;
-    var query = `select user.*,location.full_address from user join location on user.address = location.id where role = 4 `;
+    var query = `select user.*,location.full_address from user left join location on user.address = location.id where role = 4 `;
     if(active !== undefined){
       query = query +' '+ `AND user.active = ${active}`;  
     }

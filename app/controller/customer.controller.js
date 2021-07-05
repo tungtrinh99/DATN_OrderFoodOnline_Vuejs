@@ -5,7 +5,7 @@ class CustomerController {
   // Lấy danh sách người dùng
     list(req,res,next){
       
-        db.query(`select user.*,location.full_address from user join location on user.address = location.id where role = 2`,(err, result, field)=>{
+        db.query(`select user.*,location.full_address from user left join location on user.address = location.id where role = 2`,(err, result, field)=>{
             if (!err) {
                 res.send({'data':{'items' : result}});
         
@@ -51,7 +51,7 @@ class CustomerController {
   detail(req, res, next) {
     var id = req.query.id;
 
-    db.query(`SELECT a.* , b.full_address, b.longitude,b.latitude FROM user a JOIN location b ON a.address = b.id WHERE a.id = ${id} and role = '2'`, (err, result, field) => {
+    db.query(`SELECT a.* , b.full_address, b.longitude,b.latitude FROM user a LEFT JOIN location b ON a.address = b.id WHERE a.id = ${id} and role = '2'`, (err, result, field) => {
       if (!err) {
         res.send({ data: { items: result } });
       } else {

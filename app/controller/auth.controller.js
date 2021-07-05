@@ -40,7 +40,8 @@ class AuthController {
             username: username,
             password: hashedPassword,
             role: 2,
-            avatar_id: avatar_id
+            avatar_id: avatar_id,
+            active : 1
           }, (error, result, fields) => {
             if (!error) {
               res.send({
@@ -74,7 +75,7 @@ class AuthController {
         errorMessage: 'Tên đăng nhập hoặc mật khẩu không được để trống!'
       })
     } else {
-      db.query(`select a.*,b.full_address,b.longitude,b.latitude from user a JOIN location b ON a.address = b.id where a.username = ? and a.role = ${role} AND a.active = 1`, [username], (err, result, fields) => {
+      db.query(`select a.*,b.full_address,b.longitude,b.latitude from user a LEFT JOIN location b ON a.address = b.id where a.username = ? and a.role = ${role} AND a.active = 1`, [username], (err, result, fields) => {
         if(result.length === 0){
           res.send({
             errorCode: 0,
