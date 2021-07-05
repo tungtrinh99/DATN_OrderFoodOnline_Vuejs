@@ -33,10 +33,7 @@
           {{ formData.full_address }}
         </a-descriptions-item>
       </a-descriptions>
-      <!-- <div class="title">
-        <span>Danh sách món ăn</span>
-        <a-button type="primary" @click="addFood">Thêm món</a-button>
-      </div> -->
+
       <div class="title">Danh sách món ăn</div>
       <a-list
         style="height : 400px;over-flow : auto"
@@ -45,9 +42,6 @@
         :data-source="listFoodRestaurant"
       >
         <a-list-item slot="renderItem" slot-scope="item, index">
-          <!-- <a-button slot="actions" type="danger" @click="removeItem(item)"
-            >Xóa</a-button
-          > -->
           <a-list-item-meta description="">
             <a slot="title" href="">{{ item.title }}</a>
             <a-avatar
@@ -197,15 +191,6 @@ export default {
 };
 </script>
 <style scoped>
-/* .title {
-  margin-bottom: 20px;
-  color: rgba(0, 0, 0, 0.85);
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 1.5;
-  display: flex;
-  justify-content: space-between;
-} */
 .title {
   text-transform: uppercase;
   color: #6d6f71;
@@ -215,7 +200,6 @@ export default {
   font-weight: 700;
 }
 .demo-loadmore-list {
-  /* height: 350px; */
   overflow: auto;
 }
 </style>

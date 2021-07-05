@@ -528,6 +528,49 @@ const restaurant_combo = [{
   ellipsis: true,
 
 }, ];
+const lading_bill = [{
+    title: "Mã",
+    dataIndex: "id",
+    key: "id",
+    width: 80,
+    isCodeIndex: true,
+    fixed: "left",
+
+
+  }, {
+    title: "Mã vận đơn",
+    dataIndex: "code",
+    key: "code",
+    width: 120,
+    fixed: "left",
+
+  },
+  {
+    title: "Danh sách đơn hàng",
+    dataIndex: "orders",
+    key: "orders",
+    dataType : 'tags',
+    width: 400,
+
+  }, {
+    title: "Tài xế",
+    dataIndex: "name_of_driver_id",
+    key: "driver",
+    width: 150,
+
+  }, {
+    title: "Trạng thái",
+    dataIndex: "status",
+    key: "status",
+    width: 150,
+    dataType : 'ladingStatus',
+
+  }, {
+    title: "Số đơn hàng",
+    dataIndex: "total_order",
+    key: "order",
+  },
+]
 export default {
   food,
   customer,
@@ -539,5 +582,6 @@ export default {
   report,
   restaurant_discount,
   discount,
-  restaurant_combo
+  restaurant_combo,
+  lading_bill
 }

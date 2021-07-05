@@ -91,6 +91,11 @@
         v-if="entity == 'restaurant-combo'"
         @hideModal="hideModal"
       ></form-restaurant-combo>
+       <form-lading-bill
+        :entity="entity"
+        v-if="entity == 'lading-bill'"
+        @hideModal="hideModal"
+      ></form-lading-bill>
     </a-modal>
   </div>
 </template>
@@ -107,7 +112,7 @@ import FoodMerchant from "../../pages/Merchant/Goods/Form";
 import Discount from "../../pages/Admin/Discount/Form";
 import RestaurantDiscount from "../../pages/Merchant/Discount/Form";
 import Combo from "../../pages/Admin/ComboFood/Form";
-
+import LadingBill from "../../pages/Admin/LadingBill/Form.vue";
 
 import Constant from "../../constant";
 import EventBus from "../../event-bus";
@@ -125,7 +130,8 @@ export default {
     "form-add-restaurant-food": FoodMerchant,
     "form-discount": Discount,
     "form-restaurant-discount": RestaurantDiscount,
-    "form-restaurant-combo" : Combo
+    "form-restaurant-combo" : Combo,
+    "form-lading-bill":LadingBill
   },
   data() {
     

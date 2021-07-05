@@ -166,6 +166,23 @@ const restaurant_combo = {
   }]
   
 }
+const lading_bill = {
+  code: [{
+    required: true,
+    message: "Bạn chưa nhập mã vận đơn",
+    trigger: "blur"
+  }],
+  driver : [{
+    required : true , 
+    message : "Bạn chưa chọn tài xế",
+    trigger: "blur"
+  }],
+  status : [{
+    required : true , 
+    message : "Bạn chưa chọn trạng thái vận đơn",
+    trigger: "blur"
+  }]
+}
 export default {
   food,
   user,
@@ -173,5 +190,6 @@ export default {
   location,
   restaurant_discount,
   discount,
-  restaurant_combo
+  restaurant_combo,
+  lading_bill
 }

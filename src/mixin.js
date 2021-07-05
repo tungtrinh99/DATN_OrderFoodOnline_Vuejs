@@ -38,6 +38,19 @@ export default {
           sortOrder: 2,
         },
       ],
+      listLadingBillStatus: [{
+        id: 0,
+        text: 'Tất cả',
+      }, {
+        id: 1,
+        text: 'Khởi tạo',
+      }, {
+        id: 2,
+        text: 'Đang vận chuyển',
+      }, {
+        id: 3,
+        text: 'Đã hoàn thành',
+      }]
     }
   },
   methods: {
@@ -91,6 +104,11 @@ export default {
       var parts = input.split(/[^\d\w]+/);
       var lat = ConvertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
       var lng = ConvertDMSToDD(parts[4], parts[5], parts[6], parts[7]);
+    },
+    createLadingBillCode() {
+      return Math.floor(
+        Math.random() * (9999999999 - 1000000000 + 1) + 1000000000
+      );
     }
   }
 }

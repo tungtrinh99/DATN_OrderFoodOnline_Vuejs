@@ -84,6 +84,10 @@ export default {
               key: "order",
               title: "Đơn hàng",
               path: "order"
+            },{
+              key: "lading-bill",
+              title: "Vận đơn",
+              path: "lading-bill"
             }
           ]
         },

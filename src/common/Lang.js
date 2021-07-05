@@ -7,6 +7,7 @@ export default {
   order: 'Đơn hàng',
   'restaurant-food': 'Đồ ăn',
   'restaurant-discount': 'Ưu đãi',
-  'restaurant-combo':'Combo đồ ăn'
+  'restaurant-combo':'Combo đồ ăn',
+  'lading-bill' : 'Vận đơn'
 
 }

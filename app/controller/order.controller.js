@@ -1,5 +1,11 @@
 const db = require('../config/db.config');
 const fs = require("fs");
+const {
+  query
+} = require('../config/db.config');
+const {
+  forbidden
+} = require('joi');
 
 class OrderController {
   // Lấy danh sách đơn hàng
@@ -11,6 +17,8 @@ class OrderController {
     let not_status = req.body.not_status;
     let from_date = req.body.from_date;
     let to_date = req.body.to_date;
+    let not_delivery_order = req.body.not_delivery_order;
+    let driver = req.body.driver_id;
     var query = `SELECT a.*,b.title as name_of_restaurant_id,b.avatar_id as avatar_of_restaurant,c.fullname as name_of_customer_id FROM orders a JOIN restaurant b ON a.restaurant_id = b.id JOIN user c ON a.customer_id = c.id WHERE a.order_code LIKE "%${textSearch}%"`;
     if (status) {
       query = query + ' ' + `AND a.status = ${status}`
@@ -24,8 +32,14 @@ class OrderController {
     if (not_status) {
       query = query + " " + `AND a.status not in (4,5)`
     }
-    if(from_date && to_date){
-      query = query + " "+ `AND a.create_at BETWEEN '${from_date}' and '${to_date}'`
+    if (from_date && to_date) {
+      query = query + " " + `AND a.create_at BETWEEN '${from_date}' and '${to_date}'`
+    }
+    if(not_delivery_order){
+      query = query + " " + `AND a.delivery_order_id is null`;
+    }
+    if(driver){
+      query = query + " " + `AND a.drive_id = ${driver}`;
     }
     db.query(query, (err, result, field) => {
       if (!err) {
@@ -91,6 +105,7 @@ class OrderController {
       }
     );
   }
+  //chi tiet don hang
   detail(req, res, next) {
     let id = req.query.id;
     db.query(
@@ -108,26 +123,84 @@ class OrderController {
       }
     );
   }
+  //bao cao
   report(req, res, next) {
     let restaurant_id = req.body.restaurantId;
     let start = req.body.startDate;
     let end = req.body.endDate;
     var query = ``;
-    if(restaurant_id){
+    if (restaurant_id) {
       query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where create_at BETWEEN '${start}' and '${end}' and a.restaurant_id = ${restaurant_id} and a.status not in(1,5) GROUP BY restaurant_id`
-    }else {
+    } else {
       query = `SELECT b.title , sum(a.grand_total) as revenue , count(a.id) as order_quantity , sum(a.shipping) as ship_fee from orders a join restaurant b on a.restaurant_id = b.id where create_at BETWEEN '${start}' and '${end}' and a.status not in(1,5) GROUP BY restaurant_id`;
     }
-    db.query(query,(err,result,field)=>{
-      if(!err){
+    db.query(query, (err, result, field) => {
+      if (!err) {
         res.send({
-          data : {
-            items : result
+          data: {
+            items: result
           }
         })
-      }else {
+      } else {
         res.send(err)
       }
+    })
+  }
+  // danh sach van don
+  ladingBillList(req, res, next) {
+    let textSearch = req.body.textSearch || "";
+    let driverId = req.body.driverId;
+    let status = req.body.status;
+    let query = `select b.fullname as name_of_driver_id , group_concat(c.order_code) as orders,count(c.order_code) as total_order, a.*  from delivery_order a left join user b on a.driver_id = b.id left join orders c on a.id = c.delivery_order_id where a.code LIKE "%${textSearch}%"`;
+    if (driverId) {
+      query = query + ' ' + `and a.driver_id = ${driverId}`;
+    }
+    if (status) {
+      query = query + ' ' + `and a.status = ${status}`;
+    }
+    query = query + ' ' + 'group by a.id';
+    db.query(query, (err, result, fields) => {
+      if (!err) {
+        result.forEach(item => {
+          if (item.orders) {
+            return item.orders = item.orders.split(',')
+          }
+        });
+        res.send({
+          data: {
+            items: result
+          }
+        })
+      } else res.send(err);
+    })
+  }
+  // chi tiet van don
+  ladingBillDetail(req, res, next) {
+    let ladingBillId = req.query.id;
+    let query = `select b.fullname as name_of_driver_id , group_concat(c.order_code) as orders,count(c.order_code) as total_order, a.*  from delivery_order a left join user b on a.driver_id = b.id left join orders c on a.id = c.delivery_order_id where a.id = ${ladingBillId} group by a.id`;
+    db.query(query, (err, result, fields) => {
+      if (!err) res.send(result);
+      else res.send(err);
+
+    })
+  }
+  //cap nhat van don
+  ladingBillUpdate(req, res, next) {
+    let id = req.query.id;
+    let data = req.body;
+    let query = `update delivery_order set ? where id = ${id} `
+    db.query(query, data, (err, result, fields) => {
+      if (!err) res.send(result);
+      else res.send(err);
+    })
+  }
+  // them moi van don
+  ladingBillSave(req, res, next) {
+    let data = req.body;
+    let query = `insert into delivery_order set ?`;
+    db.query(query, data, (err, result, fields) => {
+      if (!err) res.send(result);
+      else res.send(err);
     })
   }
 }

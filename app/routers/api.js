@@ -104,9 +104,13 @@ router.post('/auth/login', auth.login);
 router.post('/orders/list', order.list);
 router.post('/orders/save', order.save);
 router.post('/orders/update', order.update);
-router.get('/order/detail',order.detail)
+router.get('/order/detail',order.detail);
 
-
+//vận đơn
+router.post('/lading-bill/list',order.ladingBillList);
+router.get('/lading-bill/detail',order.ladingBillDetail);
+router.post('/lading-bill/update',order.ladingBillUpdate);
+router.post('/lading-bill/save',order.ladingBillSave);
 //order-detail
 router.get('/order-item/list', orderItems.list);
 router.post('/order-item/save', orderItems.save);

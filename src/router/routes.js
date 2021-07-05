@@ -23,6 +23,7 @@ import DiscountCode from "@/pages/admin/Discount/List.vue";
 import ReportOfMerchant from "@/pages/Merchant/Report/List.vue";
 import DiscountCodeOfRestaurant from "@/pages/Merchant/Discount/List.vue";
 import RestaurantCombo from "@/pages/Admin/ComboFood/List.vue";
+import LadingBill from "@/pages/Admin/LadingBill/List.vue";
 
 const appName = " | Nghiện ăn";
 
@@ -162,6 +163,15 @@ const routes = [{
         meta: {
           auth: true,
           title: 'Combo đồ ăn' + appName
+        },
+      },
+      {
+        path: "lading-bill",
+        title: "Vận đơn",
+        component: LadingBill,
+        meta: {
+          auth: true,
+          title: 'Vận đơn' + appName
         },
       }
     ]

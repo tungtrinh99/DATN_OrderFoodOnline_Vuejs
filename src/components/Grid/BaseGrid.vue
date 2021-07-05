@@ -27,7 +27,9 @@
             :style="{ width: '30px', height: '30px' }"
           />
         </div>
-        <span slot="status" slot-scope="text">{{ renderStatus(text) }}</span>
+        <!-- <span slot="status" slot-scope="text">{{ renderStatus(text) }}</span> -->
+        <span slot="ladingStatus" slot-scope="text">{{ ladingBillStatus(text) }}</span>
+        
         <a slot="email" :href="'mailto:' + text" slot-scope="text">
           <a-tooltip :title="text" placement="topLeft">
             {{ text }}
@@ -37,10 +39,16 @@
         <span slot="list" slot-scope="text, record, index, column">
           <a-tooltip :title="renderList(text, column)" placement="topLeft">
             <a-tag :color="renderColorForList(text, column)">
-              {{ renderList(text, column) }}
+              {{ renderList(text, column).toUpperCase() }}
             </a-tag>
           </a-tooltip>
         </span>
+        <span slot="tags" slot-scope="orders">
+            <a-tag v-for="order in orders" :key="order" :color="'blue'">
+              {{ order.toUpperCase() }}
+            </a-tag>
+        </span>
+         
         <span slot="gender" slot-scope="text">{{ getTextGender(text) }}</span>
         <a slot="link" slot-scope="text" @click="openRecord(text)"
           >{{ text }}
@@ -120,6 +128,7 @@ import EventBus from "../../event-bus";
 import moment from "moment";
 import constant from "../../constant";
 import Lang from "../../common/Lang";
+import mixin from "@/mixin";
 
 import Food from "../../pages/Admin/Goods/FormEdit";
 import Customer from "../../pages/Admin/Customer/FormEdit";
@@ -130,6 +139,7 @@ import FoodMerchant from "../../pages/Merchant/Goods/FormEdit";
 import Discount from "../../pages/Admin/Discount/FormEdit";
 import Combo from "../../pages/Admin/ComboFood/FormEdit";
 export default {
+  mixins: [mixin],
   components: {
     "form-edit-food": Food,
     "form-edit-customer": Customer,
@@ -223,6 +233,9 @@ export default {
     };
   },
   methods: {
+    ladingBillStatus(status){
+      return this.listLadingBillStatus.find(item=>item.id == status).text;
+    },
     renderList(text, column) {
       let item = column.status.find(p => p.value == text);
       return item ? item.text : "";
@@ -360,9 +373,9 @@ export default {
       this.visible = false;
       this.$emit("reload");
     },
-    renderStatus(text) {
-      return this.status.find(p => p.value == text).title;
-    },
+    // renderStatus(text) {
+    //   return this.status.find(p => p.value == text).title;
+    // },
     getTextGender(index) {
       return this.gender.find(p => p.value == index).text;
     }
