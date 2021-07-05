@@ -152,7 +152,6 @@
                           <a-modal
                             title="Bạn muốn giao đến đâu ?"
                             v-model="mapVisible"
-                            :width="900"
                             :bodyStyle="{ padding: '8px', height: '550px' }"
                           >
                             <template slot="footer">
@@ -160,10 +159,15 @@
                                 type="primary"
                                 style="width: 100%"
                                 @click="addMarker"
-                                >Xong</a-button
+                                >Thêm</a-button
                               >
                             </template>
-                            <GoogleMap @addToListAddress="fetchListAddress" />
+                            <location
+                              :entity="'location'"
+                              @hideModal="hideModal"
+                              @addToListAddress="fetchListAddress"
+                            ></location>
+                            <!-- <GoogleMap @addToListAddress="fetchListAddress" /> -->
                           </a-modal>
                         </div>
                       </div>
@@ -382,6 +386,7 @@ import GoogleMap from "../GoogleMap";
 import Osm from "../../components/Maps/OpenStreetMap";
 import mixin from "./../../mixin";
 import { Empty } from "ant-design-vue";
+import Location from "./LocationForm.vue";
 export default {
   mixins: [mixin],
   props: {
@@ -391,7 +396,8 @@ export default {
   },
   components: {
     GoogleMap,
-    "open-street-map": Osm
+    "open-street-map": Osm,
+    Location
   },
   data() {
     let customerAddress = JSON.parse(localStorage.getItem("user_address"));
@@ -459,6 +465,9 @@ export default {
     showMap() {
       this.mapVisible = true;
     },
+    hideModal(){
+      this.mapVisible = false;
+    },
     showFormChangeInfo() {
       this.locationVisible = true;
     },
@@ -518,7 +527,7 @@ export default {
                   price: d.cost,
                   discount: d.discount,
                   quantity: d.quantity,
-                  combo_id : !d.restaurant_food_id ? d.id : null
+                  combo_id: !d.restaurant_food_id ? d.id : null
                 };
               });
               itemData.forEach(item => {
@@ -556,12 +565,11 @@ export default {
         this.discountCode = value.code;
         this.showOrderDetail();
         this.discountCodeVisible = false;
-      }else {
-        this.$notification['warning']({
-        message: 'Thông báo',
-        description:
-          'Đơn hàng chưa đủ điều kiện sử dụng ưu đãi',
-      });
+      } else {
+        this.$notification["warning"]({
+          message: "Thông báo",
+          description: "Đơn hàng chưa đủ điều kiện sử dụng ưu đãi"
+        });
       }
     },
     showDiscountCode() {
