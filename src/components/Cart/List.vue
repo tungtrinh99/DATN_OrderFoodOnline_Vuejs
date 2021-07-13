@@ -100,13 +100,20 @@
                 <div class="direction-to">
                   <div class="">
                     <div class="direction-name" id="shipping-address">
-                      <span>{{ formData ? formData.fullname : "" }}</span
-                      ><span>
-                        - {{ formData ? formData.phone_number : "" }}
-                      </span>
+                      <span>{{
+                        formData.fullname
+                          ? formData.fullname
+                          : "Khách hàng vãng lai"
+                      }}</span>
                     </div>
                     <div class="direction-address">
-                      <span> {{ customerAddress.address }}</span>
+                      <span>
+                        {{
+                          customerAddress.address
+                            ? customerAddress.address
+                            : "Chưa có địa điểm nhận hàng"
+                        }}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -178,10 +185,11 @@
                           >
                         </a>
                         <a-list-item-meta :description="item.address">
-                          <a slot="title"
-                            >{{ formData.fullname }} -
-                            {{ formData.phone_number }}</a
-                          >
+                          <a slot="title">{{
+                            formData.fullname
+                              ? formData.fullname
+                              : "Khách hàng vãng lai"
+                          }}</a>
                           <a-avatar slot="avatar" icon="environment" />
                         </a-list-item-meta>
                       </a-list-item>
@@ -460,12 +468,13 @@ export default {
     },
     addMarker() {
       EventBus.$emit("addMarker");
+     
       this.mapVisible = false;
     },
     showMap() {
       this.mapVisible = true;
     },
-    hideModal(){
+    hideModal() {
       this.mapVisible = false;
     },
     showFormChangeInfo() {
@@ -513,48 +522,51 @@ export default {
         update_at: moment(),
         content: null
       };
-
-      http
-        .post("/orders/save", data)
-        .then(res => {
-          if (res.data.errorCode == 1) {
-            var orderId = res.data.data.insertId;
-            if (orderId) {
-              let itemData = this.cartData.map(d => {
-                return {
-                  order_id: orderId,
-                  food_id: d.restaurant_food_id ? d.id : null,
-                  price: d.cost,
-                  discount: d.discount,
-                  quantity: d.quantity,
-                  combo_id: !d.restaurant_food_id ? d.id : null
-                };
-              });
-              itemData.forEach(item => {
-                http
-                  .post("/order-item/save", item)
-                  .then(response => {
-                    if (res.data.errorCode == 1) {
-                    } else {
-                      console.log();
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
-              });
+      if (!this.customerAddress.address) {
+        this.$message.error("Bạn chưa chọn địa điểm nhận hàng");
+      } else {
+        http
+          .post("/orders/save", data)
+          .then(res => {
+            if (res.data.errorCode == 1) {
+              let orderId = res.data.data.insertId;
+              if (orderId) {
+                let itemData = this.cartData.map(d => {
+                  return {
+                    order_id: orderId,
+                    food_id: d.restaurant_food_id ? d.id : null,
+                    price: d.cost,
+                    discount: d.discount,
+                    quantity: d.quantity,
+                    combo_id: !d.restaurant_food_id ? d.id : null
+                  };
+                });
+                itemData.forEach(item => {
+                  http
+                    .post("/order-item/save", item)
+                    .then(response => {
+                      if (res.data.errorCode == 1) {
+                      } else {
+                        console.log();
+                      }
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                });
+              }
+              this.$message.success("Đặt hàng thành công");
+              this.orderDetailVisible = false;
+              localStorage.removeItem("cart");
+              this.fetchData();
+            } else {
+              this.$message.error(res.data.message);
             }
-            this.$message.success("Đặt hàng thành công");
-            this.orderDetailVisible = false;
-            localStorage.removeItem("cart");
-            this.fetchData();
-          } else {
-            this.$message.error(res.data.message);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     },
     applyDiscountCode(value) {
       if (

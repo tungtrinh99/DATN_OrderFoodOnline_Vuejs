@@ -121,7 +121,7 @@ td {
   text-align: center;
 }
 #reportOrder {
-  width: 8in;
+  width: 7in;
   margin: auto;
 }
 

@@ -119,7 +119,7 @@ td {
   border-collapse: collapse;
 }
 #reportOrder {
-  width: 8in;
+  width: 7in;
   margin: auto;
 }
 .report-footer {

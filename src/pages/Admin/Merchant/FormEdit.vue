@@ -6,7 +6,7 @@
     :rules="rules"
     ref="ruleForm"
   >
-    <a-form-model-item label="Ảnh khách hàng" prop="avatar">
+    <a-form-model-item label="Ảnh đối tác" prop="avatar">
       <a-upload
         name="file"
         list-type="picture-card"
@@ -28,10 +28,10 @@
         </div>
       </a-upload>
     </a-form-model-item>
-    <a-form-model-item label="Mã khách hàng" ref="userCode">
+    <a-form-model-item label="Mã đối tác" ref="userCode">
       <a-input v-model="user.userCode" type="text" :allowClear="true" />
     </a-form-model-item>
-    <a-form-model-item label="Tên khách hàng" ref="fullname" prop="fullname">
+    <a-form-model-item label="Tên đối tác" ref="fullname" prop="fullname">
       <a-input v-model="user.fullname" type="text" :allowClear="true" />
     </a-form-model-item>
     <a-form-model-item label="Tên đăng nhập" ref="username" prop="username">
