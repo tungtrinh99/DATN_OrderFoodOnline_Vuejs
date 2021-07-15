@@ -11,7 +11,8 @@
       :show="show"
       :title="'Chi tiết vận đơn'"
       :formData="formData"
-      :orders ="orders"
+      :orderCodes="orderCodes"
+      :orders="orders"
       @close="close"
     >
     </show>
@@ -32,7 +33,8 @@ export default {
       isAdd: true,
       formData: {},
       show: false,
-      orders : []
+      orderCodes: [],
+      orders: []
     };
   },
   components: {
@@ -41,19 +43,33 @@ export default {
   },
   methods: {
     openRecord(value) {
-      http
-        .get("/lading-bill/detail", {
-          params: { id: value }
-        })
+      Promise.all([this.getOrders(), this.getLadingBill(value)])
         .then(res => {
-          this.formData = res.data[0];
-          this.orders = this.formData.orders != null ? this.formData.orders.split(',') : [] ;
           this.show = true;
+          this.formData = res[1].data[0];
+          this.orderCodes =
+            this.formData.orders != null ? this.formData.orders.split(",") : [];
+          let order = res[0].data.data.items;
+          this.orders.length = 0;
+          this.orderCodes.forEach(code => {
+            let result = order.find(order => order.order_code == code);
+            this.orders.push(result);
+          });
         })
-        .catch(err => {});
+        .catch(error => {});
     },
     close() {
       this.show = false;
+    },
+    getOrders() {
+      return http.post("/orders/list");
+    },
+    getLadingBill(value) {
+      return http.get("/lading-bill/detail", {
+        params: {
+          id: value
+        }
+      });
     }
   }
 };

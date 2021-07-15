@@ -11,10 +11,12 @@
       :dialog-style="{ top: '100px' }"
     >
       <div slot="footer" v-if="formData.status != 3">
+        <a-button type="danger" @click="openExport">Xuất vận đơn</a-button>
         <a-button type="primary" @click="openOrders">Gán đơn hàng</a-button>
         <a-button @click="closeLadingBill">Đóng vận đơn</a-button>
       </div>
       <div slot="footer" v-if="formData.status == 3">
+        <a-button type="danger" @click="openExport">Xuất vận đơn</a-button>
         <a-button @click="close">Thoát</a-button>
       </div>
       <div class="title">Thông tin</div>
@@ -40,7 +42,7 @@
         style="height : 400px;over-flow : auto"
         class="demo-loadmore-list"
         item-layout="horizontal"
-        :data-source="orders"
+        :data-source="orderCodes"
       >
         <a-list-item slot="renderItem" slot-scope="item, index">
           <a-list-item-meta description="">
@@ -93,23 +95,47 @@
         </a-list-item>
       </a-list>
     </a-modal>
+    <a-modal
+      :title="'Vận đơn'"
+      v-model="showLadingBill"
+      width="50%"
+      :bodyStyle="{
+        padding: '16px',
+        height: '60vh',
+        overflowY: 'auto',
+        overflowX: 'auto',
+      }"
+      :dialog-style="{ top: '100px' }"
+    >
+     <div slot="footer">
+        <a-button type="primary" @click="exportLadingBill">Xuất vận đơn</a-button>
+      </div>
+      <lading-bill :ladingBill = "formData" :orders = "orders"></lading-bill>
+    </a-modal>
   </div>
 </template>
 <script>
 import http from "../../../http-common";
 import EventBus from "../../../event-bus";
+import LadingBill from "../../../components/Export/LadingBill.vue";
+import moment from 'moment';
 export default {
   props: {
     show: Boolean,
     formData: Object,
     title: String,
-    orders: Array
+    orderCodes: Array,
+    orders : Array
+  },
+  components:{
+    LadingBill
   },
   data() {
     return {
       key: 0,
       ordersNotHaveLadingBill: [],
-      visibleOrders: false
+      visibleOrders: false,
+      showLadingBill : false
     };
   },
   methods: {
@@ -119,6 +145,7 @@ export default {
     closeOrders() {
       this.visibleOrders = false;
     },
+    
     updateLadingBill() {
       http.post(
         "/lading-bill/update",
@@ -146,6 +173,8 @@ export default {
     openOrders() {
       http
         .post("/orders/list", {
+          from_date : moment().format('YYYY-MM-DD'),
+          to_date : moment().add(1,'days').format('YYYY-MM-DD'),
           not_delivery_order: true,
           driver_id: this.formData.driver_id,
           not_status: [4, 5]
@@ -186,6 +215,12 @@ export default {
 
         })
         .catch(err => {});
+    },
+    openExport(){
+      this.showLadingBill = true;
+    },
+    exportLadingBill(){
+      EventBus.$emit('exportLadingBill')
     }
   }
 };
